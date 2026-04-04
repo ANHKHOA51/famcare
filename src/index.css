@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,84 +6,166 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 220 30% 12%;
+    /* === TONAL ARCHITECTURE === */
+    /* Surfaces — stacked sheets of fine paper */
+    --surface: 220 20% 97.5%;           /* #f8f9fb — Level 0 */
+    --surface-container-low: 220 14% 96%; /* #f3f4f6 — Level 1 */
+    --surface-container: 220 13% 93%;    /* #ecedf0 */
+    --surface-container-high: 220 10% 89%; /* #e1e3e6 */
+    --surface-container-lowest: 0 0% 100%; /* #ffffff — Level 2, max lift */
+    --surface-tint: 220 70% 30% / 0.04;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 30% 12%;
+    /* On-Surface — never pure black */
+    --on-surface: 210 12% 10%;          /* ~#191C1E */
+    --on-surface-variant: 230 8% 30%;   /* ~#434654 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 12%;
-
-    --primary: 220 70% 25%;
+    /* Primary — The Anchor */
+    --primary: 218 100% 30%;            /* #003D9B */
     --primary-foreground: 0 0% 100%;
+    --primary-container: 214 100% 40%;  /* #0052CC */
 
-    --secondary: 220 20% 96%;
-    --secondary-foreground: 220 30% 12%;
+    /* Secondary — The Calm */
+    --secondary: 191 100% 24%;          /* #00687A */
+    --secondary-foreground: 0 0% 100%;
+    --secondary-container: 191 60% 92%;
 
-    --muted: 220 15% 94%;
-    --muted-foreground: 220 10% 46%;
+    /* Tertiary — Care Alert */
+    --tertiary: 20 100% 24%;            /* #7B2600 */
+    --tertiary-foreground: 0 0% 100%;
+    --tertiary-container: 20 100% 32%;  /* #A33500 */
 
-    --accent: 220 60% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-
-    --success: 142 71% 45%;
+    /* Semantic */
+    --success: 152 60% 42%;
     --success-foreground: 0 0% 100%;
+    --success-container: 152 40% 92%;
+    --on-success-container: 152 60% 20%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --info: 199 89% 48%;
-    --info-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --brand-warm: 15 60% 32%;
-    --brand-warm-foreground: 0 0% 100%;
+    /* Mapped to shadcn tokens */
+    --background: var(--surface);
+    --foreground: var(--on-surface);
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 220 70% 25%;
+    --card: var(--surface-container-lowest);
+    --card-foreground: var(--on-surface);
+
+    --popover: var(--surface-container-lowest);
+    --popover-foreground: var(--on-surface);
+
+    --muted: var(--surface-container-low);
+    --muted-foreground: var(--on-surface-variant);
+
+    --accent: var(--surface-container-low);
+    --accent-foreground: var(--on-surface);
+
+    --border: 220 13% 91% / 0.15;      /* Ghost border — felt, not seen */
+    --input: var(--surface-container-high);
+    --ring: var(--primary);
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 10% 40%;
-    --sidebar-primary: 220 70% 25%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 60% 96%;
-    --sidebar-accent-foreground: 220 70% 25%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 220 70% 25%;
+    /* Outline variant for ghost borders */
+    --outline-variant: 220 10% 50% / 0.15;
 
-    --font-heading: 'Playfair Display', serif;
+    /* Sidebar */
+    --sidebar-background: var(--surface-container-lowest);
+    --sidebar-foreground: var(--on-surface-variant);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: 218 80% 96%;
+    --sidebar-accent-foreground: var(--primary);
+    --sidebar-border: var(--outline-variant);
+    --sidebar-ring: var(--primary);
+
+    /* Typography */
+    --font-display: 'Manrope', sans-serif;
     --font-body: 'Inter', sans-serif;
+
+    /* Patient Shadow */
+    --shadow-ambient: 0 10px 30px hsl(210 12% 10% / 0.04);
+    --shadow-elevated: 0 16px 48px hsl(210 12% 10% / 0.06);
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--outline-variant));
   }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--surface));
+    color: hsl(var(--on-surface));
     font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   h1, h2, h3 {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
   }
 }
 
 @layer utilities {
-  .font-heading {
-    font-family: var(--font-heading);
+  .font-display {
+    font-family: var(--font-display);
   }
   .font-body {
     font-family: var(--font-body);
   }
+
+  /* Surface utilities */
+  .surface-0 {
+    background-color: hsl(var(--surface));
+  }
+  .surface-1 {
+    background-color: hsl(var(--surface-container-low));
+  }
+  .surface-2 {
+    background-color: hsl(var(--surface-container-lowest));
+  }
+  .surface-glass {
+    background-color: hsl(var(--surface-container-lowest) / 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Gradient CTA — jewel effect */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-container)));
+  }
+
+  /* Patient Shadow */
+  .shadow-patient {
+    box-shadow: var(--shadow-ambient);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  /* Tonal tint wash */
+  .surface-tinted {
+    background-color: hsl(var(--surface-tint));
+  }
+
+  /* Ghost border */
+  .border-ghost {
+    border-color: hsl(var(--outline-variant));
+  }
+
+  /* Vertical pill indicator */
+  .pill-indicator {
+    width: 4px;
+    border-radius: 9999px;
+    background-color: hsl(var(--primary));
+  }
 }
 
+/* === ANIMATIONS === */
 @keyframes scan-line {
   0% { top: 0%; }
   50% { top: 92%; }
@@ -101,6 +183,11 @@
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .animate-scan-line {
   animation: scan-line 2.5s ease-in-out infinite;
 }
@@ -111,4 +198,8 @@
 
 .animate-pulse-ring {
   animation: pulse-ring 2s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
 }

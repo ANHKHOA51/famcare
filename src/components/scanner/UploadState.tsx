@@ -30,26 +30,32 @@ const UploadState = ({ onFileSelected }: UploadStateProps) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-in">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-heading font-bold text-foreground mb-2">Quét đơn thuốc AI</h2>
-        <p className="text-muted-foreground">Tải lên hình ảnh đơn thuốc để AI phân tích và tạo kế hoạch dinh dưỡng phù hợp.</p>
+    <div className="max-w-2xl mx-auto animate-fade-up">
+      {/* Header */}
+      <div className="text-center mb-10">
+        <h2 className="text-[2rem] font-display font-bold text-foreground mb-3 tracking-tight">Quét đơn thuốc AI</h2>
+        <p className="text-on-surface-variant text-[0.875rem] leading-relaxed max-w-md mx-auto">
+          Tải lên hình ảnh đơn thuốc để AI phân tích và tạo kế hoạch dinh dưỡng phù hợp.
+        </p>
       </div>
 
+      {/* Drop zone — no hard borders, background shift */}
       <div
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-2xl p-16 text-center transition-all cursor-pointer ${
-          isDragging ? "border-accent bg-accent/5 scale-[1.01]" : "border-border bg-card hover:border-accent/50"
+        className={`rounded-2xl p-18 text-center transition-all duration-300 cursor-pointer ${
+          isDragging
+            ? "surface-2 shadow-elevated scale-[1.01]"
+            : "surface-1 hover:surface-2 hover:shadow-patient"
         }`}
         onClick={() => document.getElementById("file-input")?.click()}
       >
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-5">
-          <FileImage className="text-accent" size={28} />
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/8 flex items-center justify-center mb-6">
+          <FileImage className="text-primary" size={28} />
         </div>
-        <p className="text-foreground font-semibold mb-1">Kéo & thả hình ảnh đơn thuốc vào đây</p>
-        <p className="text-sm text-muted-foreground mb-6">Hỗ trợ JPG, PNG, WEBP — Tối đa 10MB</p>
+        <p className="text-foreground font-semibold font-display text-base mb-1.5">Kéo & thả hình ảnh đơn thuốc vào đây</p>
+        <p className="text-[0.8125rem] text-on-surface-variant mb-8">Hỗ trợ JPG, PNG, WEBP — Tối đa 10MB</p>
         <Button variant="outline" className="gap-2">
           <Upload size={16} />
           Chọn file từ máy tính
@@ -58,7 +64,7 @@ const UploadState = ({ onFileSelected }: UploadStateProps) => {
       </div>
 
       {error && (
-        <div className="mt-4 flex items-center gap-2 text-destructive text-sm bg-destructive/10 px-4 py-3 rounded-lg">
+        <div className="mt-6 flex items-center gap-2 text-destructive text-sm bg-destructive/6 px-5 py-3.5 rounded-xl">
           <AlertCircle size={16} />
           {error}
         </div>

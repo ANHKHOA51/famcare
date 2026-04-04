@@ -35,7 +35,7 @@ const ScannerPage = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-10">
       {step === "upload" && <UploadState onFileSelected={handleFileSelected} />}
       {step === "scanning" && <ScanningState imageUrl={imageUrl} />}
       {step === "result" && <ResultState onReset={handleReset} />}
