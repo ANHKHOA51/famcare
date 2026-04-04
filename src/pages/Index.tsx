@@ -1,16 +1,36 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import AppSidebar from "@/components/AppSidebar";
+import TopNav from "@/components/TopNav";
+import DashboardPage from "@/pages/DashboardPage";
+import ScannerPage from "@/pages/ScannerPage";
+import MarketplacePage from "@/pages/MarketplacePage";
+import ComingSoonPage from "@/pages/ComingSoonPage";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [activePage, setActivePage] = useState("scanner");
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "dashboard": return <DashboardPage />;
+      case "scanner": return <ScannerPage />;
+      case "marketplace": return <MarketplacePage />;
+      case "nutrition": return <ComingSoonPage title="Dinh dưỡng" />;
+      case "alerts": return <ComingSoonPage title="Thông báo" />;
+      default: return <ComingSoonPage title="Coming Soon" />;
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="flex min-h-screen bg-background">
+      <AppSidebar activePage={activePage} onNavigate={setActivePage} />
+      <div className="flex-1 flex flex-col">
+        <TopNav />
+        <main className="flex-1 overflow-auto">
+          {renderPage()}
+        </main>
+      </div>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
