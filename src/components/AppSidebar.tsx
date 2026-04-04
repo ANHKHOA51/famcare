@@ -21,50 +21,57 @@ const bottomItems = [
 
 const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
   return (
-    <aside className="w-60 min-h-screen bg-card border-r border-border flex flex-col">
-      <div className="p-6">
-        <h1 className="text-lg font-bold font-heading text-primary">Aura Health</h1>
-        <p className="text-xs text-muted-foreground">Chăm sóc tận tâm</p>
+    <aside className="w-64 min-h-screen surface-2 flex flex-col shadow-patient">
+      {/* Brand */}
+      <div className="px-7 pt-8 pb-6">
+        <h1 className="text-xl font-bold font-display text-foreground tracking-tight">Hệ sinh thái Y tế</h1>
+        <p className="text-xs text-on-surface-variant mt-0.5">Chăm sóc tận tâm</p>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1">
+      {/* Nav */}
+      <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => onNavigate(item.id)}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
+              "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
               activePage === item.id
-                ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-3 border-primary"
-                : "text-sidebar-foreground hover:bg-muted"
+                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                : "text-on-surface-variant hover:bg-surface-low"
             )}
           >
-            <item.icon size={18} />
+            {activePage === item.id && (
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 pill-indicator h-6" />
+            )}
+            <item.icon size={18} strokeWidth={activePage === item.id ? 2.2 : 1.8} />
             {item.label}
           </button>
         ))}
       </nav>
 
-      <div className="px-3 pb-4 space-y-1 border-t border-border pt-4">
+      {/* Bottom */}
+      <div className="px-4 pb-4 space-y-1 pt-4">
         {bottomItems.map((item) => (
           <button
             key={item.id}
             onClick={() => onNavigate(item.id)}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-muted transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-on-surface-variant hover:bg-surface-low transition-all duration-200"
           >
-            <item.icon size={18} />
+            <item.icon size={18} strokeWidth={1.8} />
             {item.label}
           </button>
         ))}
       </div>
 
-      <div className="p-4 border-t border-border flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+      {/* User */}
+      <div className="px-5 py-5 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
           NV
         </div>
         <div>
-          <p className="text-sm font-medium text-foreground">Nguyễn Văn A</p>
-          <p className="text-xs text-muted-foreground">ID: 284902</p>
+          <p className="text-sm font-semibold text-foreground">Nguyễn Văn A</p>
+          <p className="text-[11px] text-on-surface-variant">ID: 284902</p>
         </div>
       </div>
     </aside>
