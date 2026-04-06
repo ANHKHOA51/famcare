@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# Aura Health - HealScan Scribe
 
 TODO: Document your project here
