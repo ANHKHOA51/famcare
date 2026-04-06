@@ -11,7 +11,7 @@ const LandingPage = () => {
     <div className="min-h-screen surface-2">
       {/* Navbar — glassmorphism */}
       <header className="surface-glass sticky top-0 z-50 flex items-center justify-between px-8 lg:px-16 py-4">
-        <h1 className="text-base font-bold font-display text-foreground tracking-tight">The Clinical Editorial</h1>
+        <h1 className="text-base font-bold font-display text-foreground tracking-tight">AuraHeath</h1>
         <nav className="hidden md:flex items-center gap-10">
           <a href="#" className="text-sm font-semibold text-foreground">Trang chủ</a>
           <a href="#services" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Dịch vụ</a>
@@ -174,7 +174,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="font-display font-bold text-foreground text-lg">Aura Health</h3>
-            <p className="text-[0.6875rem] text-on-surface-variant mt-1 uppercase tracking-wider">© 2024 THE CLINICAL EDITORIAL. ALL RIGHTS RESERVED.</p>
+            <p className="text-[0.6875rem] text-on-surface-variant mt-1 uppercase tracking-wider">© 2026 Aura Health. ALL RIGHTS RESERVED.</p>
           </div>
           <div className="flex gap-8 text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">
             <a href="#" className="hover:text-foreground transition-colors">Quyền riêng tư</a>

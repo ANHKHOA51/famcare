@@ -1,22 +1,22 @@
-import { mockAiResponse } from "@/data/mockAiResponse";
-import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ScanResult } from "@/pages/ScannerPage";
 
 interface ResultStateProps {
+  result: ScanResult;
   onReset: () => void;
+  onGenerateMealPlan: () => void;
 }
 
-const ResultState = ({ onReset }: ResultStateProps) => {
-  const { patient, medications, nutriHealthPlan, expertNotes } = mockAiResponse;
-
+const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) => {
   return (
-    <div className="animate-fade-up space-y-8 max-w-5xl mx-auto">
+    <div className="animate-fade-up space-y-8 max-w-5xl mx-auto pb-20">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-[2rem] font-display font-bold text-foreground tracking-tight">Kết quả phân tích</h2>
           <p className="text-on-surface-variant text-[0.875rem] mt-1.5">
-            Bệnh nhân: {patient.name} · Chẩn đoán: <span className="font-semibold text-foreground">{patient.diagnosis}</span>
+            Chẩn đoán: <span className="font-semibold text-foreground">{result.diagnosis}</span>
           </p>
         </div>
         <Button variant="outline" onClick={onReset} className="gap-2">
@@ -25,23 +25,22 @@ const ResultState = ({ onReset }: ResultStateProps) => {
         </Button>
       </div>
 
-      {/* Medications — surface-2 card on surface-0 background */}
+      {/* Medications */}
       <div className="surface-2 rounded-2xl p-8 shadow-patient">
         <div className="flex items-center gap-2.5 mb-6">
           <Pill size={20} className="text-primary" />
-          <h3 className="text-lg font-semibold font-display text-foreground">Thuốc được kê</h3>
+          <h3 className="text-lg font-semibold font-display text-foreground">Đơn thuốc của bạn</h3>
         </div>
         <div className="space-y-3">
-          {medications.map((med, i) => (
+          {result.medications.map((med, i) => (
             <div key={i} className="flex items-start gap-4 p-5 surface-1 rounded-xl transition-colors duration-200 hover:surface-2 hover:shadow-patient">
               <div className="w-11 h-11 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
                 <Pill size={18} className="text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground">{med.name}</p>
-                <p className="text-[0.8125rem] text-on-surface-variant mt-0.5">{med.dosage} · {med.frequency}</p>
+                <p className="text-[0.8125rem] text-on-surface-variant mt-0.5">{med.dosage}</p>
               </div>
-              <span className="text-[0.6875rem] bg-primary/8 text-primary px-3 py-1 rounded-full font-medium whitespace-nowrap">{med.purpose}</span>
             </div>
           ))}
         </div>
@@ -53,17 +52,17 @@ const ResultState = ({ onReset }: ResultStateProps) => {
         <div className="surface-2 rounded-2xl p-8 shadow-patient">
           <div className="flex items-center gap-2.5 mb-6">
             <Utensils size={20} className="text-success" />
-            <h3 className="text-lg font-semibold font-display text-foreground">Nên ăn</h3>
+            <h3 className="text-lg font-semibold font-display text-foreground">Thực phẩm nên ăn</h3>
           </div>
           <div className="space-y-2.5">
-            {nutriHealthPlan.recommended.map((item, i) => (
+            {result.nutrition.recommended_foods.map((item, i) => (
               <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-success-container/50 transition-colors duration-200 hover:bg-success-container">
-                <span className="text-2xl">{item.icon}</span>
-                <div className="flex-1">
-                  <p className="font-medium text-foreground text-[0.875rem]">{item.name}</p>
-                  <p className="text-[0.6875rem] text-on-surface-variant mt-0.5">{item.reason}</p>
+                <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0">
+                  <CheckCircle2 size={16} className="text-success" />
                 </div>
-                <CheckCircle2 size={18} className="text-success shrink-0" />
+                <div className="flex-1">
+                  <p className="font-medium text-foreground text-[0.875rem]">{item}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -73,40 +72,45 @@ const ResultState = ({ onReset }: ResultStateProps) => {
         <div className="surface-2 rounded-2xl p-8 shadow-patient">
           <div className="flex items-center gap-2.5 mb-6">
             <AlertTriangle size={20} className="text-destructive" />
-            <h3 className="text-lg font-semibold font-display text-foreground">Nên tránh</h3>
+            <h3 className="text-lg font-semibold font-display text-foreground">Thực phẩm nên tránh</h3>
           </div>
           <div className="space-y-2.5">
-            {nutriHealthPlan.avoid.map((item, i) => (
+            {result.nutrition.foods_to_avoid.map((item, i) => (
               <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-destructive/5 transition-colors duration-200 hover:bg-destructive/8">
-                <span className="text-2xl">{item.icon}</span>
-                <div className="flex-1">
-                  <p className="font-medium text-foreground text-[0.875rem]">{item.name}</p>
-                  <p className="text-[0.6875rem] text-on-surface-variant mt-0.5">{item.reason}</p>
+                <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                  <AlertTriangle size={16} className="text-destructive" />
                 </div>
-                <AlertTriangle size={18} className="text-destructive shrink-0" />
+                <div className="flex-1">
+                  <p className="font-medium text-foreground text-[0.875rem]">{item}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Expert Notes — tertiary tonal */}
-      <div className="bg-tertiary/5 rounded-2xl p-8">
-        <div className="flex items-center gap-2.5 mb-6">
-          <BookOpen size={20} className="text-tertiary" />
-          <h3 className="text-lg font-semibold font-display text-foreground">Lưu ý chuyên gia</h3>
+      {/* Action CTA */}
+      <div className="flex justify-center pt-4">
+        <Button 
+          size="lg" 
+          className="h-14 px-10 rounded-full text-lg shadow-elevated gap-3 animate-pulse-ring"
+          onClick={onGenerateMealPlan}
+        >
+          <Sparkles size={20} />
+          Tạo thực đơn 7 ngày
+        </Button>
+      </div>
+
+      {/* Expert Note Disclaimer */}
+      <div className="bg-primary/5 rounded-2xl p-8">
+        <div className="flex items-center gap-2.5 mb-4">
+          <BookOpen size={20} className="text-primary" />
+          <h3 className="text-lg font-semibold font-display text-foreground">Lưu ý quan trọng</h3>
         </div>
-        <div className="space-y-4">
-          {expertNotes.map((note, i) => (
-            <div key={i} className="flex items-start gap-4">
-              <div className="w-1 min-h-[44px] rounded-full bg-tertiary shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-foreground">{note.title}</p>
-                <p className="text-[0.8125rem] text-on-surface-variant mt-1 leading-relaxed">{note.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="text-[0.875rem] text-on-surface-variant leading-relaxed">
+          Kết quả này được tạo bởi Trí tuệ nhân tạo (AI) dựa trên hình ảnh đơn thuốc bạn cung cấp.
+          Thông tin dinh dưỡng chỉ mang tính chất tham khảo. Vui lòng tham khảo ý kiến bác sĩ hoặc chuyên gia dinh dưỡng trước khi thay đổi chế độ ăn uống của bạn.
+        </p>
       </div>
     </div>
   );
