@@ -9,7 +9,12 @@ export type ScannerStep = "upload" | "scanning" | "result" | "meal-plan";
 
 export interface ScanResult {
   diagnosis: string;
-  medications: { name: string; dosage: string }[];
+  medications: { 
+    name: string; 
+    dosage: string;
+    instructions?: string;
+    suggested_symptoms?: string[];
+  }[];
   nutrition: {
     recommended_foods: string[];
     foods_to_avoid: string[];

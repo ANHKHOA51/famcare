@@ -1,0 +1,472 @@
+import React, { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { Search, Pill, UserPlus, Info, AlertTriangle, CheckCircle2, History, Loader2, User, Link2, Mail, Users } from "lucide-react";
+
+interface FamilyMember {
+  id: string;
+  name: string;
+  relationship: string;
+  linkedUser?: { id: string; name: string; email: string };
+}
+
+interface Medication {
+  id: string;
+  name: string;
+  dosage: string;
+  instructions?: string;
+  diagnosis?: string;
+  symptoms_treated?: string;
+  familyMember: FamilyMember & {
+    user: { id: string; name: string; email: string };
+  };
+  createdAt: string;
+}
+
+interface UserSearchResult {
+  id: string;
+  name?: string;
+  email: string;
+}
+
+interface SearchResult {
+  top_match?: { name: string; reason: string; instructions: string; owner: string };
+  alternatives?: Array<{ name: string; reason: string }>;
+  warning?: string;
+  message?: string;
+}
+
+const CabinetPage = () => {
+  const { token, user } = useAuth();
+  const [activeTab, setActiveTab] = useState("all");
+  const [members, setMembers] = useState<FamilyMember[]>([]);
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [symptomQuery, setSymptomQuery] = useState("");
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Add Member Modal
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [userQuery, setUserQuery] = useState("");
+  const [userResults, setUserResults] = useState<UserSearchResult[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
+  const [relationship, setRelationship] = useState("");
+  const [searching2, setSearching2] = useState(false);
+  const [adding, setAdding] = useState(false);
+
+  useEffect(() => { fetchCabinet(); fetchMembers(); }, []);
+
+  const fetchCabinet = async () => {
+    try {
+      const resp = await fetch("http://localhost:3001/api/cabinet", { headers: { Authorization: `Bearer ${token}` } });
+      setMedications(await resp.json());
+    } catch { toast.error("Lỗi khi tải tủ thuốc"); }
+    finally { setLoading(false); }
+  };
+
+  const fetchMembers = async () => {
+    try {
+      const resp = await fetch("http://localhost:3001/api/family", { headers: { Authorization: `Bearer ${token}` } });
+      setMembers(await resp.json());
+    } catch {}
+  };
+
+  // Debounced user search
+  const handleUserSearch = useCallback(async (q: string) => {
+    setUserQuery(q);
+    setSelectedUser(null);
+    if (q.length < 2) { setUserResults([]); return; }
+    setSearching2(true);
+    try {
+      const resp = await fetch(`http://localhost:3001/api/family/search?q=${encodeURIComponent(q)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserResults(await resp.json());
+    } catch {}
+    finally { setSearching2(false); }
+  }, [token]);
+
+  const handleAddMember = async () => {
+    if (!selectedUser || !relationship) { toast.error("Vui lòng chọn người và mối quan hệ"); return; }
+    setAdding(true);
+    try {
+      const resp = await fetch("http://localhost:3001/api/family/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ linkedUserId: selectedUser.id, relationship })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        toast.success(`Đã thêm ${selectedUser.name || selectedUser.email} vào gia đình!`);
+        fetchMembers();
+        setAddDialogOpen(false);
+        setUserQuery(""); setUserResults([]); setSelectedUser(null); setRelationship("");
+      } else {
+        toast.error(data.error || "Lỗi khi thêm thành viên");
+      }
+    } catch { toast.error("Lỗi kết nối"); }
+    finally { setAdding(false); }
+  };
+
+  const handleSymptomSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!symptomQuery.trim()) return;
+    setSearching(true); setSearchResult(null);
+    try {
+      const resp = await fetch("http://localhost:3001/api/cabinet/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ symptom: symptomQuery })
+      });
+      setSearchResult(await resp.json());
+    } catch { toast.error("Lỗi khi tìm thuốc"); }
+    finally { setSearching(false); }
+  };
+
+  return (
+    <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-primary">Tủ thuốc Gia đình</h1>
+          <p className="text-muted-foreground mt-1">Tìm kiếm thuốc theo triệu chứng và xem lịch sử điều trị của cả nhà.</p>
+        </div>
+
+        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 shadow-sm">
+              <UserPlus className="w-4 h-4" />
+              Thêm thành viên
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Thêm thành viên gia đình
+              </DialogTitle>
+              <DialogDescription>
+                Tìm thành viên bằng email hoặc tên. Họ phải có tài khoản Aura Health.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-2">
+              {/* Step 1: Search */}
+              <div className="space-y-2">
+                <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                  Bước 1: Tìm kiếm người dùng
+                </Label>
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Nhập email hoặc tên..."
+                    value={userQuery}
+                    onChange={e => handleUserSearch(e.target.value)}
+                    className="pl-9"
+                  />
+                  {searching2 && <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground" />}
+                </div>
+
+                {/* Search Results */}
+                {userResults.length > 0 && !selectedUser && (
+                  <div className="border border-border rounded-xl overflow-hidden shadow-sm">
+                    {userResults.map(u => (
+                      <button
+                        key={u.id}
+                        onClick={() => { setSelectedUser(u); setUserResults([]); }}
+                        className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 transition-colors text-left border-b border-border last:border-0"
+                      >
+                        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                          {(u.name || u.email)[0].toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm">{u.name || "Chưa đặt tên"}</p>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Mail className="w-3 h-3" />{u.email}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {userQuery.length >= 2 && userResults.length === 0 && !searching2 && !selectedUser && (
+                  <p className="text-sm text-muted-foreground text-center py-3 border border-dashed border-border rounded-xl">
+                    Không tìm thấy người dùng nào
+                  </p>
+                )}
+              </div>
+
+              {/* Selected user */}
+              {selectedUser && (
+                <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                      {(selectedUser.name || selectedUser.email)[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm">{selectedUser.name || "Chưa đặt tên"}</p>
+                      <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
+                    </div>
+                  </div>
+                  <Badge className="bg-primary text-white gap-1">
+                    <Link2 className="w-3 h-3" /> Đã chọn
+                  </Badge>
+                </div>
+              )}
+
+              {/* Step 2: Relationship */}
+              {selectedUser && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                    Bước 2: Mối quan hệ
+                  </Label>
+                  <Select onValueChange={setRelationship} value={relationship}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Họ là ai với bạn?" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["Vợ", "Chồng", "Con", "Bố", "Mẹ", "Anh", "Chị", "Em", "Ông", "Bà", "Khác"].map(r => (
+                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => { setAddDialogOpen(false); setSelectedUser(null); setUserQuery(""); setRelationship(""); }}>
+                Hủy
+              </Button>
+              <Button onClick={handleAddMember} disabled={!selectedUser || !relationship || adding}>
+                {adding ? <Loader2 className="animate-spin w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
+                Thêm vào gia đình
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Family Members Preview */}
+      {members.length > 0 && (
+        <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-2xl border border-border">
+          <div className="flex items-center gap-1 shrink-0">
+            <Users className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-bold text-muted-foreground">Gia đình:</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {/* Always show "self" chip */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full">
+              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[10px] text-white font-bold">
+                {user?.name?.[0]?.toUpperCase()}
+              </div>
+              <span className="text-xs font-bold text-primary">Bạn</span>
+            </div>
+            {members.map(m => (
+              <div key={m.id} className="flex items-center gap-2 px-3 py-1.5 bg-background border border-border rounded-full group">
+                <div className="w-5 h-5 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">
+                  {m.name[0].toUpperCase()}
+                </div>
+                <span className="text-xs font-semibold">{m.name}</span>
+                <span className="text-[10px] text-muted-foreground">({m.relationship})</span>
+                {m.linkedUser && (
+                  <span title={`Tài khoản: ${m.linkedUser.email}`}>
+                    <Link2 className="w-3 h-3 text-primary" />
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* AI Symptom Search */}
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
+        <CardContent className="p-6 space-y-5">
+          <div>
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Search className="w-5 h-5 text-primary" />
+              Tìm thuốc theo triệu chứng (AI)
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">AI sẽ tìm trong tất cả thuốc của gia đình bạn</p>
+          </div>
+
+          <form onSubmit={handleSymptomSearch} className="flex gap-2">
+            <Input
+              placeholder="Nhập triệu chứng: 'đau bụng', 'sốt', 'nhức đầu'..."
+              value={symptomQuery}
+              onChange={e => setSymptomQuery(e.target.value)}
+              className="h-12 text-base bg-background"
+            />
+            <Button type="submit" disabled={searching} className="h-12 px-8 shadow-sm">
+              {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Tìm"}
+            </Button>
+          </form>
+
+          {searchResult && (
+            <div className="animate-in zoom-in-95 fade-in duration-300 space-y-4 pt-2 border-t border-primary/10">
+              {searchResult.message ? (
+                <div className="p-4 bg-muted rounded-xl flex items-center gap-3">
+                  <Info className="w-5 h-5 text-muted-foreground shrink-0" />
+                  <p className="text-sm">{searchResult.message}</p>
+                </div>
+              ) : (
+                <>
+                  {searchResult.top_match && (
+                    <div className="p-5 bg-primary/10 rounded-2xl border border-primary/20 relative">
+                      <Badge className="absolute top-4 right-4 bg-primary text-white text-[11px]">Gợi ý tốt nhất</Badge>
+                      <div className="flex gap-4">
+                        <div className="p-3 bg-primary/20 rounded-xl h-fit">
+                          <Pill className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="space-y-2 flex-1 pr-24">
+                          <h3 className="text-xl font-bold text-primary">{searchResult.top_match.name}</h3>
+                          <p className="text-sm text-muted-foreground flex items-center gap-1">
+                            <User className="w-3.5 h-3.5" /> Của: <span className="font-semibold text-foreground">{searchResult.top_match.owner}</span>
+                          </p>
+                          <p className="text-sm italic bg-background/60 p-3 rounded-lg border border-primary/10">"{searchResult.top_match.reason}"</p>
+                          <div className="p-3 bg-background border border-primary/15 rounded-xl">
+                            <p className="text-[11px] font-bold uppercase text-primary/60 mb-1">Cách dùng:</p>
+                            <p className="font-bold text-primary text-sm">{searchResult.top_match.instructions}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {searchResult.warning && (
+                    <div className="p-4 bg-destructive/10 rounded-xl flex items-start gap-3 border border-destructive/20">
+                      <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                      <p className="text-sm text-destructive font-medium">{searchResult.warning}</p>
+                    </div>
+                  )}
+                  {searchResult.alternatives && searchResult.alternatives.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Lựa chọn thay thế</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {searchResult.alternatives.map((a, i) => (
+                          <div key={i} className="p-3 bg-background border rounded-xl flex gap-3 items-center">
+                            <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                            <div><p className="font-bold text-sm">{a.name}</p><p className="text-xs text-muted-foreground">{a.reason}</p></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Medication List */}
+      <div>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="bg-muted p-1 rounded-xl mb-6">
+            <TabsTrigger value="all" className="rounded-lg px-4 font-bold">
+              Tất cả ({medications.length})
+            </TabsTrigger>
+            <TabsTrigger value="mine" className="rounded-lg px-4 font-bold">
+              Của tôi
+            </TabsTrigger>
+            {members.map(m => (
+              <TabsTrigger key={m.id} value={m.id} className="rounded-lg px-4 font-bold">
+                {m.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <TabsContent value={activeTab}>
+            {loading ? (
+              <div className="flex flex-col items-center py-20 gap-3">
+                <Loader2 className="w-8 h-8 animate-spin text-primary/30" />
+                <p className="text-muted-foreground text-sm animate-pulse">Đang tải tủ thuốc...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {medications
+                  .filter(m => {
+                    if (activeTab === "all") return true;
+                    if (activeTab === "mine") return m.familyMember.linkedUser?.id === user?.id || m.familyMember.user.id === user?.id;
+                    return m.familyMember.id === activeTab;
+                  })
+                  .map(med => (
+                    <Card key={med.id} className="group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden">
+                      <header className="px-4 py-3 border-b border-border bg-muted/20 flex items-center justify-between">
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold">
+                          {med.familyMember.name}
+                        </Badge>
+                        {med.familyMember.linkedUser && (
+                          <div className="flex items-center gap-1 text-[11px] text-primary font-semibold">
+                            <Link2 className="w-3 h-3" />
+                            Tài khoản liên kết
+                          </div>
+                        )}
+                      </header>
+                      <CardContent className="p-5 space-y-4">
+                        <div className="flex gap-3">
+                          <div className="p-2.5 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors h-fit">
+                            <Pill className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-base group-hover:text-primary transition-colors">{med.name}</h3>
+                            <p className="text-sm font-bold text-primary">{med.dosage}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-2 bg-muted/20 p-3 rounded-xl text-sm">
+                          {med.instructions && (
+                            <div className="flex gap-2">
+                              <Info className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
+                              <p className="text-foreground leading-snug">{med.instructions}</p>
+                            </div>
+                          )}
+                          {(med.symptoms_treated || med.diagnosis) && (
+                            <div className="flex gap-2 items-center">
+                              <History className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                              <span className="text-xs bg-primary/5 px-2 py-0.5 rounded font-medium">{med.symptoms_treated || med.diagnosis}</span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground text-right border-t border-border pt-2">
+                          {new Date(med.createdAt).toLocaleDateString("vi-VN")}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+
+                {medications.filter(m => {
+                  if (activeTab === "all") return true;
+                  if (activeTab === "mine") return m.familyMember.linkedUser?.id === user?.id || m.familyMember.user.id === user?.id;
+                  return m.familyMember.id === activeTab;
+                }).length === 0 && (
+                  <div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-3xl space-y-4">
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto opacity-40">
+                      <Pill className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-muted-foreground">Chưa có thuốc nào</p>
+                      <p className="text-sm text-muted-foreground">Scan đơn thuốc để thêm vào tủ thuốc</p>
+                    </div>
+                    <Button variant="secondary" onClick={() => window.history.back()}>Scan ngay</Button>
+                  </div>
+                )}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default CabinetPage;

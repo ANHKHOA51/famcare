@@ -17,8 +17,8 @@ const LandingPage = () => {
           <a href="#services" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Dịch vụ</a>
           <a href="#" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Giá cả</a>
         </nav>
-        <Button onClick={() => navigate("/app")} size="default">
-          Đặt lịch chăm sóc
+        <Button onClick={() => navigate("/login")} size="default">
+          Đăng nhập
         </Button>
       </header>
 
@@ -37,8 +37,8 @@ const LandingPage = () => {
               Giải pháp y tế thông minh dành cho người bận rộn. Theo dõi sức khỏe thời gian thực và kết nối bác sĩ tận tâm cho người thân yêu của bạn.
             </p>
             <div className="flex gap-4">
-              <Button onClick={() => navigate("/app")} size="lg" className="rounded-full">
-                Đặt lịch ngay
+              <Button onClick={() => navigate("/login")} size="lg" className="rounded-full">
+                Bắt đầu ngay
               </Button>
               <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/app")}>
                 Xem cách hoạt động

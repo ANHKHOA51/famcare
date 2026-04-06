@@ -1,5 +1,7 @@
-import { LayoutDashboard, ScanLine, ShoppingBag, Utensils, Bell, Settings, HelpCircle } from "lucide-react";
+import { LayoutDashboard, ScanLine, ShoppingBag, Utensils, Bell, Settings, HelpCircle, Pill, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface AppSidebarProps {
   activePage: string;
@@ -9,17 +11,25 @@ interface AppSidebarProps {
 const navItems = [
   { id: "dashboard", label: "Bảng điều khiển", icon: LayoutDashboard },
   { id: "scanner", label: "Đơn thuốc", icon: ScanLine },
+  { id: "cabinet", label: "Tủ thuốc", icon: Pill },
   { id: "marketplace", label: "Chợ Dịch vụ", icon: ShoppingBag },
   { id: "nutrition", label: "Dinh dưỡng", icon: Utensils },
-  { id: "alerts", label: "Thông báo", icon: Bell },
 ];
 
 const bottomItems = [
-  { id: "settings", label: "Settings", icon: Settings },
-  { id: "support", label: "Support", icon: HelpCircle },
+  { id: "settings", label: "Cài đặt", icon: Settings },
+  { id: "support", label: "Hỗ trợ", icon: HelpCircle },
 ];
 
 const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <aside className="w-64 min-h-screen surface-2 flex flex-col shadow-patient">
       {/* Brand */}
@@ -51,7 +61,7 @@ const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
       </nav>
 
       {/* Bottom */}
-      <div className="px-4 pb-4 space-y-1 pt-4">
+      <div className="px-4 pb-4 space-y-1 pt-4 border-t border-border/50">
         {bottomItems.map((item) => (
           <button
             key={item.id}
@@ -62,16 +72,24 @@ const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
             {item.label}
           </button>
         ))}
+        
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-destructive hover:bg-destructive/10 transition-all duration-200"
+        >
+          <LogOut size={18} strokeWidth={1.8} />
+          Đăng xuất
+        </button>
       </div>
 
       {/* User */}
-      <div className="px-5 py-5 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
-          NV
+      <div className="px-5 py-5 flex items-center gap-3 bg-muted/30">
+        <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-sm font-bold shadow-sm">
+          {user?.name?.[0]?.toUpperCase() || <User size={20} />}
         </div>
-        <div>
-          <p className="text-sm font-semibold text-foreground">Nguyễn Văn A</p>
-          <p className="text-[11px] text-on-surface-variant">ID: 284902</p>
+        <div className="flex-1 overflow-hidden">
+          <p className="text-sm font-semibold text-foreground truncate">{user?.name || "Người dùng"}</p>
+          <p className="text-[11px] text-on-surface-variant truncate opacity-70">{user?.email}</p>
         </div>
       </div>
     </aside>

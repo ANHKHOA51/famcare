@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(cuid())
+  email          String         @unique
+  password       String
+  name           String?
+  ownedMembers   FamilyMember[] @relation("OwnedMembers")
+  linkedMembers  FamilyMember[] @relation("LinkedMembers")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model FamilyMember {
+  id           String       @id @default(cuid())
+  name         String
+  relationship String
+  age          Int?
+  userId       String
+  linkedUserId String?
+  user         User         @relation("OwnedMembers", fields: [userId], references: [id])
+  linkedUser   User?        @relation("LinkedMembers", fields: [linkedUserId], references: [id])
+  medications  Medication[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Medication {
+  id               String       @id @default(cuid())
+  name             String
+  dosage           String
+  instructions     String?
+  diagnosis        String?
+  symptoms_treated String?
+  familyMemberId   String
+  familyMember     FamilyMember @relation(fields: [familyMemberId], references: [id])
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
