@@ -208,6 +208,31 @@ app.get('/api/cabinet', authenticateToken, async (req, res) => {
   res.json(medications);
 });
 
+app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if medication exists and check permission
+    const medication = await prisma.medication.findUnique({
+      where: { id },
+      include: { familyMember: true }
+    });
+
+    if (!medication) return res.status(404).json({ error: 'Medication not found' });
+
+    // Only owner of the family can delete
+    if (medication.familyMember.userId !== req.user.userId) {
+      return res.status(403).json({ error: 'You do not have permission to delete this medication' });
+    }
+
+    await prisma.medication.delete({ where: { id } });
+    res.json({ message: 'Medication deleted successfully' });
+  } catch (error) {
+    console.error('DELETE MEDICATION ERROR:', error);
+    res.status(500).json({ error: 'Error deleting medication' });
+  }
+});
+
 // --- AI & Scanner Routes ---
 const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -229,14 +254,62 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
   }
 });
 
+const FOOD_DATABASE = [
+  { id: 'pho-ga', name: 'Phở Gà', image: 'https://images.unsplash.com/photo-1503767835115-9ea6b58859ff', benefits: 'Giàu đạm, dễ tiêu hóa, phù hợp khi cơ thể mệt mỏi.' },
+  { id: 'goi-cuon', name: 'Gỏi Cuốn Tôm Thịt', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe', benefits: 'Nhiều rau xanh, thanh mát, ít dầu mỡ.' },
+  { id: 'chao-yen-mach', name: 'Cháo Yến Mạch', image: 'https://images.unsplash.com/photo-1501139083538-0139583c060f', benefits: 'Tốt cho tim mạch và tiêu hóa, cung cấp năng lượng bền bỉ.' },
+  { id: 'ca-hoi-ap-chao', name: 'Cá Hồi Áp Chảo', image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288', benefits: 'Giàu Omega-3, hỗ trợ giảm viêm và bảo vệ tim mạch.' },
+  { id: 'khoai-lang', name: 'Khoai Lang Luộc', image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d', benefits: 'Tinh bột chậm, tốt cho người tiểu đường và tiêu hóa.' },
+  { id: 'sup-bi-do', name: 'Súp Bí Đỏ', image: 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a', benefits: 'Giàu Vitamin A, hỗ trợ miễn dịch và mắt.' },
+  { id: 'bong-cai-xanh', name: 'Bông Cải Xanh Luộc', image: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c', benefits: 'Nhiều chất xơ và chất chống oxy hóa.' },
+  { id: 'uc-ga-luoc', name: 'Ức Gà Luộc', image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d', benefits: 'Nguồn đạm sạch, ít chất béo xấu.' },
+  { id: 'sua-chua-trai-cay', name: 'Sữa Chua Trái Cây', image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777', benefits: 'Cung cấp lợi khuẩn và vitamin từ hoa quả.' },
+  { id: 'sup-ga-nam', name: 'Súp Gà Nấm', image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd', benefits: 'Ấm bụng, bổ dưỡng, hỗ trợ phục hồi sức khỏe.' },
+  { id: 'salad-trai-cay', name: 'Salad Trái Cây', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', benefits: 'Vitamin tổng hợp tự nhiên, giúp đẹp da và tăng đề kháng.' },
+  { id: 'ca-ro-kho-to', name: 'Cá Rô Kho Tộ', image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2', benefits: 'Nguồn đạm truyền thống, ít calorie.' },
+  { id: 'trung-hap', name: 'Trứng Hấp Kiểu Nhật', image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99', benefits: 'Mềm mịn, dễ nuốt, phù hợp cho người đau họng hoặc mệt.' }
+];
+
 app.post('/api/generate-meal-plan', async (req, res) => {
   try {
-    const { diagnosis, recommended_foods } = req.body;
+    const { diagnosis } = req.body;
     const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
-    const prompt = `Create 7-day meal plan for diagnosis: "${diagnosis}". Return ONLY JSON: { "meal_plan": [ { "day": "Thứ 2", "meals": [ { "type": "Sáng", "dish_name_vi": "string", "search_keyword_en": "string" } ] } ] }.`;
+    
+    const dbList = FOOD_DATABASE.map(f => `- ID: "${f.id}", Tên: "${f.name}", Lợi ích: "${f.benefits}"`).join('\n');
+    const prompt = `Bạn là chuyên gia dinh dưỡng. Dựa trên danh sách món ăn sau:
+    ${dbList}
+    
+    Hãy xây dựng thực đơn 3 ngày cho người bệnh: "${diagnosis}". 
+    Mỗi ngày chọn đúng 2 món (Sáng và Trưa/Tối) từ danh sách trên.
+    Yêu cầu:
+    1. Trả về đúng định dạng JSON: { "meal_plan": [ { "day": "Ngày 1", "meals": [ { "type": "Sáng", "food_id": "MÃ_ID_TRONG_DANH_SÁCH", "reason": "Tại sao món này tốt cho bệnh lý này?" } ] } ] }.
+    2. "food_id" PHẢI khớp chính xác 100% với mã ID được cung cấp.
+    3. Phần "reason" viết tự nhiên, thuyết phục.
+    4. KHÔNG TRẢ VỀ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
+
     const result = await model.generateContent(prompt);
-    res.json(JSON.parse(result.response.text().replace(/```json|```/g, '').trim()));
+    const rawText = result.response.text();
+    const cleanJson = JSON.parse(rawText.replace(/```json|```/g, '').trim());
+    
+    // Inject full food data back with SAFETY FALLBACK
+    const fullPlan = cleanJson.meal_plan.map(d => ({
+      ...d,
+      meals: d.meals.map(m => {
+        // Find match or fallback to 'pho-ga' if AI messed up the ID
+        const foodInfo = FOOD_DATABASE.find(f => f.id === m.food_id) || FOOD_DATABASE[0];
+        return { 
+          ...m, 
+          name: foodInfo.name,
+          image: foodInfo.image,
+          benefits: foodInfo.benefits,
+          reason: m.reason || `Món ăn này rất tốt cho tình trạng ${diagnosis}`
+        };
+      })
+    }));
+
+    res.json({ meal_plan: fullPlan });
   } catch (error) {
+    console.error('MEAL PLAN ERROR:', error);
     res.status(500).json({ error: 'Error generating meal plan' });
   }
 });
@@ -262,6 +335,10 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error searching cabinet' });
   }
+});
+
+app.get('/api/foods', (req, res) => {
+  res.json(FOOD_DATABASE);
 });
 
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));

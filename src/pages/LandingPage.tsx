@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ScanLine, Monitor, Home, Utensils, ArrowRight, AlertCircle } from "lucide-react";
 import heroCare from "@/assets/hero-care.jpg";
@@ -6,6 +7,15 @@ import serviceScanner from "@/assets/service-scanner.jpg";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleCtaClick = () => {
+    if (isAuthenticated) {
+      navigate("/app");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="min-h-screen surface-2">
@@ -17,8 +27,8 @@ const LandingPage = () => {
           <a href="#services" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Dịch vụ</a>
           <a href="#" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Giá cả</a>
         </nav>
-        <Button onClick={() => navigate("/login")} size="default">
-          Đăng nhập
+        <Button onClick={handleCtaClick} size="default">
+          {isAuthenticated ? "Vào ứng dụng" : "Đăng nhập"}
         </Button>
       </header>
 
@@ -37,8 +47,8 @@ const LandingPage = () => {
               Giải pháp y tế thông minh dành cho người bận rộn. Theo dõi sức khỏe thời gian thực và kết nối bác sĩ tận tâm cho người thân yêu của bạn.
             </p>
             <div className="flex gap-4">
-              <Button onClick={() => navigate("/login")} size="lg" className="rounded-full">
-                Bắt đầu ngay
+              <Button onClick={handleCtaClick} size="lg" className="rounded-full">
+                {isAuthenticated ? "Vào ứng dụng" : "Bắt đầu ngay"}
               </Button>
               <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/app")}>
                 Xem cách hoạt động

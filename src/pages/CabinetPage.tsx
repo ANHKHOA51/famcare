@@ -9,12 +9,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, Pill, UserPlus, Info, AlertTriangle, CheckCircle2, History, Loader2, User, Link2, Mail, Users } from "lucide-react";
+import { Search, Pill, UserPlus, Info, AlertTriangle, CheckCircle2, History, Loader2, User, Link2, Mail, Users, Trash2 } from "lucide-react";
 
 interface FamilyMember {
   id: string;
   name: string;
   relationship: string;
+  userId: string;
   linkedUser?: { id: string; name: string; email: string };
 }
 
@@ -44,7 +45,11 @@ interface SearchResult {
   message?: string;
 }
 
-const CabinetPage = () => {
+interface CabinetPageProps {
+  onNavigate?: (page: string) => void;
+}
+
+const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const { token, user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [members, setMembers] = useState<FamilyMember[]>([]);
@@ -130,6 +135,23 @@ const CabinetPage = () => {
       setSearchResult(await resp.json());
     } catch { toast.error("Lỗi khi tìm thuốc"); }
     finally { setSearching(false); }
+  };
+
+  const handleDeleteMedication = async (id: string, name: string) => {
+    if (!window.confirm(`Bạn có chắc muốn xóa thuốc "${name}"? Thao tác này không thể hoàn tác.`)) return;
+    try {
+      const resp = await fetch(`http://localhost:3001/api/cabinet/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (resp.ok) {
+        toast.success(`Đã xóa ${name}`);
+        setMedications(prev => prev.filter(m => m.id !== id));
+      } else {
+        const data = await resp.json();
+        toast.error(data.error || "Không thể xóa thuốc");
+      }
+    } catch { toast.error("Lỗi kết nối"); }
   };
 
   return (
@@ -403,14 +425,25 @@ const CabinetPage = () => {
                   .map(med => (
                     <Card key={med.id} className="group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden">
                       <header className="px-4 py-3 border-b border-border bg-muted/20 flex items-center justify-between">
-                        <Badge variant="outline" className="text-[10px] uppercase font-bold">
-                          {med.familyMember.name}
-                        </Badge>
-                        {med.familyMember.linkedUser && (
-                          <div className="flex items-center gap-1 text-[11px] text-primary font-semibold">
-                            <Link2 className="w-3 h-3" />
-                            Tài khoản liên kết
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-[10px] uppercase font-bold">
+                            {med.familyMember.name}
+                          </Badge>
+                          {med.familyMember.linkedUser && (
+                            <div className="flex items-center gap-1 text-[11px] text-primary font-semibold">
+                              <Link2 className="w-3 h-3" />
+                            </div>
+                          )}
+                        </div>
+                        {med.familyMember.userId === user?.id && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="w-7 h-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                            onClick={() => handleDeleteMedication(med.id, med.name)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
                         )}
                       </header>
                       <CardContent className="p-5 space-y-4">
@@ -457,7 +490,7 @@ const CabinetPage = () => {
                       <p className="text-lg font-bold text-muted-foreground">Chưa có thuốc nào</p>
                       <p className="text-sm text-muted-foreground">Scan đơn thuốc để thêm vào tủ thuốc</p>
                     </div>
-                    <Button variant="secondary" onClick={() => window.history.back()}>Scan ngay</Button>
+                    <Button variant="secondary" onClick={() => onNavigate?.("scanner")}>Scan ngay</Button>
                   </div>
                 )}
               </div>

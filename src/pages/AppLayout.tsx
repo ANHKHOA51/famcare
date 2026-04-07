@@ -6,6 +6,7 @@ import ScannerPage from "@/pages/ScannerPage";
 import CabinetPage from "@/pages/CabinetPage";
 import MarketplacePage from "@/pages/MarketplacePage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
+import FoodTestPage from "@/pages/FoodTestPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 const AppLayout = () => {
@@ -15,8 +16,9 @@ const AppLayout = () => {
     switch (activePage) {
       case "dashboard": return <DashboardPage />;
       case "scanner": return <ScannerPage />;
-      case "cabinet": return <CabinetPage />;
+      case "cabinet": return <CabinetPage onNavigate={setActivePage} />;
       case "marketplace": return <MarketplacePage />;
+      case "food-test": return <FoodTestPage />;
       case "nutrition": return <ComingSoonPage title="Dinh dưỡng" />;
       default: return <ComingSoonPage title="Coming Soon" />;
     }
