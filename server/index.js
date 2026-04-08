@@ -22,6 +22,7 @@ try {
   console.log('✅ Database client initialized');
 } catch (e) {
   console.warn('⚠️ Database unavailable - running in limited mode');
+  console.warn('Prisma init detail:', e?.message || e);
 }
 
 const app = express();
