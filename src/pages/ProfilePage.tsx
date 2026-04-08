@@ -39,7 +39,7 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('aura_token');
         const res = await fetch('/api/auth/profile', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -78,7 +78,7 @@ export default function ProfilePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('aura_token');
       const res = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: { 
