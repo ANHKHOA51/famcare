@@ -6,6 +6,8 @@ import heroCare from "@/assets/hero-care.jpg";
 import serviceScanner from "@/assets/service-scanner.jpg";
 import PublicNavbar from "@/components/PublicNavbar";
 
+import PricingSection from "@/components/PricingSection";
+
 const LandingPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -66,7 +68,11 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
+
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* Services — surface shift to Level 0 */}
       <section id="services" className="px-8 lg:px-16 py-20 surface-0">
@@ -137,7 +143,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto bg-tertiary rounded-3xl p-12 lg:p-18 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-tertiary-foreground">
             <h2 className="text-3xl lg:text-[2.5rem] font-display font-extrabold leading-[1.1] mb-5 tracking-tight">
-              Yên tâm làm việc,<br />Aura sẽ lo phần còn lại.
+              Yên tâm làm việc,<br />FamCare sẽ lo phần còn lại.
             </h2>
             <p className="text-sm opacity-75 mb-10 max-w-md leading-[1.7]">
               Hệ thống thông báo thông minh tự động nhận diện các bất thường và liên hệ ngay với bạn hoặc đội cứu thương trong trường hợp khẩn cấp.
