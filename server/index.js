@@ -48,9 +48,15 @@ const authenticateToken = (req, res, next) => {
 };
 
 // --- Auth Routes ---
-app.post('/api/auth/register', async (req, res) => {
+  app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email này đã được sử dụng' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const user = await prisma.user.create({
@@ -58,7 +64,7 @@ app.post('/api/auth/register', async (req, res) => {
         email, 
         password: hashedPassword, 
         name,
-        familyMembers: {
+        ownedMembers: {
           create: { name: name || 'Bản thân', relationship: 'Bản thân' }
         }
       },
@@ -67,7 +73,7 @@ app.post('/api/auth/register', async (req, res) => {
     res.json({ message: 'User registered successfully', userId: user.id });
   } catch (error) {
     console.error('REGISTRATION ERROR:', error);
-    res.status(400).json({ error: 'Email already exists or invalid data' });
+    res.status(400).json({ error: 'Đã có lỗi xảy ra hoặc dữ liệu không hợp lệ' });
   }
 });
 
