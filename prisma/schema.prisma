@@ -12,6 +12,15 @@ model User {
   email          String         @unique
   password       String
   name           String?
+  phone          String?
+  address        String?
+  dob            DateTime?
+  gender         String?
+  bloodType      String?
+  allergies      String?
+  chronicIllness String?
+  height         Float?
+  weight         Float?
   ownedMembers   FamilyMember[] @relation("OwnedMembers")
   linkedMembers  FamilyMember[] @relation("LinkedMembers")
   createdAt      DateTime       @default(now())

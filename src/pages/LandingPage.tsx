@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ScanLine, Monitor, Home, Utensils, ArrowRight, AlertCircle } from "lucide-react";
 import heroCare from "@/assets/hero-care.jpg";
 import serviceScanner from "@/assets/service-scanner.jpg";
+import PublicNavbar from "@/components/PublicNavbar";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -19,25 +20,14 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen surface-2">
-      {/* Navbar — glassmorphism */}
-      <header className="surface-glass sticky top-0 z-50 flex items-center justify-between px-8 lg:px-16 py-4">
-        <h1 className="text-base font-bold font-display text-foreground tracking-tight">AuraHeath</h1>
-        <nav className="hidden md:flex items-center gap-10">
-          <a href="#" className="text-sm font-semibold text-foreground">Trang chủ</a>
-          <a href="#services" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Dịch vụ</a>
-          <a href="#" className="text-sm text-on-surface-variant hover:text-foreground transition-colors">Giá cả</a>
-        </nav>
-        <Button onClick={handleCtaClick} size="default">
-          {isAuthenticated ? "Vào ứng dụng" : "Đăng nhập"}
-        </Button>
-      </header>
+      <PublicNavbar />
 
       {/* Hero */}
       <section className="px-8 lg:px-16 py-20 lg:py-28">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-block bg-success-container text-success-on-container text-[0.6875rem] font-semibold px-4 py-1.5 rounded-full mb-8 tracking-wider uppercase">
-              Aura Health · Kỷ nguyên y tế mới
+              FamCare · Kỷ nguyên y tế mới
             </div>
             <h2 className="text-5xl lg:text-[3.5rem] font-display font-extrabold text-foreground leading-[1.08] mb-7 tracking-tight">
               Chăm sóc cha mẹ<br />
@@ -183,13 +173,14 @@ const LandingPage = () => {
       <footer className="px-8 lg:px-16 py-10 surface-2">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
-            <h3 className="font-display font-bold text-foreground text-lg">Aura Health</h3>
-            <p className="text-[0.6875rem] text-on-surface-variant mt-1 uppercase tracking-wider">© 2026 Aura Health. ALL RIGHTS RESERVED.</p>
+            <h3 className="font-display font-bold text-foreground text-lg">FamCare</h3>
+            <p className="text-[0.6875rem] text-on-surface-variant mt-1 uppercase tracking-wider">© 2026 FamCare. ALL RIGHTS RESERVED.</p>
           </div>
           <div className="flex gap-8 text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">
-            <a href="#" className="hover:text-foreground transition-colors">Quyền riêng tư</a>
-            <a href="#" className="hover:text-foreground transition-colors">Điều khoản</a>
-            <a href="#" className="hover:text-foreground transition-colors">Liên hệ</a>
+            <Link to="/about" className="hover:text-foreground transition-colors">Về chúng tôi</Link>
+            <Link to="/resources" className="hover:text-foreground transition-colors">Tài liệu</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">Điều khoản</Link>
+            <Link to="/contact" className="hover:text-foreground transition-colors">Liên hệ</Link>
           </div>
         </div>
       </footer>

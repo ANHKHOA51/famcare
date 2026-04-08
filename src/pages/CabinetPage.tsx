@@ -177,7 +177,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                 Thêm thành viên gia đình
               </DialogTitle>
               <DialogDescription>
-                Tìm thành viên bằng email hoặc tên. Họ phải có tài khoản Aura Health.
+                Tìm thành viên bằng email hoặc tên. Họ phải có tài khoản FamCare.
               </DialogDescription>
             </DialogHeader>
 

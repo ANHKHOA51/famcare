@@ -7,6 +7,7 @@ import CabinetPage from "@/pages/CabinetPage";
 import MarketplacePage from "@/pages/MarketplacePage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
 import FoodTestPage from "@/pages/FoodTestPage";
+import ProfilePage from "@/pages/ProfilePage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 const AppLayout = () => {
@@ -19,6 +20,7 @@ const AppLayout = () => {
       case "cabinet": return <CabinetPage onNavigate={setActivePage} />;
       case "marketplace": return <MarketplacePage />;
       case "food-test": return <FoodTestPage />;
+      case "profile": return <ProfilePage />;
       case "nutrition": return <ComingSoonPage title="Dinh dưỡng" />;
       default: return <ComingSoonPage title="Coming Soon" />;
     }

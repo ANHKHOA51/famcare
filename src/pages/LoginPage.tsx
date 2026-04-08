@@ -50,7 +50,7 @@ const LoginPage = () => {
               <HeartPulse className="w-10 h-10 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight text-primary">Aura Health</CardTitle>
+          <CardTitle className="text-2xl font-bold tracking-tight text-primary">FamCare</CardTitle>
           <CardDescription>Chào mừng bạn trở lại. Hãy đăng nhập để truy cập tủ thuốc gia đình.</CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>

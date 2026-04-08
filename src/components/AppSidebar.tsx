@@ -19,6 +19,7 @@ const navItems = [
 ];
 
 const bottomItems = [
+  { id: "profile", label: "Hồ sơ cá nhân", icon: User },
   { id: "settings", label: "Cài đặt", icon: Settings },
   { id: "support", label: "Hỗ trợ", icon: HelpCircle },
 ];

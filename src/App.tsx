@@ -6,6 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import AppLayout from "./pages/AppLayout.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import AboutPage from "./pages/AboutPage.tsx";
+import ResourcesPage from "./pages/ResourcesPage.tsx";
+import TermsPage from "./pages/TermsPage.tsx";
+import ContactPage from "./pages/ContactPage.tsx";
 
 import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
@@ -24,6 +28,10 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/resources" element={<ResourcesPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/app" element={<AppLayout />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

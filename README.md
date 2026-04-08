@@ -1,3 +1,3 @@
-# Aura Health - HealScan Scribe
+# FamCare - HealScan Scribe
 
 TODO: Document your project here

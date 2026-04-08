@@ -49,7 +49,7 @@ const SignupPage = () => {
               <HeartPulse className="w-10 h-10 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight text-primary">Aura Health</CardTitle>
+          <CardTitle className="text-2xl font-bold tracking-tight text-primary">FamCare</CardTitle>
           <CardDescription>Bắt đầu xây dựng tủ thuốc gia đình từ hôm nay.</CardDescription>
         </CardHeader>
         <form onSubmit={handleSignup}>

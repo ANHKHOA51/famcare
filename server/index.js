@@ -93,7 +93,41 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
       ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } } 
     }
   });
+  
+  if (user) {
+    delete user.password; // Don't send password hash
+  }
+  
   res.json(user);
+});
+
+app.put('/api/auth/profile', authenticateToken, async (req, res) => {
+  try {
+    const { 
+      name, phone, address, dob, gender,
+      bloodType, allergies, chronicIllness, height, weight
+    } = req.body;
+    
+    // Parse dob if provided
+    let parsedDob = undefined;
+    if (dob) {
+      parsedDob = new Date(dob);
+    }
+    
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.userId },
+      data: {
+        name, phone, address, dob: parsedDob, gender,
+        bloodType, allergies, chronicIllness, height: height ? parseFloat(height) : null, weight: weight ? parseFloat(weight) : null
+      }
+    });
+    
+    delete updatedUser.password;
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('PROFILE UPDATE ERROR:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
 });
 
 // --- Family Routes ---
