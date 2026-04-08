@@ -375,4 +375,8 @@ app.get('/api/foods', (req, res) => {
   res.json(FOOD_DATABASE);
 });
 
-app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+export default app;
+
+if (process.env.VERCEL !== '1') {
+  app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+}

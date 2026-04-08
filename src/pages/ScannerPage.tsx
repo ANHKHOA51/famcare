@@ -35,7 +35,7 @@ const ScannerPage = () => {
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await fetch("http://localhost:3001/api/scan", {
+      const response = await fetch("/api/scan", {
         method: "POST",
         body: formData,
       });

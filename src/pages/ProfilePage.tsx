@@ -40,7 +40,7 @@ export default function ProfilePage() {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:3001/api/auth/profile', {
+        const res = await fetch('/api/auth/profile', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -79,7 +79,7 @@ export default function ProfilePage() {
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3001/api/auth/profile', {
+      const res = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,

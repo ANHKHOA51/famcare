@@ -37,7 +37,7 @@ const MealPlanPage = ({ diagnosis, recommendedFoods, onBack }: MealPlanPageProps
   useEffect(() => {
     const fetchMealPlan = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/generate-meal-plan', {
+        const response = await fetch('/api/generate-meal-plan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ diagnosis, recommended_foods: recommendedFoods }),

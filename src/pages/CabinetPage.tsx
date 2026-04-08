@@ -72,7 +72,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
 
   const fetchCabinet = async () => {
     try {
-      const resp = await fetch("http://localhost:3001/api/cabinet", { headers: { Authorization: `Bearer ${token}` } });
+      const resp = await fetch("/api/cabinet", { headers: { Authorization: `Bearer ${token}` } });
       setMedications(await resp.json());
     } catch { toast.error("Lỗi khi tải tủ thuốc"); }
     finally { setLoading(false); }
@@ -80,7 +80,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
 
   const fetchMembers = async () => {
     try {
-      const resp = await fetch("http://localhost:3001/api/family", { headers: { Authorization: `Bearer ${token}` } });
+      const resp = await fetch("/api/family", { headers: { Authorization: `Bearer ${token}` } });
       setMembers(await resp.json());
     } catch {}
   };
@@ -92,7 +92,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
     if (q.length < 2) { setUserResults([]); return; }
     setSearching2(true);
     try {
-      const resp = await fetch(`http://localhost:3001/api/family/search?q=${encodeURIComponent(q)}`, {
+      const resp = await fetch(`/api/family/search?q=${encodeURIComponent(q)}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserResults(await resp.json());
@@ -104,7 +104,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
     if (!selectedUser || !relationship) { toast.error("Vui lòng chọn người và mối quan hệ"); return; }
     setAdding(true);
     try {
-      const resp = await fetch("http://localhost:3001/api/family/add", {
+      const resp = await fetch("/api/family/add", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ linkedUserId: selectedUser.id, relationship })
@@ -127,7 +127,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
     if (!symptomQuery.trim()) return;
     setSearching(true); setSearchResult(null);
     try {
-      const resp = await fetch("http://localhost:3001/api/cabinet/search", {
+      const resp = await fetch("/api/cabinet/search", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ symptom: symptomQuery })
@@ -140,7 +140,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const handleDeleteMedication = async (id: string, name: string) => {
     if (!window.confirm(`Bạn có chắc muốn xóa thuốc "${name}"? Thao tác này không thể hoàn tác.`)) return;
     try {
-      const resp = await fetch(`http://localhost:3001/api/cabinet/${id}`, {
+      const resp = await fetch(`/api/cabinet/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });

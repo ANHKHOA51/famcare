@@ -34,7 +34,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
   const fetchMembers = async () => {
     setLoadingMembers(true);
     try {
-      const resp = await fetch("http://localhost:3001/api/family", {
+      const resp = await fetch("/api/family", {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await resp.json();
@@ -55,7 +55,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
 
     setIsSaving(true);
     try {
-      const resp = await fetch("http://localhost:3001/api/cabinet/save", {
+      const resp = await fetch("/api/cabinet/save", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

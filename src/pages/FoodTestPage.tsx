@@ -18,7 +18,7 @@ const FoodTestPage = () => {
   const fetchFoods = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/foods");
+      const response = await fetch("/api/foods");
       const data = await response.json();
       setFoods(data);
     } catch (error) {
