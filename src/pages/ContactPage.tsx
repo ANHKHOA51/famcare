@@ -15,7 +15,7 @@ export default function ContactPage() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold mb-4">Gặp gỡ bộ phận hỗ trợ</h2>
-              <p className="text-muted-foreground">Vui lòng gọi điện/email hoặc nhắn tin trên tổng đài trực tuyến 24h đối với việc mở truy cập ứng dụng y tế. Các báo cáo lỗi về Ứng dụng/AI vui lòng sử dụng Form bên cạnh.</p>
+              <p className="text-muted-foreground">Vui lòng gọi điện/email hoặc nhắn tin trên tổng đài trực tuyến 24h (gặp chị Thư không cao) đối với việc mở truy cập ứng dụng y tế. Các báo cáo lỗi về Ứng dụng/AI vui lòng sử dụng Form bên cạnh.</p>
               
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
