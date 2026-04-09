@@ -4,14 +4,25 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Activity, Users } from 'lucide-react';
+import { Loader2, User, Activity, Users, UserPlus, Search, Mail, Link2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // Modal State
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [userQuery, setUserQuery] = useState("");
+  const [userResults, setUserResults] = useState<{id: string, name?: string, email: string}[]>([]);
+  const [selectedUser, setSelectedUser] = useState<{id: string, name?: string, email: string} | null>(null);
+  const [relationship, setRelationship] = useState("");
+  const [searching2, setSearching2] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   // Profile Form State
   const [formData, setFormData] = useState({
@@ -35,44 +46,110 @@ export default function ProfilePage() {
     linkedUser: { email: string } | null;
   }[]>([]);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem('aura_token');
-        const res = await fetch('/api/auth/profile', {
-          headers: { 'Authorization': `Bearer ${token}` }
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('aura_token');
+      const res = await fetch('/api/auth/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      
+      if (res.ok && data) {
+        setFormData({
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          address: data.address || '',
+          dob: data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
+          gender: data.gender || '',
+          bloodType: data.bloodType || '',
+          height: data.height || '',
+          weight: data.weight || '',
+          allergies: data.allergies || '',
+          chronicIllness: data.chronicIllness || ''
         });
-        const data = await res.json();
-        
-        if (res.ok && data) {
-          setFormData({
-            name: data.name || '',
-            email: data.email || '',
-            phone: data.phone || '',
-            address: data.address || '',
-            dob: data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
-            gender: data.gender || '',
-            bloodType: data.bloodType || '',
-            height: data.height || '',
-            weight: data.weight || '',
-            allergies: data.allergies || '',
-            chronicIllness: data.chronicIllness || ''
-          });
-          setFamilyMembers(data.ownedMembers || []);
-        }
-      } catch (error) {
-        toast({
-          title: "Lỗi",
-          description: "Không thể lấy thông tin cá nhân",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
+        setFamilyMembers(data.ownedMembers || []);
       }
-    };
+    } catch (error) {
+      toast({
+        title: "Lỗi",
+        description: "Không thể lấy thông tin cá nhân",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, [toast]);
+
+  // Handle Add Member
+  const handleUserSearch = async (q: string) => {
+    setUserQuery(q);
+    setSelectedUser(null);
+    if (q.length < 2) { setUserResults([]); return; }
+    setSearching2(true);
+    try {
+      const token = localStorage.getItem('aura_token');
+      const resp = await fetch(`/api/family/search?q=${encodeURIComponent(q)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserResults(await resp.json());
+    } catch {}
+    finally { setSearching2(false); }
+  };
+
+  const handleAddMember = async () => {
+    if (!selectedUser || !relationship) { 
+      toast({title: "Lỗi", description: "Vui lòng chọn người và mối quan hệ", variant: "destructive"}); 
+      return; 
+    }
+    setAdding(true);
+    try {
+      const token = localStorage.getItem('aura_token');
+      const resp = await fetch("/api/family/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ linkedUserId: selectedUser.id, relationship })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        toast({title: "Thành công", description: `Đã thêm ${selectedUser.name || selectedUser.email} vào gia đình!`});
+        fetchProfile();
+        setAddDialogOpen(false);
+        setUserQuery(""); setUserResults([]); setSelectedUser(null); setRelationship("");
+      } else {
+        toast({title: "Lỗi", description: data.error || "Lỗi khi thêm thành viên", variant: "destructive"});
+      }
+    } catch { 
+      toast({title: "Lỗi", description: "Lỗi kết nối", variant: "destructive"}); 
+    }
+    finally { setAdding(false); }
+  };
+
+  // Handle Remove Member
+  const handleRemoveMember = async (id: string, name: string) => {
+    if (!window.confirm(`Bạn có chắc muốn xóa "${name}" khỏi gia đình? Toàn bộ hồ sơ thuốc của họ cũng sẽ bị xóa.`)) return;
+    try {
+      const token = localStorage.getItem('aura_token');
+      const resp = await fetch(`/api/family/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (resp.ok) {
+        toast({ title: "Thành công", description: `Đã xóa ${name} khỏi gia đình.` });
+        fetchProfile(); // Refresh the list
+      } else {
+        const data = await resp.json();
+        toast({ title: "Lỗi", description: data.error || "Không thể xóa thành viên", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Lỗi", description: "Lỗi kết nối", variant: "destructive" });
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -270,14 +347,135 @@ export default function ProfilePage() {
                         <p className="font-medium">{member.name}</p>
                         <p className="text-sm text-muted-foreground">Quan hệ: {member.relationship} {member.linkedUser ? `(${member.linkedUser.email})` : ''}</p>
                       </div>
-                      <Button variant="outline" size="sm">Xem hồ sơ</Button>
+                      <div className="flex gap-2">
+                        {member.relationship !== 'Bản thân' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleRemoveMember(member.id, member.name)}
+                            className="text-destructive hover:bg-destructive hover:text-white"
+                          >
+                            Xóa
+                          </Button>
+                        )}
+                        <Button variant="outline" size="sm">Xem hồ sơ</Button>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
             </CardContent>
             <CardFooter className="flex justify-start border-t p-4">
-              <Button onClick={() => window.alert("Tính năng thêm người thân đang phát triển")}>Thêm thành viên</Button>
+              <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <UserPlus className="w-4 h-4" />
+                    Thêm thành viên
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-primary" />
+                      Thêm thành viên gia đình
+                    </DialogTitle>
+                    <DialogDescription>
+                      Tìm thành viên bằng email hoặc tên (Yêu cầu phải có tài khoản FamCare).
+                    </DialogDescription>
+                  </DialogHeader>
+      
+                  <div className="space-y-4 py-2">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                        Bước 1: Tìm kiếm người dùng
+                      </Label>
+                      <div className="relative">
+                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          placeholder="Nhập email hoặc tên..."
+                          value={userQuery}
+                          onChange={e => handleUserSearch(e.target.value)}
+                          className="pl-9"
+                        />
+                        {searching2 && <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground" />}
+                      </div>
+      
+                      {userResults.length > 0 && !selectedUser && (
+                        <div className="border border-border rounded-xl overflow-hidden shadow-sm">
+                          {userResults.map(u => (
+                            <button
+                              key={u.id}
+                              onClick={() => { setSelectedUser(u); setUserResults([]); }}
+                              className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 transition-colors text-left border-b border-border last:border-0"
+                            >
+                              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                                {u.name ? u.name[0].toUpperCase() : u.email[0].toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="font-bold text-sm">{u.name || "Chưa đặt tên"}</p>
+                                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Mail className="w-3 h-3" />{u.email}
+                                </p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+      
+                      {userQuery.length >= 2 && userResults.length === 0 && !searching2 && !selectedUser && (
+                        <p className="text-sm text-muted-foreground text-center py-3 border border-dashed border-border rounded-xl">
+                          Không tìm thấy người dùng nào
+                        </p>
+                      )}
+                    </div>
+      
+                    {selectedUser && (
+                      <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                            {(selectedUser.name || selectedUser.email)[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm">{selectedUser.name || "Chưa đặt tên"}</p>
+                            <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
+                          </div>
+                        </div>
+                        <Badge className="bg-primary text-white gap-1">
+                          <Link2 className="w-3 h-3" /> Đã chọn
+                        </Badge>
+                      </div>
+                    )}
+      
+                    {selectedUser && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                          Bước 2: Mối quan hệ
+                        </Label>
+                        <Select onValueChange={setRelationship} value={relationship}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Họ là ai với bạn?" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {["Vợ", "Chồng", "Con", "Bố", "Mẹ", "Anh", "Chị", "Em", "Ông", "Bà", "Khác"].map(r => (
+                              <SelectItem key={r} value={r}>{r}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+      
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => { setAddDialogOpen(false); setSelectedUser(null); setUserQuery(""); setRelationship(""); }}>
+                      Hủy
+                    </Button>
+                    <Button onClick={handleAddMember} disabled={!selectedUser || !relationship || adding}>
+                      {adding ? <Loader2 className="animate-spin w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
+                      Thêm vào gia đình
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardFooter>
           </Card>
         </TabsContent>

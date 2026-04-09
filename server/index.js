@@ -207,6 +207,36 @@ app.post('/api/family/add', authenticateToken, async (req, res) => {
   }
 });
 
+app.delete('/api/family/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const member = await prisma.familyMember.findUnique({
+      where: { id }
+    });
+
+    if (!member) {
+      return res.status(404).json({ error: 'Family member not found' });
+    }
+
+    // Only owner of the family group or the linked user can delete/leave
+    if (member.userId !== req.user.userId && member.linkedUserId !== req.user.userId) {
+      return res.status(403).json({ error: 'You do not have permission to remove this member' });
+    }
+
+    // Also delete associated medications to avoid orphan records or handle cascade manually (schema doesn't have onDelete cascade)
+    await prisma.medication.deleteMany({
+      where: { familyMemberId: id }
+    });
+
+    await prisma.familyMember.delete({ where: { id } });
+    res.json({ message: 'Family member removed successfully' });
+  } catch (error) {
+    console.error('DELETE MEMBER ERROR:', error);
+    res.status(500).json({ error: 'Error removing family member' });
+  }
+});
+
 // --- Cabinet Routes ---
 app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
   try {
