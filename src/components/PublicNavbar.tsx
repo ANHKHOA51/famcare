@@ -26,9 +26,9 @@ export default function PublicNavbar() {
     <header className="surface-glass sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 bg-background/80 backdrop-blur-md border-b">
       <Link to="/" className="text-xl flex items-center gap-2 font-bold font-display text-primary tracking-tight">
         <Stethoscope className="w-5 h-5 text-primary" />
-        HǇ sinh thái Y tế
+        FamCare
       </Link>
-
+    
       <nav className="hidden md:flex items-center gap-8">
         <Link to="/" className={`text-sm ${isActive('/') ? 'font-semibold text-primary' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>Trang chủ</Link>
         <Link to="/about" className={`text-sm ${isActive('/about') ? 'font-semibold text-primary' : 'text-muted-foreground hover:text-foreground transition-colors'}`}>Về chúng tôi</Link>
