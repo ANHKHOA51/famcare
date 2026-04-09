@@ -14,7 +14,7 @@ const activities = [
 
 const DashboardPage = () => {
   return (
-    <div className="p-10 animate-fade-up">
+    <div className="p-4 md:p-10 animate-fade-up">
       {/* Header */}
       <div className="mb-10">
         <h2 className="text-[2rem] font-display font-bold text-foreground tracking-tight">

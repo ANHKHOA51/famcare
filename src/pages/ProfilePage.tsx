@@ -44,6 +44,8 @@ export default function ProfilePage() {
     name: string;
     relationship: string;
     linkedUser: { email: string } | null;
+    isLinked?: boolean;
+    originalUserId?: string;
   }[]>([]);
 
   const fetchProfile = async () => {
@@ -69,7 +71,18 @@ export default function ProfilePage() {
           allergies: data.allergies || '',
           chronicIllness: data.chronicIllness || ''
         });
-        setFamilyMembers(data.ownedMembers || []);
+        
+        const owned = data.ownedMembers || [];
+        const linked = (data.linkedMembers || []).map((m: any) => ({
+          id: m.id,
+          name: m.user?.name || m.user?.email || 'Người dùng',
+          relationship: 'Chủ hộ',
+          linkedUser: m.user,
+          isLinked: true,
+          originalUserId: m.user?.id
+        }));
+
+        setFamilyMembers([...owned, ...linked]);
       }
     } catch (error) {
       toast({
@@ -344,11 +357,20 @@ export default function ProfilePage() {
                   {familyMembers.map((member) => (
                     <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
-                        <p className="font-medium">{member.name}</p>
-                        <p className="text-sm text-muted-foreground">Quan hệ: {member.relationship} {member.linkedUser ? `(${member.linkedUser.email})` : ''}</p>
+                        <p className="font-medium">
+                          {member.name}
+                          {member.isLinked && (
+                            <Badge variant="secondary" className="ml-2 font-normal text-xs bg-primary/10 text-primary border-primary/20">
+                              Người đã thêm bạn
+                            </Badge>
+                          )}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Quan hệ: {member.relationship} {member.linkedUser && !member.isLinked ? `(${member.linkedUser.email})` : ''}
+                        </p>
                       </div>
-                      <div className="flex gap-2">
-                        {member.relationship !== 'Bản thân' && (
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        {member.relationship !== 'Bản thân' && !member.isLinked && (
                           <Button 
                             variant="outline" 
                             size="sm" 
@@ -356,6 +378,16 @@ export default function ProfilePage() {
                             className="text-destructive hover:bg-destructive hover:text-white"
                           >
                             Xóa
+                          </Button>
+                        )}
+                        {member.isLinked && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleRemoveMember(member.id, member.name)}
+                            className="text-destructive hover:bg-destructive hover:text-white"
+                          >
+                            Rời khỏi
                           </Button>
                         )}
                         <Button variant="outline" size="sm">Xem hồ sơ</Button>

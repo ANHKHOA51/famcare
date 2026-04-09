@@ -97,7 +97,8 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.user.userId },
     include: { 
-      ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } } 
+      ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } },
+      linkedMembers: { include: { user: { select: { id: true, name: true, email: true } } } }
     }
   });
   
@@ -172,7 +173,24 @@ app.get('/api/family', authenticateToken, async (req, res) => {
     where: { userId: req.user.userId },
     include: { linkedUser: { select: { id: true, name: true, email: true } } }
   });
-  res.json(ownedMembers);
+
+  const linkedMembers = await prisma.familyMember.findMany({
+    where: { linkedUserId: req.user.userId },
+    include: { user: { select: { id: true, name: true, email: true } } }
+  });
+
+  // Format linkedMembers to be consumable by the frontend dropdowns
+  const formattedLinked = linkedMembers.map(m => ({
+    id: m.id, 
+    name: m.user.name || m.user.email,
+    relationship: 'Chủ hộ',
+    userId: m.userId,
+    linkedUserId: m.linkedUserId,
+    linkedUser: m.user,
+    isLinked: true
+  }));
+
+  res.json([...ownedMembers, ...formattedLinked]);
 });
 
 app.post('/api/family/add', authenticateToken, async (req, res) => {
@@ -241,11 +259,31 @@ app.delete('/api/family/:id', authenticateToken, async (req, res) => {
 app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
   try {
     const { name, dosage, instructions, diagnosis, symptoms_treated, familyMemberId } = req.body;
+
+    // Check if the user has permission to add to this family member
+    const targetMember = await prisma.familyMember.findUnique({
+      where: { id: familyMemberId }
+    });
+
+    if (!targetMember) {
+      return res.status(404).json({ error: 'Family member not found' });
+    }
+
+    if (targetMember.userId !== req.user.userId && targetMember.linkedUserId !== req.user.userId) {
+      // Allow if the user is linked to the owner of this targetMember
+      const userLink = await prisma.familyMember.findFirst({
+        where: { userId: targetMember.userId, linkedUserId: req.user.userId }
+      });
+      if (!userLink) {
+        return res.status(403).json({ error: 'No permission to add medication for this member' });
+      }
+    }
+
     const medication = await prisma.medication.create({
-      data: { 
-        name, dosage, instructions, diagnosis, 
+      data: {
+        name, dosage, instructions, diagnosis,
         symptoms_treated: Array.isArray(symptoms_treated) ? symptoms_treated.join(', ') : symptoms_treated,
-        familyMemberId 
+        familyMemberId
       }
     });
     res.json(medication);
@@ -256,27 +294,51 @@ app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
 });
 
 app.get('/api/cabinet', authenticateToken, async (req, res) => {
-  // Medications from families I own + medications from families I'm linked to
+  // Find ownerIds of families I am linked to
+  const memberLinks = await prisma.familyMember.findMany({
+    where: { linkedUserId: req.user.userId },
+    select: { userId: true }
+  });
+  const ownerIds = memberLinks.map(link => link.userId);
+
+  // Medications from families I own + medications from families I'm linked to + medications of my owners
   const medications = await prisma.medication.findMany({
     where: {
       familyMember: {
         OR: [
           { userId: req.user.userId },          // families I own
-          { linkedUserId: req.user.userId }    // families I'm linked to as a member
+          { linkedUserId: req.user.userId },    // families I'm linked to as a member
+          { userId: { in: ownerIds } }          // families of people who linked me
         ]
       }
     },
-    include: { 
+    include: {
       familyMember: {
-        include: { 
+        include: {
           user: { select: { id: true, name: true, email: true } },
           linkedUser: { select: { id: true, name: true, email: true } }
         }
-      } 
+      }
     },
     orderBy: { createdAt: 'desc' }
   });
-  res.json(medications);
+
+  // Adjust display name for linked users seeing the owner's "Bản thân"
+  const formattedMedications = medications.map(med => {
+    let displayName = med.familyMember.name;
+    if (med.familyMember.userId !== req.user.userId && med.familyMember.linkedUserId === null) {
+      displayName = med.familyMember.user?.name || med.familyMember.user?.email || 'Chủ gia đình';
+    }
+    return {
+      ...med,
+      familyMember: {
+        ...med.familyMember,
+        name: displayName
+      }
+    };
+  });
+
+  res.json(formattedMedications);
 });
 
 app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
@@ -291,8 +353,8 @@ app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
 
     if (!medication) return res.status(404).json({ error: 'Medication not found' });
 
-    // Only owner of the family can delete
-    if (medication.familyMember.userId !== req.user.userId) {
+    // Only owner of the family or the linked user can delete
+    if (medication.familyMember.userId !== req.user.userId && medication.familyMember.linkedUserId !== req.user.userId) {
       return res.status(403).json({ error: 'You do not have permission to delete this medication' });
     }
 
@@ -388,15 +450,43 @@ app.post('/api/generate-meal-plan', async (req, res) => {
 app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
   try {
     const { symptom } = req.body;
+    
+    // Get owner IDs to access full family cabinet
+    const memberLinks = await prisma.familyMember.findMany({
+      where: { linkedUserId: req.user.userId },
+      select: { userId: true }
+    });
+    const ownerIds = memberLinks.map(link => link.userId);
+
     const cabinet = await prisma.medication.findMany({
-      where: { familyMember: { userId: req.user.userId } },
-      include: { familyMember: true }
+      where: {
+        familyMember: {
+          OR: [
+            { userId: req.user.userId },
+            { linkedUserId: req.user.userId },
+            { userId: { in: ownerIds } }
+          ]
+        }
+      },
+      include: {
+        familyMember: {
+          include: {
+            user: { select: { id: true, name: true, email: true } }
+          }
+        }
+      }
     });
 
     if (cabinet.length === 0) return res.json({ message: 'Tủ thuốc của bạn đang trống.' });
 
     const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
-    const cabinetList = cabinet.map(m => `- ${m.name}: Dùng cho ${m.symptoms_treated || m.diagnosis}. Liều lượng: ${m.dosage}. Người dùng: ${m.familyMember.name}`).join('\n');
+    const cabinetList = cabinet.map(m => {
+      let ownerName = m.familyMember.name;
+      if (m.familyMember.userId !== req.user.userId && m.familyMember.linkedUserId === null) {
+        ownerName = m.familyMember.user?.name || m.familyMember.user?.email || 'Chủ gia đình';
+      }
+      return `- ${m.name}: Dùng cho ${m.symptoms_treated || m.diagnosis}. Liều lượng: ${m.dosage}. Người dùng: ${ownerName}`;
+    }).join('\n');
     
     const prompt = `Based on this family medicine cabinet:\n${cabinetList}\n\nPatient symptom: "${symptom}". 
     Find the best medicine(s) to treat this symptom. Return ONLY JSON: { "top_match": { "name": "string", "reason": "string", "instructions": "string", "owner": "string" }, "alternatives": [{ "name": "string", "reason": "string" }], "warning": "string" }. If no match found, explain why. All text in natural Vietnamese.`;

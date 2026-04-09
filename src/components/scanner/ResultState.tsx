@@ -87,7 +87,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
   return (
     <div className="animate-fade-up space-y-8 max-w-5xl mx-auto pb-20">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-[2rem] font-display font-bold text-foreground tracking-tight">Kết quả phân tích</h2>
           <p className="text-on-surface-variant text-[0.875rem] mt-1.5">
@@ -101,8 +101,8 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
       </div>
 
       {/* Medications */}
-      <div className="surface-2 rounded-2xl p-8 shadow-patient">
-        <div className="flex items-center justify-between mb-6">
+      <div className="surface-2 rounded-2xl p-4 sm:p-8 shadow-patient">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-2.5 text-primary">
             <Pill size={20} />
             <h3 className="text-lg font-semibold font-display text-foreground">Đơn thuốc của bạn</h3>

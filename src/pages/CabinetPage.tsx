@@ -154,6 +154,19 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
     } catch { toast.error("Lỗi kết nối"); }
   };
 
+  const filteredMedications = medications.filter(m => {
+    if (activeTab === "all") return true;
+    if (activeTab === "mine") {
+      return m.familyMember.linkedUserId === user?.id || 
+             (m.familyMember.userId === user?.id && !m.familyMember.linkedUserId && m.familyMember.relationship === 'Bản thân');
+    }
+    const tabMember = members.find(mbr => mbr.id === activeTab);
+    if (tabMember?.isLinked) {
+      return m.familyMember.userId === tabMember.userId;
+    }
+    return m.familyMember.id === activeTab;
+  });
+
   return (
     <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
@@ -416,13 +429,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {medications
-                  .filter(m => {
-                    if (activeTab === "all") return true;
-                    if (activeTab === "mine") return m.familyMember.linkedUser?.id === user?.id || m.familyMember.user.id === user?.id;
-                    return m.familyMember.id === activeTab;
-                  })
-                  .map(med => (
+                {filteredMedications.map(med => (
                     <Card key={med.id} className="group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden">
                       <header className="px-4 py-3 border-b border-border bg-muted/20 flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -477,11 +484,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                     </Card>
                   ))}
 
-                {medications.filter(m => {
-                  if (activeTab === "all") return true;
-                  if (activeTab === "mine") return m.familyMember.linkedUser?.id === user?.id || m.familyMember.user.id === user?.id;
-                  return m.familyMember.id === activeTab;
-                }).length === 0 && (
+                {filteredMedications.length === 0 && (
                   <div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-3xl space-y-4">
                     <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto opacity-40">
                       <Pill className="w-8 h-8 text-muted-foreground" />

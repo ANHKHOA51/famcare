@@ -29,9 +29,11 @@ const AppLayout = () => {
   return (
     <ProtectedRoute>
       <div className="flex min-h-screen bg-background">
-        <AppSidebar activePage={activePage} onNavigate={setActivePage} />
-        <div className="flex-1 flex flex-col">
-          <TopNav />
+        <div className="hidden md:flex">
+          <AppSidebar activePage={activePage} onNavigate={setActivePage} />
+        </div>
+        <div className="flex-1 flex flex-col min-w-0 w-full overflow-hidden">
+          <TopNav activePage={activePage} onNavigate={setActivePage} />
           <main className="flex-1 overflow-auto">
             {renderPage()}
           </main>
