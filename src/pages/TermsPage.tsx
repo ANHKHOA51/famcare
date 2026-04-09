@@ -14,7 +14,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">1. Điều khoản sử dụng</h2>
             <p className="leading-relaxed">
-              Bằng cách truy cập và sử dụng dịch vụ Hệ sinh thái Y tế (Dịch vụ), quý khách đồng ý bị ràng buộc bởi các điều khoản được trình bày tại đây. 
+              Bằng cách truy cập và sử dụng dịch vụ FamCare (Dịch vụ), quý khách đồng ý bị ràng buộc bởi các điều khoản được trình bày tại đây. 
               Tài khoản cần có thông tin đầy đủ, chính xác phục vụ cho các chức năng kiểm định sức khỏe do Trí Tuệ Nhân Tạo (AI) của chúng tôi chịu trách nhiệm.
               Người dùng phải theo dõi cẩn thận và báo báo sự sai sót liên quan tới dữ liệu y tế nếu gặp phải.
             </p>

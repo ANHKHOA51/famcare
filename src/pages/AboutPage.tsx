@@ -13,7 +13,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Tầm nhìn</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Trở thành hệ sinh thái y tế số hàng đầu, nơi mọi người có thể quản lý sức khỏe cá nhân và gia đình một cách trực quan, khoa học và hoàn toàn liền mạch. 
+              Trở thành FamCare số hàng đầu, nơi mọi người có thể quản lý sức khỏe cá nhân và gia đình một cách trực quan, khoa học và hoàn toàn liền mạch. 
               Mang y tế và sự chăm sóc tận tâm đến từng hộ gia đình thông qua công nghệ AI và trợ lý ảo thông minh.
             </p>
           </section>

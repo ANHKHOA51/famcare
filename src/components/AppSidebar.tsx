@@ -43,7 +43,7 @@ const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
     <aside className="w-64 min-h-screen surface-2 flex flex-col shadow-patient">
       {/* Brand */}
       <Link to="/" className="px-7 pt-8 pb-6 hover:opacity-80 transition-opacity">
-        <h1 className="text-xl font-bold font-display text-foreground tracking-tight">Hệ sinh thái Y tế</h1>
+        <h1 className="text-xl font-bold font-display text-foreground tracking-tight">FamCare</h1>
         <p className="text-xs text-on-surface-variant mt-0.5">Chăm sóc tận tâm</p>
       </Link>
 
