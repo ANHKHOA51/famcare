@@ -550,15 +550,16 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                         <Card key={med.id} className="border-border/50 hover:border-primary/30 transition-all hover:shadow-md bg-gradient-to-br from-background to-muted/20 group rounded-2xl overflow-hidden relative">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start mb-4">
-                              <div className="flex-1 pr-4">
-                                <div className="flex items-center gap-2 mb-1.5">
-                                  <h3 className="font-bold text-lg text-foreground line-clamp-1">{med.name}</h3>
-                                  {med.diagnosis && (
-                                    <Badge variant="outline" className="text-[10px] font-semibold tracking-wide bg-primary/5 text-primary border-primary/20 shrink-0">
-                                      {med.diagnosis}
-                                    </Badge>
-                                  )}
-                                </div>
+                              <div className="flex-1 pr-4 min-w-0">
+                                <h3 className="font-bold text-lg text-foreground line-clamp-1 mb-1.5">{med.name}</h3>
+                                {med.diagnosis && (
+                                  <Badge
+                                    variant="outline"
+                                    className="text-[10px] font-semibold tracking-wide bg-primary/5 text-primary border-primary/20 mb-2 max-w-full inline-flex"
+                                  >
+                                    <span className="truncate block">{med.diagnosis}</span>
+                                  </Badge>
+                                )}
                                 <p className="text-sm font-semibold text-primary/80 truncate flex items-center gap-1.5">
                                   {med.dosage}
                                 </p>
