@@ -535,10 +535,22 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
       }
     });
 
-    if (cabinet.length === 0) return res.json({ message: 'Tủ thuốc của bạn đang trống.' });
+    const validCabinet = cabinet.reduce((acc, m) => {
+      const isOwned = m.familyMember.userId === req.user.userId || m.familyMember.linkedUserId === req.user.userId;
+      if (!isOwned && m.isShared === false) return acc;
+      
+      acc.push({
+        ...m,
+        name: decrypt(m.name),
+        diagnosis: decrypt(m.diagnosis)
+      });
+      return acc;
+    }, []);
+
+    if (validCabinet.length === 0) return res.json({ message: 'Tủ thuốc của bạn đang trống.' });
 
     const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
-    const cabinetList = cabinet.map(m => {
+    const cabinetList = validCabinet.map(m => {
       let ownerName = m.familyMember.name;
       if (m.familyMember.userId !== req.user.userId && m.familyMember.linkedUserId === null) {
         ownerName = m.familyMember.user?.name || m.familyMember.user?.email || 'Chủ gia đình';
