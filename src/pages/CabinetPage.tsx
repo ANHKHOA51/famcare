@@ -211,8 +211,14 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
 
     if (activeTab === "all") return true;
     if (activeTab === "mine") {
-      return m.familyMember.linkedUserId === user?.id ||
+      const isOwnMedication =
+        m.familyMember.linkedUserId === user?.id ||
         (m.familyMember.userId === user?.id && !m.familyMember.linkedUserId && m.familyMember.relationship === "Bản thân");
+
+      // Include medications shared to this account from other family owners.
+      const isSharedToMe = m.familyMember.userId !== user?.id && m.isShared !== false;
+
+      return isOwnMedication || isSharedToMe;
     }
 
     const tabMember = members.find(mbr => mbr.id === activeTab);
