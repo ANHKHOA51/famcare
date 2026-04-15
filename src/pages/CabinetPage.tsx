@@ -55,6 +55,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const [members, setMembers] = useState<FamilyMember[]>([]);
   const [medications, setMedications] = useState<Medication[]>([]);
   const [symptomQuery, setSymptomQuery] = useState("");
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -155,6 +156,16 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   };
 
   const filteredMedications = medications.filter(m => {
+    // Phase 1: Local Search filter
+    if (localSearchQuery) {
+      const q = localSearchQuery.toLowerCase();
+      const match = m.name.toLowerCase().includes(q) || 
+                    (m.diagnosis && m.diagnosis.toLowerCase().includes(q)) || 
+                    (m.symptoms_treated && m.symptoms_treated.toLowerCase().includes(q));
+      if (!match) return false;
+    }
+
+    // Phase 2: Tab filter
     if (activeTab === "all") return true;
     if (activeTab === "mine") {
       return m.familyMember.linkedUserId === user?.id || 
@@ -167,13 +178,23 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
     return m.familyMember.id === activeTab;
   });
 
+  // Group medications by owner name (familyMember.name)
+  const groupedMedications = filteredMedications.reduce((acc, m) => {
+    const groupName = m.familyMember.name;
+    if (!acc[groupName]) {
+      acc[groupName] = [];
+    }
+    acc[groupName].push(m);
+    return acc;
+  }, {} as Record<string, Medication[]>);
+
   return (
     <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary">Tủ thuốc Gia đình</h1>
-          <p className="text-muted-foreground mt-1">Tìm kiếm thuốc theo triệu chứng và xem lịch sử điều trị của cả nhà.</p>
+          <p className="text-muted-foreground mt-1">Quản lý và theo dõi thông tin điều trị của cả nhà dưới tên hiển thị.</p>
         </div>
 
         <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
@@ -427,6 +448,117 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                 <Loader2 className="w-8 h-8 animate-spin text-primary/30" />
                 <p className="text-muted-foreground text-sm animate-pulse">Đang tải tủ thuốc...</p>
               </div>
+            ) : Object.keys(groupedMedications).length === 0 ? (
+              <div className="text-center py-24 px-6 border-2 border-dashed border-border rounded-3xl bg-muted/20">
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner ring-4 ring-primary/5">
+                  <Pill className="text-primary w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">Tủ thuốc đang trống</h3>
+                <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
+                  Chưa có loại thuốc nào được thêm vào. Bắt đầu bằng cách quét đơn thuốc hoặc thêm thủ công.
+                </p>
+                <div className="mt-8 flex gap-3 justify-center">
+                  <Button onClick={() => onNavigate?.("home")} className="rounded-full shadow-md font-semibold font-display gap-2 group hover:shadow-lg transition-all h-11 px-6">
+                    <History className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    Quét đơn thuốc ngay
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-12">
+                {Object.entries(groupedMedications).map(([groupName, meds]) => (
+                  <div key={groupName} className="space-y-4">
+                    <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm">
+                        {groupName[0].toUpperCase()}
+                      </div>
+                      <h2 className="text-lg font-bold text-foreground">{groupName}</h2>
+                      <Badge variant="secondary" className="ml-2 font-mono text-xs rounded-full bg-muted/50">
+                        {meds.length} thuốc
+                      </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+                      {meds.map((med) => (
+                        <Card key={med.id} className="border-border/50 hover:border-primary/30 transition-all hover:shadow-md bg-gradient-to-br from-background to-muted/20 group rounded-2xl overflow-hidden relative">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="flex-1 pr-4">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <h3 className="font-bold text-lg text-foreground line-clamp-1">{med.name}</h3>
+                                  {med.diagnosis && (
+                                    <Badge variant="outline" className="text-[10px] font-semibold tracking-wide bg-primary/5 text-primary border-primary/20 shrink-0">
+                                      {med.diagnosis}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm font-semibold text-primary/80 truncate flex items-center gap-1.5">
+                                  {med.dosage}
+                                </p>
+                              </div>
+                              <div className="w-12 h-12 rounded-xl bg-primary/8 flex items-center justify-center shrink-0 border border-primary/10 shadow-sm group-hover:scale-110 transition-transform">
+                                <Pill className="text-primary w-6 h-6" />
+                              </div>
+                            </div>
+
+                            <div className="space-y-3">
+                              {med.symptoms_treated && (
+                                <div className="bg-background rounded-xl p-3 border border-border/50 shadow-sm">
+                                  <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">Chữa triệu chứng</p>
+                                  <p className="text-sm font-medium text-foreground line-clamp-1">{med.symptoms_treated}</p>
+                                </div>
+                              )}
+                              
+                              {med.instructions && (
+                                <div className="bg-background rounded-xl p-3 border border-border/50 shadow-sm">
+                                  <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">Cách dùng</p>
+                                  <p className="text-sm text-foreground italic leading-relaxed line-clamp-2">{med.instructions}</p>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Optional Fields from Security/Optimization Phase */}
+                            {(med.prescriptionCode || med.hospitalName) && (
+                               <div className="mt-4 pt-4 border-t border-border/40 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                 {med.prescriptionCode && (
+                                   <div className="truncate"><span className="font-medium">Mã Đơn:</span> {med.prescriptionCode}</div>
+                                 )}
+                                 {med.hospitalName && (
+                                   <div className="truncate"><span className="font-medium">Khám tại:</span> {med.hospitalName}</div>
+                                 )}
+                               </div>
+                            )}
+
+                            <div className="mt-5 pt-4 border-t border-border/50 flex items-center justify-between">
+                              <p className="text-[11px] font-medium text-muted-foreground">
+                                Thêm vào {new Date(med.createdAt).toLocaleDateString('vi-VN')}
+                              </p>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                onClick={() => handleDeleteMedication(med.id, med.name)}
+                                title="Xóa thuốc khỏi tủ"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>  
+    </div>
+  );
+};
+
+export default CabinetPage;
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {filteredMedications.map(med => (

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles, Save, User, Loader2, Check } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles, Save, User, Loader2, Check, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScanResult } from "@/pages/ScannerPage";
 import { useAuth } from "@/context/AuthContext";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 interface ResultStateProps {
@@ -26,6 +28,9 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
   const [isSaving, setIsSaving] = useState(false);
   const [savedMedications, setSavedMedications] = useState<string[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
+  const [isShared, setIsShared] = useState(true);
+  const [prescriptionCode, setPrescriptionCode] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
 
   useEffect(() => {
     fetchMembers();
@@ -67,6 +72,9 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
           instructions: med.instructions,
           diagnosis: result.diagnosis,
           symptoms_treated: med.suggested_symptoms?.join(", "),
+          prescriptionCode,
+          hospitalName,
+          isShared,
           familyMemberId: selectedMember
         })
       });
@@ -100,26 +108,69 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
         </Button>
       </div>
 
+      {/* Meta Information */}
+      <div className="surface-2 rounded-2xl p-4 sm:p-6 shadow-patient space-y-4">
+        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+          <Shield size={16} className="text-primary"/> 
+          Thông tin xác thực (Tuỳ chọn)
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="hospital" className="text-xs text-on-surface-variant font-medium">Bệnh viện / Phòng khám</Label>
+            <Input 
+              id="hospital" 
+              placeholder="VD: Bệnh viện Chợ Rẫy" 
+              value={hospitalName}
+              onChange={(e) => setHospitalName(e.target.value)}
+              className="bg-background h-10 border-primary/20"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="presCode" className="text-xs text-on-surface-variant font-medium">Mã đơn thuốc</Label>
+            <Input 
+              id="presCode" 
+              placeholder="VD: PK-123456" 
+              value={prescriptionCode}
+              onChange={(e) => setPrescriptionCode(e.target.value)}
+              className="bg-background h-10 border-primary/20"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Medications */}
       <div className="surface-2 rounded-2xl p-4 sm:p-8 shadow-patient">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-6">
           <div className="flex items-center gap-2.5 text-primary">
             <Pill size={20} />
             <h3 className="text-lg font-semibold font-display text-foreground">Đơn thuốc của bạn</h3>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-[0.8125rem] text-on-surface-variant font-medium">Lưu cho:</span>
-            <Select value={selectedMember} onValueChange={setSelectedMember}>
-              <SelectTrigger className="w-[180px] h-9 text-[0.8125rem] bg-background">
-                <SelectValue placeholder="Chọn thành viên" />
-              </SelectTrigger>
-              <SelectContent>
-                {members.map(m => (
-                  <SelectItem key={m.id} value={m.id}>{m.name} ({m.relationship})</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-background p-2 px-3 rounded-lg border border-primary/10 w-full sm:w-auto">
+              <span className="text-[0.8125rem] text-on-surface-variant font-medium whitespace-nowrap">Lưu cho:</span>
+              <Select value={selectedMember} onValueChange={setSelectedMember}>
+                <SelectTrigger className="w-full sm:w-[150px] h-8 text-[0.8125rem] border-0 bg-transparent focus:ring-0">
+                  <SelectValue placeholder="Chọn thành viên" />
+                </SelectTrigger>
+                <SelectContent>
+                  {members.map(m => (
+                    <SelectItem key={m.id} value={m.id}>{m.name} ({m.relationship})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-3 bg-background p-2 rounded-lg border border-primary/10 px-3 w-full sm:w-auto mt-2 sm:mt-0 justify-between">
+              <Label htmlFor="privacy-toggle" className="text-[0.8125rem] text-on-surface-variant font-medium cursor-pointer">
+                Chia sẻ với gia đình
+              </Label>
+              <Switch 
+                id="privacy-toggle" 
+                checked={isShared} 
+                onCheckedChange={setIsShared}
+              />
+            </div>
           </div>
         </div>
 

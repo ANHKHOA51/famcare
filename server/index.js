@@ -431,7 +431,10 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
     const base64Image = req.file.buffer.toString('base64');
 
-    const prompt = `Analyze prescription image. Extract diagnosis, medications, and nutrition advice. Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"] }], "nutrition": { "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
+    const prompt = `Analyze prescription image. 
+    If the image is entirely blurry, unreadable, or clearly not a medical document, return ONLY this JSON: { "error": "BLURRY" }.
+    Otherwise, extract diagnosis, medications, and nutrition advice. Link the nutrition advice directly to the diagnosis (e.g. if High Blood pressure, advise eating less salt/sodium). 
+    Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"] }], "nutrition": { "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
 
     const result = await model.generateContent([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }]);
     const response = await result.response;

@@ -9,6 +9,7 @@ export type ScannerStep = "upload" | "scanning" | "result" | "meal-plan";
 
 export interface ScanResult {
   diagnosis: string;
+  error?: string;
   medications: { 
     name: string; 
     dosage: string;
@@ -45,6 +46,13 @@ const ScannerPage = () => {
       }
 
       const data = await response.json();
+      
+      if (data.error === "BLURRY") {
+        toast.error("Ảnh quá mờ hoặc không nhận diện được đơn thuốc. Vui lòng chụp lại rõ hơn!");
+        setStep("upload");
+        return;
+      }
+      
       setScanResult(data);
       setStep("result");
       toast.success("Đã phân tích đơn thuốc!");
