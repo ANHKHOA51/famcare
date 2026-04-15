@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,9 @@ interface FamilyMember {
   name: string;
   relationship: string;
   userId: string;
+  linkedUserId?: string | null;
   linkedUser?: { id: string; name: string; email: string };
+  isLinked?: boolean;
 }
 
 interface Medication {
@@ -26,6 +28,9 @@ interface Medication {
   instructions?: string;
   diagnosis?: string;
   symptoms_treated?: string;
+  prescriptionCode?: string | null;
+  hospitalName?: string | null;
+  isShared?: boolean;
   familyMember: FamilyMember & {
     user: { id: string; name: string; email: string };
   };
@@ -60,7 +65,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Add Member Modal
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserSearchResult[]>([]);
@@ -69,40 +73,64 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const [searching2, setSearching2] = useState(false);
   const [adding, setAdding] = useState(false);
 
-  useEffect(() => { fetchCabinet(); fetchMembers(); }, []);
-
-  const fetchCabinet = async () => {
+  const fetchCabinet = useCallback(async () => {
     try {
       const resp = await fetch("/api/cabinet", { headers: { Authorization: `Bearer ${token}` } });
+      if (!resp.ok) {
+        const data = await resp.json().catch(() => null);
+        throw new Error(data?.error || "Lỗi khi tải tủ thuốc");
+      }
       setMedications(await resp.json());
-    } catch { toast.error("Lỗi khi tải tủ thuốc"); }
-    finally { setLoading(false); }
-  };
+    } catch {
+      toast.error("Lỗi khi tải tủ thuốc");
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
-  const fetchMembers = async () => {
+  const fetchMembers = useCallback(async () => {
     try {
       const resp = await fetch("/api/family", { headers: { Authorization: `Bearer ${token}` } });
+      if (!resp.ok) return;
       setMembers(await resp.json());
-    } catch {}
-  };
+    } catch {
+      // ignore
+    }
+  }, [token]);
 
-  // Debounced user search
+  useEffect(() => {
+    fetchCabinet();
+    fetchMembers();
+  }, [fetchCabinet, fetchMembers]);
+
   const handleUserSearch = useCallback(async (q: string) => {
     setUserQuery(q);
     setSelectedUser(null);
-    if (q.length < 2) { setUserResults([]); return; }
+    if (q.length < 2) {
+      setUserResults([]);
+      return;
+    }
     setSearching2(true);
     try {
       const resp = await fetch(`/api/family/search?q=${encodeURIComponent(q)}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserResults(await resp.json());
-    } catch {}
-    finally { setSearching2(false); }
+      if (resp.ok) {
+        setUserResults(await resp.json());
+      }
+    } catch {
+      // ignore
+    } finally {
+      setSearching2(false);
+    }
   }, [token]);
 
   const handleAddMember = async () => {
-    if (!selectedUser || !relationship) { toast.error("Vui lòng chọn người và mối quan hệ"); return; }
+    if (!selectedUser || !relationship) {
+      toast.error("Vui lòng chọn người và mối quan hệ");
+      return;
+    }
+
     setAdding(true);
     try {
       const resp = await fetch("/api/family/add", {
@@ -113,37 +141,43 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
       const data = await resp.json();
       if (resp.ok) {
         toast.success(`Đã thêm ${selectedUser.name || selectedUser.email} vào gia đình!`);
-        fetchMembers();
+        await fetchMembers();
         setAddDialogOpen(false);
-        setUserQuery(""); setUserResults([]); setSelectedUser(null); setRelationship("");
+        setUserQuery("");
+        setUserResults([]);
+        setSelectedUser(null);
+        setRelationship("");
       } else {
         toast.error(data.error || "Lỗi khi thêm thành viên");
       }
-    } catch { toast.error("Lỗi kết nối"); }
-    finally { setAdding(false); }
+    } catch {
+      toast.error("Lỗi kết nối");
+    } finally {
+      setAdding(false);
+    }
   };
 
   const handleSymptomSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!symptomQuery.trim()) return;
-    setSearching(true); setSearchResult(null);
+    setSearching(true);
+    setSearchResult(null);
     try {
       const resp = await fetch("/api/cabinet/search", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ symptom: symptomQuery })
       });
-      
       if (!resp.ok) {
         const errData = await resp.json().catch(() => null);
         throw new Error(errData?.error || "Lỗi khi tìm bằng AI");
       }
-      
       setSearchResult(await resp.json());
-    } catch (error: any) { 
-      toast.error(error.message || "Lỗi khi tìm thuốc"); 
+    } catch (error: any) {
+      toast.error(error?.message || "Lỗi khi tìm thuốc");
+    } finally {
+      setSearching(false);
     }
-    finally { setSearching(false); }
   };
 
   const handleDeleteMedication = async (id: string, name: string) => {
@@ -157,48 +191,47 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
         toast.success(`Đã xóa ${name}`);
         setMedications(prev => prev.filter(m => m.id !== id));
       } else {
-        const data = await resp.json();
-        toast.error(data.error || "Không thể xóa thuốc");
+        const data = await resp.json().catch(() => null);
+        toast.error(data?.error || "Không thể xóa thuốc");
       }
-    } catch { toast.error("Lỗi kết nối"); }
+    } catch {
+      toast.error("Lỗi kết nối");
+    }
   };
 
   const filteredMedications = medications.filter(m => {
-    // Phase 1: Local Search filter
     if (localSearchQuery) {
       const q = localSearchQuery.toLowerCase();
-      const match = m.name.toLowerCase().includes(q) || 
-                    (m.diagnosis && m.diagnosis.toLowerCase().includes(q)) || 
-                    (m.symptoms_treated && m.symptoms_treated.toLowerCase().includes(q));
+      const match =
+        m.name.toLowerCase().includes(q) ||
+        (m.diagnosis && m.diagnosis.toLowerCase().includes(q)) ||
+        (m.symptoms_treated && m.symptoms_treated.toLowerCase().includes(q));
       if (!match) return false;
     }
 
-    // Phase 2: Tab filter
     if (activeTab === "all") return true;
     if (activeTab === "mine") {
-      return m.familyMember.linkedUserId === user?.id || 
-             (m.familyMember.userId === user?.id && !m.familyMember.linkedUserId && m.familyMember.relationship === 'Bản thân');
+      return m.familyMember.linkedUserId === user?.id ||
+        (m.familyMember.userId === user?.id && !m.familyMember.linkedUserId && m.familyMember.relationship === "Bản thân");
     }
+
     const tabMember = members.find(mbr => mbr.id === activeTab);
     if (tabMember?.isLinked) {
       return m.familyMember.userId === tabMember.userId;
     }
+
     return m.familyMember.id === activeTab;
   });
 
-  // Group medications by owner name (familyMember.name)
-  const groupedMedications = filteredMedications.reduce((acc, m) => {
-    const groupName = m.familyMember.name;
-    if (!acc[groupName]) {
-      acc[groupName] = [];
-    }
-    acc[groupName].push(m);
+  const groupedMedications = filteredMedications.reduce((acc, medication) => {
+    const groupName = medication.familyMember.name;
+    if (!acc[groupName]) acc[groupName] = [];
+    acc[groupName].push(medication);
     return acc;
   }, {} as Record<string, Medication[]>);
 
   return (
     <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary">Tủ thuốc Gia đình</h1>
@@ -224,7 +257,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
             </DialogHeader>
 
             <div className="space-y-4 py-2">
-              {/* Step 1: Search */}
               <div className="space-y-2">
                 <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
                   Bước 1: Tìm kiếm người dùng
@@ -240,7 +272,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                   {searching2 && <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground" />}
                 </div>
 
-                {/* Search Results */}
                 {userResults.length > 0 && !selectedUser && (
                   <div className="border border-border rounded-xl overflow-hidden shadow-sm">
                     {userResults.map(u => (
@@ -270,7 +301,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                 )}
               </div>
 
-              {/* Selected user */}
               {selectedUser && (
                 <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -288,7 +318,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                 </div>
               )}
 
-              {/* Step 2: Relationship */}
               {selectedUser && (
                 <div className="space-y-2">
                   <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
@@ -321,7 +350,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
         </Dialog>
       </div>
 
-      {/* Family Members Preview */}
       {members.length > 0 && (
         <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-2xl border border-border">
           <div className="flex items-center gap-1 shrink-0">
@@ -329,7 +357,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
             <span className="text-sm font-bold text-muted-foreground">Gia đình:</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {/* Always show "self" chip */}
             <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full">
               <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[10px] text-white font-bold">
                 {user?.name?.[0]?.toUpperCase()}
@@ -354,7 +381,37 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
         </div>
       )}
 
-      {/* AI Symptom Search */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+        <form onSubmit={handleSymptomSearch} className="flex gap-2 isolate relative bg-background p-[1px] rounded-full shadow-sm ring-1 ring-border/50">
+          <div className="relative flex-1">
+            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Hỏi AI: 'Đau đầu sổ mũi uống gì?'"
+              className="pl-12 pr-4 h-12 bg-transparent border-0 rounded-l-full focus-visible:ring-0 shadow-none text-base"
+              value={symptomQuery}
+              onChange={e => setSymptomQuery(e.target.value)}
+            />
+          </div>
+          <Button type="submit" disabled={searching} className="h-12 px-6 rounded-full shadow-none hover:shadow-md transition-shadow">
+            {searching ? <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" /> : "Tìm với AI"}
+          </Button>
+        </form>
+
+        <div className="flex gap-2 isolate relative bg-background p-[1px] rounded-full shadow-sm ring-1 ring-border/50">
+          <div className="relative flex-1">
+            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Bộ lọc: Gõ tên thuốc, bệnh hoặc triệu chứng..."
+              className="pl-12 pr-4 h-12 bg-transparent border-0 rounded-full focus-visible:ring-0 shadow-none text-base"
+              value={localSearchQuery}
+              onChange={e => setLocalSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
         <CardContent className="p-6 space-y-5">
           <div>
@@ -420,7 +477,10 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                         {searchResult.alternatives.map((a, i) => (
                           <div key={i} className="p-3 bg-background border rounded-xl flex gap-3 items-center">
                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                            <div><p className="font-bold text-sm">{a.name}</p><p className="text-xs text-muted-foreground">{a.reason}</p></div>
+                            <div>
+                              <p className="font-bold text-sm">{a.name}</p>
+                              <p className="text-xs text-muted-foreground">{a.reason}</p>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -433,10 +493,9 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
         </CardContent>
       </Card>
 
-      {/* Medication List */}
       <div>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-muted p-1 rounded-xl mb-6">
+          <TabsList className="bg-muted p-1 rounded-xl mb-6 flex flex-wrap h-auto">
             <TabsTrigger value="all" className="rounded-lg px-4 font-bold">
               Tất cả ({medications.length})
             </TabsTrigger>
@@ -485,9 +544,9 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                         {meds.length} thuốc
                       </Badge>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-                      {meds.map((med) => (
+                      {meds.map(med => (
                         <Card key={med.id} className="border-border/50 hover:border-primary/30 transition-all hover:shadow-md bg-gradient-to-br from-background to-muted/20 group rounded-2xl overflow-hidden relative">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start mb-4">
@@ -516,7 +575,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                                   <p className="text-sm font-medium text-foreground line-clamp-1">{med.symptoms_treated}</p>
                                 </div>
                               )}
-                              
+
                               {med.instructions && (
                                 <div className="bg-background rounded-xl p-3 border border-border/50 shadow-sm">
                                   <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">Cách dùng</p>
@@ -525,31 +584,28 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                               )}
                             </div>
 
-                            {/* Optional Fields from Security/Optimization Phase */}
                             {(med.prescriptionCode || med.hospitalName) && (
-                               <div className="mt-4 pt-4 border-t border-border/40 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                                 {med.prescriptionCode && (
-                                   <div className="truncate"><span className="font-medium">Mã Đơn:</span> {med.prescriptionCode}</div>
-                                 )}
-                                 {med.hospitalName && (
-                                   <div className="truncate"><span className="font-medium">Khám tại:</span> {med.hospitalName}</div>
-                                 )}
-                               </div>
+                              <div className="mt-4 pt-4 border-t border-border/40 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                {med.prescriptionCode && <div className="truncate"><span className="font-medium">Mã Đơn:</span> {med.prescriptionCode}</div>}
+                                {med.hospitalName && <div className="truncate"><span className="font-medium">Khám tại:</span> {med.hospitalName}</div>}
+                              </div>
                             )}
 
                             <div className="mt-5 pt-4 border-t border-border/50 flex items-center justify-between">
                               <p className="text-[11px] font-medium text-muted-foreground">
-                                Thêm vào {new Date(med.createdAt).toLocaleDateString('vi-VN')}
+                                Thêm vào {new Date(med.createdAt).toLocaleDateString("vi-VN")}
                               </p>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                                onClick={() => handleDeleteMedication(med.id, med.name)}
-                                title="Xóa thuốc khỏi tủ"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                              {(med.familyMember.userId === user?.id || med.familyMember.linkedUserId === user?.id) && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                  onClick={() => handleDeleteMedication(med.id, med.name)}
+                                  title="Xóa thuốc khỏi tủ"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              )}
                             </div>
                           </CardContent>
                         </Card>
@@ -557,85 +613,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>  
-    </div>
-  );
-};
-
-export default CabinetPage;
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredMedications.map(med => (
-                    <Card key={med.id} className="group hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden">
-                      <header className="px-4 py-3 border-b border-border bg-muted/20 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-[10px] uppercase font-bold">
-                            {med.familyMember.name}
-                          </Badge>
-                          {med.familyMember.linkedUser && (
-                            <div className="flex items-center gap-1 text-[11px] text-primary font-semibold">
-                              <Link2 className="w-3 h-3" />
-                            </div>
-                          )}
-                        </div>
-                        {med.familyMember.userId === user?.id && (
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="w-7 h-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                            onClick={() => handleDeleteMedication(med.id, med.name)}
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        )}
-                      </header>
-                      <CardContent className="p-5 space-y-4">
-                        <div className="flex gap-3">
-                          <div className="p-2.5 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors h-fit">
-                            <Pill className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-base group-hover:text-primary transition-colors">{med.name}</h3>
-                            <p className="text-sm font-bold text-primary">{med.dosage}</p>
-                          </div>
-                        </div>
-                        <div className="space-y-2 bg-muted/20 p-3 rounded-xl text-sm">
-                          {med.instructions && (
-                            <div className="flex gap-2">
-                              <Info className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
-                              <p className="text-foreground leading-snug">{med.instructions}</p>
-                            </div>
-                          )}
-                          {(med.symptoms_treated || med.diagnosis) && (
-                            <div className="flex gap-2 items-center">
-                              <History className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                              <span className="text-xs bg-primary/5 px-2 py-0.5 rounded font-medium">{med.symptoms_treated || med.diagnosis}</span>
-                            </div>
-                          )}
-                        </div>
-                        <p className="text-[10px] text-muted-foreground text-right border-t border-border pt-2">
-                          {new Date(med.createdAt).toLocaleDateString("vi-VN")}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
-
-                {filteredMedications.length === 0 && (
-                  <div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-3xl space-y-4">
-                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto opacity-40">
-                      <Pill className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-muted-foreground">Chưa có thuốc nào</p>
-                      <p className="text-sm text-muted-foreground">Scan đơn thuốc để thêm vào tủ thuốc</p>
-                    </div>
-                    <Button variant="secondary" onClick={() => onNavigate?.("scanner")}>Scan ngay</Button>
-                  </div>
-                )}
               </div>
             )}
           </TabsContent>
