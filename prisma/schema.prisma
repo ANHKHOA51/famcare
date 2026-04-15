@@ -48,6 +48,9 @@ model Medication {
   instructions     String?
   diagnosis        String?
   symptoms_treated String?
+  prescriptionCode String?
+  hospitalName     String?
+  isShared         Boolean      @default(true)
   familyMemberId   String
   familyMember     FamilyMember @relation(fields: [familyMemberId], references: [id])
   createdAt        DateTime     @default(now())

@@ -10,8 +10,43 @@ const { PrismaClient } = pkg;
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 dotenv.config();
+
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'aura_health_secret_key__2026_123'; // 32 bytes
+const IV_LENGTH = 16;
+
+function encrypt(text) {
+  if (!text) return text;
+  try {
+    const iv = crypto.randomBytes(IV_LENGTH);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
+  } catch (err) {
+    console.error('Encryption error:', err);
+    return text;
+  }
+}
+
+function decrypt(text) {
+  if (!text) return text;
+  if (!text.includes(':')) return text; // Not encrypted
+  try {
+    const textParts = text.split(':');
+    const iv = Buffer.from(textParts.shift(), 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+  } catch (err) {
+    console.error('Decryption error:', err);
+    return text;
+  }
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -258,7 +293,7 @@ app.delete('/api/family/:id', authenticateToken, async (req, res) => {
 // --- Cabinet Routes ---
 app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
   try {
-    const { name, dosage, instructions, diagnosis, symptoms_treated, familyMemberId } = req.body;
+    const { name, dosage, instructions, diagnosis, symptoms_treated, familyMemberId, prescriptionCode, hospitalName, isShared } = req.body;
 
     // Check if the user has permission to add to this family member
     const targetMember = await prisma.familyMember.findUnique({
@@ -281,8 +316,14 @@ app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
 
     const medication = await prisma.medication.create({
       data: {
-        name, dosage, instructions, diagnosis,
+        name: encrypt(name),
+        dosage, 
+        instructions, 
+        diagnosis: encrypt(diagnosis),
         symptoms_treated: Array.isArray(symptoms_treated) ? symptoms_treated.join(', ') : symptoms_treated,
+        prescriptionCode,
+        hospitalName,
+        isShared: isShared !== undefined ? Boolean(isShared) : true,
         familyMemberId
       }
     });
@@ -324,19 +365,33 @@ app.get('/api/cabinet', authenticateToken, async (req, res) => {
   });
 
   // Adjust display name for linked users seeing the owner's "Bản thân"
-  const formattedMedications = medications.map(med => {
+  // Filter out private meds and decrypt
+  const formattedMedications = medications.reduce((acc, med) => {
+    // A medication is "owned" by the user if it belongs to a family member they own, or if they are the linked user.
+    // If not owned, it must be isShared === true
+    const isOwned = med.familyMember.userId === req.user.userId || med.familyMember.linkedUserId === req.user.userId;
+    
+    if (!isOwned && med.isShared === false) {
+      return acc;
+    }
+
     let displayName = med.familyMember.name;
     if (med.familyMember.userId !== req.user.userId && med.familyMember.linkedUserId === null) {
       displayName = med.familyMember.user?.name || med.familyMember.user?.email || 'Chủ gia đình';
     }
-    return {
+
+    acc.push({
       ...med,
+      name: decrypt(med.name),
+      diagnosis: decrypt(med.diagnosis),
       familyMember: {
         ...med.familyMember,
         name: displayName
       }
-    };
-  });
+    });
+    
+    return acc;
+  }, []);
 
   res.json(formattedMedications);
 });
