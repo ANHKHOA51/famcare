@@ -133,8 +133,16 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ symptom: symptomQuery })
       });
+      
+      if (!resp.ok) {
+        const errData = await resp.json().catch(() => null);
+        throw new Error(errData?.error || "Lỗi khi tìm bằng AI");
+      }
+      
       setSearchResult(await resp.json());
-    } catch { toast.error("Lỗi khi tìm thuốc"); }
+    } catch (error: any) { 
+      toast.error(error.message || "Lỗi khi tìm thuốc"); 
+    }
     finally { setSearching(false); }
   };
 

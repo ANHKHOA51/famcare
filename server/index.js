@@ -441,7 +441,11 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     const jsonResponse = JSON.parse(response.text().replace(/```json|```/g, '').trim());
     res.json(jsonResponse);
   } catch (error) {
-    res.status(500).json({ error: 'Error scanning prescription' });
+    console.error('SCAN ERROR:', error);
+    if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
+      return res.status(429).json({ error: 'Hệ thống AI đang quá tải do nhu cầu cao. Vui lòng thử lại sau giây lát!' });
+    }
+    res.status(500).json({ error: 'Đã có lỗi xảy ra khi quét đơn thuốc' });
   }
 });
 
@@ -501,7 +505,10 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     res.json({ meal_plan: fullPlan });
   } catch (error) {
     console.error('MEAL PLAN ERROR:', error);
-    res.status(500).json({ error: 'Error generating meal plan' });
+    if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
+      return res.status(429).json({ error: 'Hệ thống AI tạo thực đơn đang quá tải. Vui lòng thử lại sau!' });
+    }
+    res.status(500).json({ error: 'Lỗi khi tạo thực đơn AI' });
   }
 });
 
@@ -564,7 +571,11 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     const result = await model.generateContent(prompt);
     res.json(JSON.parse(result.response.text().replace(/```json|```/g, '').trim()));
   } catch (error) {
-    res.status(500).json({ error: 'Error searching cabinet' });
+    console.error('AI SEARCH ERROR:', error);
+    if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
+      return res.status(429).json({ error: 'AI tìm kiếm của tủ thuốc đang quá tải. Vui lòng thử lại sau.' });
+    }
+    res.status(500).json({ error: 'Lỗi khi tìm kiếm với AI' });
   }
 });
 

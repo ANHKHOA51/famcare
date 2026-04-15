@@ -42,7 +42,8 @@ const ScannerPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to scan prescription");
+        const errData = await response.json().catch(() => null);
+        throw new Error(errData?.error || "Không thể phân tích đơn thuốc. Vui lòng thử lại.");
       }
 
       const data = await response.json();
@@ -56,9 +57,9 @@ const ScannerPage = () => {
       setScanResult(data);
       setStep("result");
       toast.success("Đã phân tích đơn thuốc!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Scanning error:", error);
-      toast.error("Không thể phân tích đơn thuốc. Vui lòng thử lại.");
+      toast.error(error.message || "Không thể phân tích đơn thuốc. Vui lòng thử lại.");
       setStep("upload");
     }
   }, []);
