@@ -16,45 +16,7 @@ interface Meal {
   nutritionNotes: { title: string; desc: string; }[];
 }
 
-const mockMeals: Meal[] = [
-  {
-    id: "1",
-    name: "Cá hồi hấp xì dầu & Gừng",
-    time: "25 phút",
-    calories: "320 kcal",
-    difficulty: "Dễ",
-    tags: ["Ít muối", "Tốt cho người bị Gout"],
-    description: "Món ăn thanh đạm, giữ trọn vị ngọt tự nhiên của cá hồi, kết hợp với gừng ấm nóng giúp cân bằng vị giác và hỗ trợ tiêu hóa.",
-    ingredients: [
-      { name: "Cá hồi tươi", amount: "200g" },
-      { name: "Xì dầu (ít muối)", amount: "20ml" },
-      { name: "Gừng tươi", amount: "15g" },
-      { name: "Hành lá", amount: "10g" }
-    ],
-    steps: [
-      { title: "Sơ chế", desc: "Cá hồi rửa sạch, thấm khô bằng giấy bếp. Gừng gọt vỏ thái sợi. Hành lá cắt khúc 4-5cm." },
-      { title: "Ướp gia vị", desc: "Xếp cá vào đĩa sâu lòng, rắc gừng sợi lên mặt cá. Rưới xì dầu." },
-      { title: "Hấp cách thủy", desc: "Đun sôi nước trong xửng hấp, cho cá vào hấp lửa vừa khoảng 10-12 phút." }
-    ],
-    nutritionNotes: [
-      { title: "GIÀU OMEGA-3", desc: "Hỗ trợ sức khỏe tim mạch và giảm viêm, cực kỳ tốt cho hệ thần kinh của người cao tuổi." },
-      { title: "KIỂM SOÁT NATRI", desc: "Sử dụng xì dầu giảm muối giúp kiểm soát huyết áp." }
-    ]
-  },
-  {
-    id: "2",
-    name: "Rau củ luộc thập cẩm & Muối vừng",
-    time: "15 phút",
-    calories: "150 kcal",
-    difficulty: "Dễ",
-    tags: ["Nhiều chất xơ", "Tốt cho người bị Gout"],
-    description: "Nguồn vitamin dồi dào từ súp lơ, cà rốt và đậu bắp giúp thanh lọc cơ thể.",
-    ingredients: [],
-    steps: [],
-    nutritionNotes: []
-  }
-];
-
+// (Removed mockMeals array as requested)
 export default function MealPlanPage() {
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [activeTab, setActiveTab] = useState("all");
@@ -132,7 +94,7 @@ export default function MealPlanPage() {
     canh: "canh",
     trangmieng: "tráng"
   };
-  const allMeals = generatedMeals.length > 0 ? generatedMeals : mockMeals;
+  const allMeals = generatedMeals;
   const displayMeals = activeTab === "all"
     ? allMeals
     : allMeals.filter(m =>
@@ -260,8 +222,8 @@ export default function MealPlanPage() {
       </form>
 
       <div className="grid lg:grid-cols-12 gap-10 items-start">
-        {/* Left Col */}
-        <div className="lg:col-span-8 space-y-8">
+        {/* Main Col */}
+        <div className="lg:col-span-12 max-w-5xl mx-auto w-full space-y-8">
           <div className="bg-gradient-to-br from-[#3b82f6] to-[#2563eb] rounded-[2.5rem] p-8 md:p-10 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden">
             <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
               <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
@@ -271,12 +233,12 @@ export default function MealPlanPage() {
               <span className="text-xs text-blue-100 font-medium">Hôm nay</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-display font-bold mb-4 leading-[1.1] tracking-tight relative z-10">
-              {generatedMeals.length > 0 ? aiTitle : "Gợi ý thực đơn cho Bố dựa trên hồ sơ bệnh lý Cao huyết áp & Gout"}
+              {generatedMeals.length > 0 ? aiTitle : "Chào mừng đến với Trợ lý Dinh dưỡng AI"}
             </h1>
             <p className="text-blue-100 md:text-lg max-w-xl relative z-10">
               {generatedMeals.length > 0 
                 ? (generalAdvice[0] || "Chọn menu dưới để xem chi tiết dinh dưỡng.")
-                : "Chế độ ăn kiêng Purin thấp và kiểm soát Natri giúp ổn định chỉ số Axit Uric."}
+                : "Nhập tình trạng bệnh lý của bạn (VD: Tiểu đường, Gout, Mỡ máu cao...) để AI thiết kế thực đơn phù hợp và an toàn nhất."}
             </p>
           </div>
 
@@ -301,33 +263,33 @@ export default function MealPlanPage() {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {isGenerating ? (
-                <div className="md:col-span-2 flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-blue-100 rounded-3xl bg-blue-50/50">
+                <div className="xl:col-span-4 lg:col-span-3 md:col-span-2 flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-blue-100 rounded-3xl bg-blue-50/50">
                    <Loader2 className="animate-spin text-blue-400 mb-4" size={32} />
                    <p className="text-blue-600 font-medium animate-pulse">AI đang phân tích và lên thực đơn an toàn...</p>
                 </div>
               ) : (
                 displayMeals.map((meal) => (
-                  <div key={meal.id} className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="aspect-[4/3] bg-gradient-to-br from-indigo-100 to-blue-50 relative overflow-hidden flex items-center justify-center text-blue-200">
-                      <Utensils size={80} className="group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                      <div className="absolute top-4 left-4 flex gap-2">
-                         {meal.tags.map((t, i) => (
-                           <span key={i} className="bg-blue-500/80 text-white backdrop-blur-sm px-2.5 py-1 rounded text-[0.625rem] font-bold uppercase tracking-wider">{t}</span>
+                  <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md transition-shadow flex flex-col">
+                    <div className="aspect-video bg-gradient-to-br from-indigo-100 to-blue-50 relative overflow-hidden flex items-center justify-center text-blue-200">
+                      <Utensils size={32} className="group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
+                      <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                         {meal.tags.slice(0, 1).map((t, i) => (
+                           <span key={i} className="bg-blue-500/80 text-white backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
                          ))}
                       </div>
                     </div>
-                    <div className="p-6 h-full flex flex-col">
-                      <h3 className="font-bold text-lg text-slate-800 mb-2">{meal.name}</h3>
-                      <p className="text-sm text-slate-500 line-clamp-3 mb-4 leading-relaxed flex-grow">{meal.description}</p>
-                      <div className="flex items-center justify-between mt-auto">
-                        <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
-                          <span className="flex items-center gap-1.5"><Clock size={14} className="text-slate-400"/> {meal.time}</span>
-                          <span className="flex items-center gap-1.5"><Flame size={14} className="text-orange-400"/> {meal.calories}</span>
+                    <div className="p-4 flex-1 flex flex-col">
+                      <h3 className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{meal.name}</h3>
+                      <p className="text-[0.7rem] text-slate-500 line-clamp-2 mb-3 leading-relaxed flex-grow">{meal.description}</p>
+                      <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
+                        <div className="flex items-center gap-2 text-[0.6rem] font-bold text-slate-500">
+                          <span className="flex items-center gap-1"><Clock size={10} className="text-slate-400"/> {meal.time}</span>
+                          <span className="flex items-center gap-1"><Flame size={10} className="text-orange-400"/> {meal.calories}</span>
                         </div>
-                        <button onClick={() => setSelectedMeal(meal)} className="text-[#0ea5e9] font-bold text-sm hover:text-blue-700 transition-colors flex items-center gap-1">
-                          Chi tiết <ChevronRight size={16} />
+                        <button onClick={() => setSelectedMeal(meal)} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
+                          Chi tiết <ChevronRight size={12} />
                         </button>
                       </div>
                     </div>
@@ -335,67 +297,15 @@ export default function MealPlanPage() {
                 ))
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Right Col */}
-        <div className="lg:col-span-4 space-y-8 sticky top-24">
-          <div className="bg-[#e0f2fe]/50 border border-blue-100 rounded-[2.5rem] p-6 lg:p-8">
-            <h3 className="font-bold text-slate-800 flex items-center justify-between mb-6">
-              Giỏ hàng thông minh <ShoppingBag size={20} className="text-blue-600" />
-            </h3>
-            <div className="space-y-4 mb-8">
-              {[
-                { n: "Dầu thực vật", p: "250ml • Co.op Mart", pr: "55k" },
-                { n: "Súp lơ xanh organic", p: "500g • WinMart", pr: "32k" },
-                { n: "Bí đỏ hồ lô", p: "1 quả • Chợ truyền thống", pr: "25k" }
-              ].map((item, i) => (
-                <div key={i} className="flex justify-between items-center bg-white p-3 rounded-2xl shadow-sm border border-slate-50">
-                   <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 bg-slate-100 rounded-xl"></div>
-                     <div>
-                       <p className="font-bold text-sm text-slate-800 leading-tight">{item.n}</p>
-                       <p className="text-[0.6875rem] text-blue-600 font-medium">{item.p}</p>
-                     </div>
-                   </div>
-                   <span className="font-bold text-slate-700 text-sm shrink-0">{item.pr}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between items-end mb-4 border-t border-blue-200/50 pt-4">
-              <span className="text-blue-600 font-medium text-sm">Tổng cộng<br/>ước tính</span>
-              <span className="text-xl font-bold text-slate-800">112.000đ</span>
-            </div>
-            <button className="w-full bg-[#38bdf8] hover:bg-[#0284c7] text-white font-semibold py-3.5 rounded-2xl transition-colors shadow-sm flex items-center justify-center gap-2 text-sm">
-              <Search size={16} /> Đặt mua ngay
-            </button>
-          </div>
-
-          <div className="bg-[#ffedd5]/50 border border-orange-100 rounded-[2.5rem] p-6 lg:p-8">
-            <h3 className="font-bold text-slate-800 mb-6">Chỉ số cần chú ý</h3>
-            <div className="space-y-5 mb-6">
-              <div>
-                <div className="flex justify-between text-sm mb-2 font-semibold text-slate-700">
-                  <span>Axit Uric</span>
-                  <span className="text-teal-600">tốt</span>
-                </div>
-                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                   <div className="h-full bg-teal-500 w-[40%] rounded-full"></div>
-                </div>
+            
+            {/* Show an empty state if no meals generated */}
+            {generatedMeals.length === 0 && !isGenerating && (
+              <div className="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
+                 <Utensils size={40} className="text-slate-300 mb-4" />
+                 <p className="text-slate-500 font-medium">Bạn chưa có thực đơn nào.</p>
+                 <p className="text-sm text-slate-400 mt-2 max-w-sm mx-auto">Vui lòng nhập tình trạng bệnh ở thanh phía trên và nhấn Enter để AI thiết kế món ăn nhé.</p>
               </div>
-              <div>
-                <div className="flex justify-between text-sm mb-2 font-semibold text-slate-700">
-                  <span>Huyết áp</span>
-                  <span className="text-amber-600">128/85 mmHg</span>
-                </div>
-                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                   <div className="h-full bg-amber-500 w-[65%] rounded-full"></div>
-                </div>
-              </div>
-            </div>
-            <p className="text-[0.8rem] text-slate-600 italic leading-relaxed text-center">
-              Thực đơn hôm nay tập trung hạ 0.5mg/dL Axit Uric trong tuần này.
-            </p>
+            )}
           </div>
         </div>
       </div>

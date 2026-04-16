@@ -275,58 +275,59 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                <p className="text-slate-500 font-medium">Chưa có loại thuốc nào trong tủ.</p>
              </div>
           ) : (
-             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
+             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                {filteredMedications.map(med => (
-                 <div key={med.id} className="group bg-white border border-slate-100 p-4 rounded-3xl hover:shadow-md transition-shadow">
-                    <div className={`w-full aspect-[21/9] sm:h-32 rounded-2xl overflow-hidden relative mb-4 bg-gradient-to-br flex items-center justify-center ${getMockColor(med.name)}`}>
-                      <Pill size={40} className="opacity-50 group-hover:scale-110 transition-transform duration-500" />
+                 <div key={med.id} className="group bg-white border border-slate-100 p-3 rounded-2xl hover:shadow-md transition-shadow flex flex-col">
+                    <div className={`w-full aspect-[21/9] sm:h-24 rounded-xl overflow-hidden relative mb-3 bg-gradient-to-br flex items-center justify-center ${getMockColor(med.name)}`}>
+                      <Pill size={32} className="opacity-50 group-hover:scale-110 transition-transform duration-500" />
                       
                       {/* Bug #4 fix: stable badge — deterministic, not random */}
                       {isNearExpiry(med.id) && (
-                        <div className="absolute top-3 right-3 bg-orange-400 text-white text-[0.625rem] font-bold uppercase tracking-wider px-2 py-1 rounded-md shadow-sm">
-                          Hạn dùng gần
+                        <div className="absolute top-2 right-2 bg-orange-400 text-white text-[0.55rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
+                          Sắp hết
                         </div>
                       )}
                     </div>
 
-                    <div className="space-y-1 pb-4 border-b border-slate-100 flex justify-between items-start">
-                      <div>
-                        <h3 className="font-bold text-slate-800 text-lg">{med.name}</h3>
-                        <div className="flex items-center gap-2">
-                          <span className="bg-blue-50 text-blue-600 text-[0.625rem] font-bold uppercase tracking-wider px-2 py-1 rounded">Viên uống</span>
-                          <span className="text-xs text-slate-500 truncate" title={med.symptoms_treated || "Chưa có thông tin"}>{med.symptoms_treated || "Không rõ tác dụng"}</span>
+                    <div className="space-y-0.5 pb-3 border-b border-slate-50 flex justify-between items-start">
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-slate-800 text-sm truncate" title={med.name}>{med.name}</h3>
+                        <div className="flex items-center gap-1.5">
+                          <span className="bg-blue-50 text-blue-600 text-[0.55rem] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded">Viên</span>
+                          <span className="text-[0.65rem] text-slate-500 truncate" title={med.symptoms_treated || ""}>{med.symptoms_treated || "Không rõ"}</span>
                         </div>
                       </div>
                       <button 
                         onClick={() => handleDeleteMedication(med.id)}
-                        className="text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-full transition-colors flex-shrink-0"
-                        title="Xóa thuốc"
+                        className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-colors flex-shrink-0"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
 
-                    <div className="pt-4 grid grid-cols-2 gap-2 text-sm">
-                      <div className="text-slate-500">Hạn sử dụng:</div>
-                      <div className="font-semibold text-slate-800 text-right">--/--/----</div>
-                      <div className="text-slate-500">Số lượng / Liều dẫn:</div>
-                      <div className="font-semibold text-slate-800 text-right flex items-center justify-end gap-1">
-                        <span className="truncate">{med.dosage}</span>
-                        {getExplainableDosage(med.name) && (
-                           <TooltipProvider>
-                             <Tooltip delayDuration={300}>
-                               <TooltipTrigger asChild>
-                                 <HelpCircle size={14} className="text-blue-500 cursor-help flex-shrink-0" />
-                               </TooltipTrigger>
-                               <TooltipContent side="top" className="max-w-[200px] text-xs">
-                                 <p>{getExplainableDosage(med.name)}</p>
-                               </TooltipContent>
-                             </Tooltip>
-                           </TooltipProvider>
-                        )}
+                    <div className="pt-3 space-y-1 text-[0.7rem]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-500">Hạn dùng:</span>
+                        <span className="font-semibold text-slate-800">--/--</span>
                       </div>
-                      <div className="text-red-500">Chống chỉ định:</div>
-                      <div className="font-semibold text-slate-800 text-right">—</div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-500">Liều dùng:</span>
+                        <div className="font-semibold text-slate-800 flex items-center gap-1">
+                          <span className="truncate max-w-[50px]">{med.dosage}</span>
+                          {getExplainableDosage(med.name) && (
+                             <TooltipProvider>
+                               <Tooltip delayDuration={300}>
+                                 <TooltipTrigger asChild>
+                                   <HelpCircle size={10} className="text-blue-500 cursor-help flex-shrink-0" />
+                                 </TooltipTrigger>
+                                 <TooltipContent side="top" className="max-w-[180px] text-[10px]">
+                                   <p>{getExplainableDosage(med.name)}</p>
+                                 </TooltipContent>
+                               </Tooltip>
+                             </TooltipProvider>
+                          )}
+                        </div>
+                      </div>
                     </div>
                  </div>
                ))}
