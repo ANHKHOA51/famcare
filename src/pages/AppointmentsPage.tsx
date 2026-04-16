@@ -1,6 +1,45 @@
-import { Clock, CalendarDays, MapPin, Video, Stethoscope, ChevronRight, Activity, Plus } from "lucide-react";
+import { useState } from "react";
+import { Clock, CalendarDays, MapPin, Video, Stethoscope, ChevronRight, Activity, Plus, Search } from "lucide-react";
+import { toast } from "sonner";
+
+const DOCTORS = [
+  { name: "Ngô Trung Nam", title: "CK II", department: "Sản", location: "Online", schedule: "Thứ 2.4.5", time: "09:30", price: "200.000đ" },
+  { name: "Trương Duy Thái", title: "BS", department: "Tai-Mũi-Họng", location: "Bệnh viện Đa khoa quốc tế Hoàn Mỹ", schedule: "Thứ 5.6.7", time: "7:00 - 11:00", price: "450.000đ" },
+  { name: "Trịnh Xuân Quân", title: "Ths.Bs", department: "Tai-Mũi-Họng", location: "Online", schedule: "Cả tuần", time: "18:00 - 20:00", price: "150.000đ" },
+  { name: "Nguyễn Thị Lam", title: "CK II", department: "Khoa y học cổ truyền - phục hồi chức năng", location: "Bệnh Viện Đa Khoa Hồng Đức II", schedule: "Thứ 2.3.4.5.6.7", time: "7:00 - 11:00", price: "300.000đ" },
+  { name: "Lê Khánh Điền", title: "Trưởng Khoa", department: "Phục Hồi Chức Năng", location: "Bệnh viện An Bình", schedule: "2026-05-03", time: "13:00-17:00", price: "300.000đ" },
+  { name: "Vũ Thị Hà", title: "CK I", department: "Mắt", location: "Online", schedule: "Cả tuần", time: "Cả ngày", price: "150.000đ" },
+  { name: "Nguyễn Lê Nguyên", title: "Ths.Bs", department: "Da liễu", location: "Bệnh viện Da liễu TP.HCM", schedule: "Thứ 3.5.7", time: "17:00 - 20:00", price: "250.000đ" },
+  { name: "Phạm Thành Trung", title: "BS", department: "Răng-Hàm-Mặt", location: "Nha khoa Kim", schedule: "Cả tuần", time: "08:00 - 20:00", price: "100.000đ" },
+  { name: "Đặng Huy Quốc Thịnh", title: "CK II", department: "Ung bướu", location: "Bệnh viện Ung bướu TP.HCM", schedule: "Thứ 2.4.6", time: "07:30 - 11:30", price: "500.000đ" },
+  { name: "Nguyễn Hữu Tùng", title: "BS", department: "Nội tổng quát", location: "Bệnh viện Đa khoa Tâm Anh", schedule: "Thứ 2.3.4.5.6", time: "07:00 - 16:00", price: "400.000đ" },
+  { name: "Trần Thị Minh Hạnh", title: "Ths.Bs", department: "Dinh dưỡng", location: "Online", schedule: "Thứ 7, Chủ nhật", time: "08:00 - 11:00", price: "300.000đ" },
+  { name: "Huỳnh Thanh Hiển", title: "BS", department: "Tâm thần", location: "Bệnh viện Tâm thần TP.HCM", schedule: "Thứ 2.4.6", time: "16:00 - 19:00", price: "350.000đ" },
+  { name: "Nguyễn Anh Tuấn", title: "PGS.TS.BS", department: "Tiêu hóa", location: "Bệnh viện Đại học Y Dược", schedule: "Thứ 3.5", time: "07:00 - 11:00", price: "600.000đ" },
+  { name: "Lê Thị Tuyết Phượng", title: "CK II", department: "Nội tiêu hóa", location: "Bệnh viện Nhân dân 115", schedule: "Thứ 2.4.6", time: "07:00 - 11:30", price: "450.000đ" },
+  { name: "Đỗ Quang Huân", title: "PGS.TS.BS", department: "Tim mạch", location: "Viện Tim TP.HCM", schedule: "Thứ 2.4", time: "07:30 - 11:30", price: "700.000đ" },
+  { name: "Nguyễn Thị Thanh Hà", title: "PGS.TS.BS", department: "Sản phụ khoa", location: "Bệnh viện Từ Dũ", schedule: "Thứ 3.5.7", time: "16:30 - 19:30", price: "550.000đ" },
+  { name: "Trương Hữu Khanh", title: "BS", department: "Nội nhi", location: "Bệnh viện Nhi đồng 1", schedule: "Thứ 2.4.6", time: "16:00 - 18:00", price: "400.000đ" },
+  { name: "Nguyễn Trọng Hào", title: "TS.BS", department: "Da liễu", location: "Bệnh viện Da liễu TP.HCM", schedule: "Thứ 2.4.6", time: "07:00 - 11:00", price: "500.000đ" },
+  { name: "Võ Văn Thành", title: "PGS.TS.BS", department: "Chấn thương chỉnh hình", location: "Bệnh viện Chấn thương chỉnh hình", schedule: "Thứ 3.5", time: "08:00 - 11:00", price: "800.000đ" },
+  { name: "Nguyễn Ty Phương", title: "Ths.Bs", department: "Nội tiết", location: "Online", schedule: "Thứ 2.4.6", time: "19:00 - 21:00", price: "250.000đ" },
+  { name: "Phan Thanh Hải", title: "BS", department: "Chẩn đoán hình ảnh", location: "Trung tâm Y khoa Medic", schedule: "Cả tuần", time: "07:00 - 19:00", price: "300.000đ" },
+  { name: "Nguyễn Hoài Nam", title: "PGS.TS.BS", department: "Lồng ngực - Mạch máu", location: "Bệnh viện Đại học Y Dược", schedule: "Thứ 2.4.6", time: "07:00 - 11:00", price: "600.000đ" },
+  { name: "Trần Ngọc Ánh", title: "PGS.TS.BS", department: "Da liễu", location: "Phòng khám Da liễu Trần Ngọc Ánh", schedule: "Cả tuần", time: "16:00 - 20:00", price: "400.000đ" },
+  { name: "Cao Hữu Thịnh", title: "BS", department: "Sản phụ khoa - Hiếm muộn", location: "Bệnh viện An Sinh", schedule: "Thứ 2.3.4.5.6", time: "08:00 - 17:00", price: "500.000đ" },
+  { name: "Lương Lễ Hoàng", title: "BS", department: "Nội khoa - Y học dân tộc", location: "Trung tâm Oxy cao áp", schedule: "Thứ 3.5", time: "08:00 - 11:00", price: "450.000đ" },
+  { name: "Nguyễn Thị Ngọc Phượng", title: "GS.TS.BS", department: "Sản phụ khoa", location: "Bệnh viện Mỹ Đức", schedule: "Thứ 2.4.6", time: "08:00 - 11:00", price: "1.000.000đ" },
+  { name: "Trần Đông A", title: "GS.TS.BS", department: "Ngoại nhi", location: "Bệnh viện Nhi đồng 2", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "800.000đ" },
+  { name: "Nguyễn Chấn Hùng", title: "GS.TS.BS", department: "Ung bướu", location: "Bệnh viện Ung bướu TP.HCM", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "1.000.000đ" },
+  { name: "Đỗ Hồng Ngọc", title: "BS", department: "Nhi khoa", location: "Online/Tư vấn", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "500.000đ" },
+  { name: "Nguyễn Lân Hiếu", title: "PGS.TS.BS", department: "Tim mạch", location: "Bệnh viện Đại học Y Hà Nội", schedule: "Thứ 2.4", time: "07:30 - 11:30", price: "700.000đ" }
+];
 
 export default function AppointmentsPage() {
+  const [view, setView] = useState("my"); // "my" or "search"
+  const [searchTerm, setSearchTerm] = useState("");
+  const [deptFilter, setDeptFilter] = useState("Tất cả");
+
   const appointments = [
     {
       id: 1,
@@ -22,70 +61,159 @@ export default function AppointmentsPage() {
     }
   ];
 
+  const filteredDoctors = DOCTORS.filter(doc => {
+    const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          doc.department.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDept = deptFilter === "Tất cả" || doc.department.includes(deptFilter);
+    return matchesSearch && matchesDept;
+  });
+
+  const departments = ["Tất cả", ...Array.from(new Set(DOCTORS.map(d => d.department.split(" - ")[0])))];
+
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto animate-fade-in relative container-fluid bg-[#f8fafc] min-h-screen">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900 tracking-tight mb-2">Đặt lịch khám</h1>
-          <p className="text-slate-500">Quản lý lịch hẹn với bác sĩ và cơ sở y tế cho cả gia đình.</p>
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900 tracking-tight mb-2">Hệ thống Y tế</h1>
+          <p className="text-slate-500">Đặt lịch khám với các chuyên gia hàng đầu và quản lý sức khỏe gia đình.</p>
         </div>
-        <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-sm transition-transform hover:scale-105 whitespace-nowrap">
-          <Plus size={20} />
-          Đặt lịch hẹn mới
-        </button>
+        <div className="flex bg-slate-200/50 p-1 rounded-2xl">
+          <button 
+            onClick={() => setView("my")}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${view === 'my' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Lịch của tôi
+          </button>
+          <button 
+            onClick={() => setView("search")}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${view === 'search' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Tìm bác sĩ
+          </button>
+        </div>
       </div>
+
+      {view === 'search' && (
+        <div className="mb-10 space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex flex-col md:flex-row gap-4">
+             <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Tìm theo tên bác sĩ, chuyên khoa..." 
+                  className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-teal-500/20 transition-all font-medium"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+             </div>
+             <select 
+               className="bg-white border border-slate-200 rounded-2xl px-6 py-3.5 font-bold text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none"
+               value={deptFilter}
+               onChange={(e) => setDeptFilter(e.target.value)}
+             >
+               {departments.map(d => <option key={d} value={d}>{d}</option>)}
+             </select>
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-8 space-y-8">
-          <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-teal-500 pb-1">
-                Lịch hẹn sắp tới (2)
-              </h2>
-            </div>
+          {view === 'my' ? (
+            <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm animate-in fade-in duration-500">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-teal-500 pb-1">
+                  Lịch hẹn sắp tới ({appointments.length})
+                </h2>
+              </div>
 
-            <div className="space-y-6">
-              {appointments.map((apt) => (
-                <div key={apt.id} className="group relative bg-[#f8fafc] border border-slate-200 hover:border-teal-300 rounded-[1.5rem] p-6 transition-all">
-                  <div className="absolute top-4 right-6 flex items-center gap-2">
-                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${apt.type === 'online' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
-                       {apt.type === 'online' ? 'Khám Online' : 'Tại phòng khám'}
-                     </span>
-                  </div>
-                  
-                  <div className="flex flex-col md:flex-row md:items-center gap-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center text-slate-600 shrink-0 shadow-inner">
-                       <Stethoscope size={28} />
+              <div className="space-y-6">
+                {appointments.map((apt) => (
+                  <div key={apt.id} className="group relative bg-[#f8fafc] border border-slate-200 hover:border-teal-300 rounded-[1.5rem] p-6 transition-all">
+                    <div className="absolute top-4 right-6 flex items-center gap-2">
+                       <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${apt.type === 'online' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
+                         {apt.type === 'online' ? 'Khám Online' : 'Tại phòng khám'}
+                       </span>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg text-slate-900">{apt.doctor}</h3>
-                      <p className="text-sm font-medium text-teal-600 mb-3">{apt.specialty}</p>
-                      
-                      <div className="grid sm:grid-cols-2 gap-3 text-sm text-slate-600">
-                        <div className="flex items-center gap-2">
-                           <Clock size={16} className="text-slate-400" />
-                           <span className="font-medium">{apt.date}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                           {apt.type === 'online' ? <Video size={16} className="text-slate-400" /> : <MapPin size={16} className="text-slate-400" />}
-                           <span className="truncate">{apt.type === 'online' ? "Google Meet Link" : apt.hospital}</span>
+                    
+                    <div className="flex flex-col md:flex-row md:items-center gap-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center text-slate-600 shrink-0 shadow-inner">
+                         <Stethoscope size={28} />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-slate-900">{apt.doctor}</h3>
+                        <p className="text-sm font-medium text-teal-600 mb-3">{apt.specialty}</p>
+                        
+                        <div className="grid sm:grid-cols-2 gap-3 text-sm text-slate-600">
+                          <div className="flex items-center gap-2">
+                             <Clock size={16} className="text-slate-400" />
+                             <span className="font-medium">{apt.date}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                             {apt.type === 'online' ? <Video size={16} className="text-slate-400" /> : <MapPin size={16} className="text-slate-400" />}
+                             <span className="truncate">{apt.type === 'online' ? "Google Meet Link" : apt.hospital}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    
+                    <div className="mt-6 flex items-center gap-3 border-t border-slate-200 pt-5">
+                      <button className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 rounded-xl transition-colors">
+                        Đổi lịch
+                      </button>
+                      <button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition-colors">
+                        {apt.type === 'online' ? 'Vào phòng khám' : 'Mở bản đồ'}
+                      </button>
+                    </div>
                   </div>
-                  
-                  <div className="mt-6 flex items-center gap-3 border-t border-slate-200 pt-5">
-                    <button className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 rounded-xl transition-colors">
-                      Đổi lịch
-                    </button>
-                    <button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition-colors">
-                      {apt.type === 'online' ? 'Vào phòng khám' : 'Mở bản đồ'}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-6 animate-in fade-in duration-500">
+               {filteredDoctors.map((doc, i) => (
+                 <div key={i} className="bg-white border border-slate-100 rounded-[2rem] p-6 hover:shadow-xl hover:shadow-teal-500/5 transition-all group flex flex-col">
+                    <div className="flex items-start justify-between mb-6">
+                       <div className="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center shrink-0">
+                          <Stethoscope size={28} />
+                       </div>
+                       <div className="text-right">
+                          <p className="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Giá khám</p>
+                          <p className="text-teal-600 font-bold">{doc.price}</p>
+                       </div>
+                    </div>
+
+                    <div className="mb-6">
+                       <h3 className="font-bold text-slate-900 group-hover:text-teal-600 transition-colors">{doc.title}. {doc.name}</h3>
+                       <p className="text-sm text-slate-500 font-medium">{doc.department}</p>
+                    </div>
+
+                    <div className="space-y-3 mb-8 flex-grow">
+                       <div className="flex items-start gap-2 text-[0.8rem] text-slate-600">
+                          <MapPin size={14} className="mt-0.5 text-slate-400 shrink-0" />
+                          <span className="leading-tight">{doc.location}</span>
+                       </div>
+                       <div className="flex items-start gap-2 text-[0.8rem] text-slate-600">
+                          <Clock size={14} className="mt-0.5 text-slate-400 shrink-0" />
+                          <span className="leading-tight">{doc.schedule} | {doc.time}</span>
+                       </div>
+                    </div>
+
+                    <button 
+                      onClick={() => toast.success(`Đã đăng ký tư vấn với ${doc.title}. ${doc.name}!`)}
+                      className="w-full bg-slate-900 group-hover:bg-teal-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2"
+                    >
+                      Đặt lịch ngay <ChevronRight size={18} />
+                    </button>
+                 </div>
+               ))}
+               {filteredDoctors.length === 0 && (
+                 <div className="col-span-2 py-20 text-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50">
+                    <p className="text-slate-500 font-medium">Không tìm thấy bác sĩ phù hợp.</p>
+                 </div>
+               )}
+            </div>
+          )}
         </div>
 
         <div className="lg:col-span-4 space-y-6">
