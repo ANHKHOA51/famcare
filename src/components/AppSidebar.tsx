@@ -14,7 +14,7 @@ const navItems = [
   { id: "scanner", label: "Đơn thuốc", icon: ScanLine },
   { id: "cabinet", label: "Tủ thuốc", icon: Pill },
   { id: "meal-plan", label: "Dinh dưỡng", icon: Utensils },
-  { id: "marketplace", label: "Chợ Dịch vụ", icon: ShoppingBag },
+  { id: "marketplace", label: "Dịch vụ", icon: ShoppingBag },
 ];
 
 const bottomItems = [
