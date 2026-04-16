@@ -207,9 +207,10 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
           <div key={index} className={`relative bg-white/40 backdrop-blur-sm rounded-3xl p-6 shadow-sm border ${med.confidence_score && med.confidence_score < 80 ? 'border-red-400/60' : 'border-white/50'}`}>
             <button 
               onClick={() => handleRemoveMed(index)}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full text-white flex items-center justify-center shadow-sm hover:bg-red-600 transition-colors"
+              className="absolute top-4 right-4 w-7 h-7 bg-white/80 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-full flex items-center justify-center transition-all border border-slate-100 shadow-sm z-10"
+              title="Xóa thuốc"
             >
-              <X size={14} strokeWidth={3} />
+              <X size={14} strokeWidth={2.5} />
             </button>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="space-y-1.5">
