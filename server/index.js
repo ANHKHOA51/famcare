@@ -431,7 +431,7 @@ Do not wrap output in markdown code fences.
 Do not include any explanation, prefix, or suffix text.`;
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
   process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
-  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash,gemini-1.5-flash,gemini-1.5-pro')
+  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash')
     .split(',')
     .map(model => model.trim())
     .filter(Boolean)
@@ -488,9 +488,8 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       lastError = error;
       console.warn(`[AI][Gemini][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
 
-      if (!isRetryableGeminiError(error)) {
-        throw error;
-      }
+      // Continue to next provider/model even on non-retryable Gemini errors (e.g. 404 model not found).
+      continue;
     }
   }
 
@@ -576,13 +575,8 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       lastError = error;
       console.warn(`[AI][OpenAI][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
 
-      const status = error?.status;
-      const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase();
-      const retryable = status === 429 || status === 500 || status === 503 || message.includes('overloaded') || message.includes('temporarily unavailable') || message.includes('rate limit');
-
-      if (!retryable) {
-        throw error;
-      }
+      // Keep trying remaining OpenAI models for maximum availability.
+      continue;
     }
   }
 
