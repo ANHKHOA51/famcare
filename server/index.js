@@ -425,6 +425,10 @@ app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
 const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_JSON_SYSTEM_PROMPT = `You are a strict JSON API.
+Return valid JSON only.
+Do not wrap output in markdown code fences.
+Do not include any explanation, prefix, or suffix text.`;
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
   process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
   ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash,gemini-1.5-flash,gemini-1.5-pro')
@@ -449,16 +453,40 @@ const isRetryableGeminiError = (error) => {
   );
 };
 
-const generateWithFallbackModels = async (contents) => {
+const extractJsonFromText = (text) => {
+  const cleaned = String(text || '').replace(/```json|```/g, '').trim();
+  if (!cleaned) return cleaned;
+
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (firstBrace >= 0 && lastBrace > firstBrace) {
+    return cleaned.slice(firstBrace, lastBrace + 1);
+  }
+
+  const firstBracket = cleaned.indexOf('[');
+  const lastBracket = cleaned.lastIndexOf(']');
+  if (firstBracket >= 0 && lastBracket > firstBracket) {
+    return cleaned.slice(firstBracket, lastBracket + 1);
+  }
+
+  return cleaned;
+};
+
+const parseJsonStrict = (text) => JSON.parse(extractJsonFromText(text));
+
+const generateWithFallbackModels = async (contents, options = {}) => {
+  const { task = 'generic', strictJson = true } = options;
   let lastError;
 
   for (const modelName of GEMINI_MODEL_CANDIDATES) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName });
-      return await model.generateContent(contents);
+      const result = await model.generateContent(contents);
+      console.info(`[AI][Gemini][${task}] success model=${modelName}`);
+      return result;
     } catch (error) {
       lastError = error;
-      console.warn(`Gemini model failed (${modelName}):`, error?.status || error?.message || error);
+      console.warn(`[AI][Gemini][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
 
       if (!isRetryableGeminiError(error)) {
         throw error;
@@ -499,6 +527,16 @@ const generateWithFallbackModels = async (contents) => {
 
   for (const modelName of openAiModels) {
     try {
+      const contentForOpenAI = [
+        {
+          type: 'text',
+          text: strictJson
+            ? `${OPENAI_JSON_SYSTEM_PROMPT}\n\nFollow the user instruction and keep the exact JSON schema requested.`
+            : 'Follow the user instruction carefully.',
+        },
+        ...openAiMessages[0].content,
+      ];
+
       const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -507,8 +545,9 @@ const generateWithFallbackModels = async (contents) => {
         },
         body: JSON.stringify({
           model: modelName,
-          messages: openAiMessages,
+          messages: [{ role: 'user', content: contentForOpenAI }],
           temperature: 0.2,
+          ...(strictJson ? { response_format: { type: 'json_object' } } : {}),
         }),
       });
 
@@ -522,6 +561,11 @@ const generateWithFallbackModels = async (contents) => {
 
       const data = await openAiResponse.json();
       const content = data?.choices?.[0]?.message?.content || '';
+      console.info(`[AI][OpenAI][${task}] success model=${modelName}`);
+
+      if (strictJson) {
+        parseJsonStrict(content);
+      }
 
       return {
         response: {
@@ -530,7 +574,7 @@ const generateWithFallbackModels = async (contents) => {
       };
     } catch (error) {
       lastError = error;
-      console.warn(`OpenAI model failed (${modelName}):`, error?.status || error?.message || error);
+      console.warn(`[AI][OpenAI][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
 
       const status = error?.status;
       const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase();
@@ -556,9 +600,9 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
     Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }], "nutrition": { "general_dietary_advice": ["string"], "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
 
-    const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }]);
+    const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
     const response = await result.response;
-    const jsonResponse = JSON.parse(response.text().replace(/```json|```/g, '').trim());
+    const jsonResponse = parseJsonStrict(response.text());
     res.json(jsonResponse);
   } catch (error) {
     console.error('SCAN ERROR:', error);
@@ -603,9 +647,9 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     3. Phần "reason" viết tự nhiên, thuyết phục.
     4. KHÔNG TRẢ VỀ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
 
-    const result = await generateWithFallbackModels(prompt);
+    const result = await generateWithFallbackModels(prompt, { task: 'meal-plan', strictJson: true });
     const rawText = result.response.text();
-    const cleanJson = JSON.parse(rawText.replace(/```json|```/g, '').trim());
+    const cleanJson = parseJsonStrict(rawText);
     
     // Inject full food data back with SAFETY FALLBACK
     const fullPlan = cleanJson.meal_plan.map(d => ({
@@ -707,8 +751,8 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     const prompt = `Based on this family medicine cabinet:\n${cabinetList}\n\nPatient symptom: "${symptom}". 
     Find the best medicine(s) to treat this symptom. Return ONLY JSON: { "top_match": { "name": "string", "reason": "string", "instructions": "string", "owner": "string" }, "alternatives": [{ "name": "string", "reason": "string" }], "warning": "string" }. If no match found, explain why. All text in natural Vietnamese.`;
 
-    const result = await generateWithFallbackModels(prompt);
-    res.json(JSON.parse(result.response.text().replace(/```json|```/g, '').trim()));
+    const result = await generateWithFallbackModels(prompt, { task: 'cabinet-search', strictJson: true });
+    res.json(parseJsonStrict(result.response.text()));
   } catch (error) {
     console.error('AI SEARCH ERROR:', error);
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
