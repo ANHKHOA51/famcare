@@ -121,7 +121,7 @@ const LandingPage = () => {
               </div>
               <h3 className="text-lg font-bold font-display mb-2">Chăm sóc tại nhà</h3>
               <p className="text-sm opacity-80 mb-5 leading-relaxed">Đặt lịch điều dưỡng tới tận nhà để thay băng, tiêm thuốc hoặc hỗ trợ sinh hoạt.</p>
-              <button className="flex items-center gap-1.5 text-sm font-semibold opacity-85 hover:opacity-100 transition-opacity w-fit">
+              <button onClick={() => navigate("/app")} className="flex items-center gap-1.5 text-sm font-semibold opacity-85 hover:opacity-100 transition-opacity w-fit">
                 Khám phá ngay <ArrowRight size={14} />
               </button>
             </div>
@@ -183,10 +183,10 @@ const LandingPage = () => {
             <p className="text-[0.6875rem] text-on-surface-variant mt-1 uppercase tracking-wider">© 2026 FamCare. ALL RIGHTS RESERVED.</p>
           </div>
           <div className="flex gap-8 text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">
-            <Link to="/about" className="hover:text-foreground transition-colors">Về chúng tôi</Link>
-            <Link to="/resources" className="hover:text-foreground transition-colors">Tài liệu</Link>
-            <Link to="/terms" className="hover:text-foreground transition-colors">Điều khoản</Link>
-            <Link to="/contact" className="hover:text-foreground transition-colors">Liên hệ</Link>
+            <Link to="/" className="hover:text-foreground transition-colors">Về chúng tôi</Link>
+            <Link to="/" className="hover:text-foreground transition-colors">Tài liệu</Link>
+            <Link to="/" className="hover:text-foreground transition-colors">Điều khoản</Link>
+            <Link to="/" className="hover:text-foreground transition-colors">Liên hệ</Link>
           </div>
         </div>
       </footer>

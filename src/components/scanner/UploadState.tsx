@@ -61,7 +61,7 @@ const UploadState = ({ onFileSelected }: UploadStateProps) => {
             <Upload size={16} />
             Chọn ảnh
           </Button>
-          <Button variant="default" className="gap-2" onClick={(e) => { e.stopPropagation(); document.getElementById("camera-input")?.click(); }}>
+          <Button variant="default" className="gap-2 md:hidden" onClick={(e) => { e.stopPropagation(); document.getElementById("camera-input")?.click(); }}>
             <Camera size={16} />
             Chụp trực tiếp
           </Button>

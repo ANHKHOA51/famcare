@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Star, Gem } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const plans = [
   {
@@ -40,6 +41,8 @@ const plans = [
 ];
 
 export default function PricingSection() {
+  const navigate = useNavigate();
+
   return (
     <section id="pricing" className="px-8 lg:px-16 py-20 surface-0 border-t">
       <div className="max-w-7xl mx-auto">
@@ -72,7 +75,7 @@ export default function PricingSection() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" className={`w-full rounded-full ${plan.highlight ? "bg-primary text-white hover:bg-primary/90" : ""}`}>
+              <Button onClick={() => navigate("/login")} size="lg" className={`w-full rounded-full ${plan.highlight ? "bg-primary text-white hover:bg-primary/90" : ""}`}>
                 {plan.cta}
               </Button>
             </div>

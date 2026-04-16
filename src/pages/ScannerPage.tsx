@@ -4,6 +4,8 @@ import ScanningState from "@/components/scanner/ScanningState";
 import ResultState from "@/components/scanner/ResultState";
 import MealPlanPage from "./MealPlanPage";
 import { toast } from "sonner";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertCircle } from "lucide-react";
 
 export type ScannerStep = "upload" | "scanning" | "result" | "meal-plan";
 
@@ -27,6 +29,7 @@ const ScannerPage = () => {
   const [step, setStep] = useState<ScannerStep>("upload");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
+  const [blurError, setBlurError] = useState(false);
 
   const handleFileSelected = useCallback(async (file: File) => {
     const url = URL.createObjectURL(file);
@@ -50,7 +53,7 @@ const ScannerPage = () => {
       const data = await response.json();
       
       if (data.error === "BLURRY") {
-        toast.error("Ảnh quá mờ hoặc không nhận diện được đơn thuốc. Vui lòng chụp lại rõ hơn!");
+        setBlurError(true);
         setStep("upload");
         return;
       }
@@ -93,6 +96,27 @@ const ScannerPage = () => {
           onBack={() => setStep("result")}
         />
       )}
+
+      <AlertDialog open={blurError} onOpenChange={setBlurError}>
+        <AlertDialogContent className="rounded-2xl border-destructive/20 animate-in fade-in zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-5 w-5" /> Không nhận diện được
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-on-surface-variant text-[15px] pt-2">
+              Chất lượng ảnh đưa vào quá mờ, không phải ảnh y tế hoặc bị mất góc khiến AI không thể phân tích được chữ và kê đơn. Vui lòng chụp lại một tấm ảnh mới rõ ràng và đúng trung tâm hơn.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-4 pt-4 border-t">
+            <AlertDialogAction 
+              onClick={() => setBlurError(false)}
+              className="rounded-xl w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Tôi đã hiểu, chụp lại màn hình
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles, Save, User, Loader2, Check, Shield, Pencil } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles, Save, User, Loader2, Check, Shield, Pencil, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScanResult } from "@/pages/ScannerPage";
 import { useAuth } from "@/context/AuthContext";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ResultStateProps {
   result: ScanResult;
@@ -57,13 +58,20 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
     }
   };
 
-  const handleSaveToCabinet = async (med: any, index: number) => {
+  const handleSaveToCabinet = (med: any, index: number, showWarning: boolean) => {
+    const finalName = editedMedications[index] || med.name;
+    if (showWarning) {
+      setPendingMed({ med, index, finalName });
+      return;
+    }
+    confirmSaveToCabinet(med, index, finalName);
+  };
+
+  const confirmSaveToCabinet = async (med: any, index: number, finalName: string) => {
     if (!selectedMember) {
       toast.error("Vui lòng chọn thành viên");
       return;
     }
-
-    const finalName = editedMedications[index] || med.name;
 
     setIsSaving(true);
     try {
@@ -96,6 +104,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
       toast.error("Lỗi kết nối");
     } finally {
       setIsSaving(false);
+      setPendingMed(null);
     }
   };
 
@@ -260,7 +269,25 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-1.5 h-[24px] overflow-hidden">
-                    <span className="text-[0.8125rem] font-bold text-primary px-2.5 py-0.5 bg-primary/10 rounded-md border border-primary/15 whitespace-nowrap">{med.dosage}</span>
+                    <span className="text-[0.8125rem] font-bold text-primary px-2.5 py-0.5 bg-primary/10 rounded-md border border-primary/15 whitespace-nowrap flex items-center gap-1">
+                      {med.dosage}
+                      <TooltipProvider>
+                        <Tooltip delayDuration={300}>
+                          <TooltipTrigger asChild>
+                            <Info size={12} className="text-primary/60 hover:text-primary cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[250px] p-3 text-left bg-popover shadow-elevated border-primary/20">
+                            <p className="text-[11px] font-bold text-primary mb-1 uppercase tracking-wider">💡 Tham khảo nhanh</p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              Theo dược thư: <br/>
+                              - Người lớn: Liều chuẩn 500mg.<br/>
+                              - Trẻ em: 10-15mg/kg.<br/>
+                              <span className="italic block mt-1 text-[10px]">*Chỉ mang tính chất tham khảo*</span>
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </span>
                     {med.instructions ? (
                       <span className="text-[0.8125rem] text-muted-foreground italic truncate">
                         • {med.instructions}
@@ -314,6 +341,30 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
           Thông tin dinh dưỡng chỉ mang tính chất tham khảo. Vui lòng tham khảo ý kiến bác sĩ hoặc chuyên gia dinh dưỡng trước khi thay đổi chế độ ăn uống của bạn.
         </p>
       </div>
+
+      {/* Confirmation Dialog for Low Confidence */}
+      <AlertDialog open={!!pendingMed} onOpenChange={(open) => !open && setPendingMed(null)}>
+        <AlertDialogContent className="rounded-2xl max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" /> Xác nhận tên thuốc
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-on-surface-variant pt-2">
+              AI nhận diện ảnh này có độ tin cậy thấp cho thuốc <span className="font-bold text-foreground">"{pendingMed?.finalName}"</span>. 
+              Bạn có chắc chắn đây là tên thuốc đúng trong đơn không?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-4 gap-3">
+            <AlertDialogCancel className="rounded-xl">Kiểm tra lại</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => pendingMed && confirmSaveToCabinet(pendingMed.med, pendingMed.index, pendingMed.finalName)}
+              className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Đúng, hãy lưu
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
