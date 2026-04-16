@@ -507,9 +507,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
-  // Pass 3 Fix #8: Fixed default model name — 'gemini-3.1-flash-lite-preview' does not exist
-  process.env.GEMINI_MODEL_PRIMARY || 'gemini-1.5-flash',
-  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash,gemini-1.5-pro')
+  process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
+  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.5-flash,gemini-3.1-pro')
     .split(',')
     .map(model => model.trim())
     .filter(Boolean)
