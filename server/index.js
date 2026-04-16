@@ -427,7 +427,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
   process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite',
-  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash')
+  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.5-flash,gemini-3.1-pro')
     .split(',')
     .map(model => model.trim())
     .filter(Boolean)
