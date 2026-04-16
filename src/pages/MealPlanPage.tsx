@@ -123,7 +123,20 @@ export default function MealPlanPage() {
     }
   };
 
-  const displayMeals = generatedMeals.length > 0 ? generatedMeals : mockMeals;
+  // Pass 3 Fix #7: filter meals by activeTab — previously activeTab state was set but never used for filtering
+  const TAB_KEYWORD_MAP: Record<string, string> = {
+    man: "mặn",
+    canh: "canh",
+    trangmieng: "tráng"
+  };
+  const allMeals = generatedMeals.length > 0 ? generatedMeals : mockMeals;
+  const displayMeals = activeTab === "all"
+    ? allMeals
+    : allMeals.filter(m =>
+        m.tags.some(tag =>
+          tag.toLowerCase().includes(TAB_KEYWORD_MAP[activeTab] ?? "")
+        )
+      );
 
   const renderDetail = (meal: Meal) => (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8 animate-fade-in relative container-fluid bg-[#f8fafc]">

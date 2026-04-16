@@ -31,6 +31,8 @@ const ScannerPage = () => {
   const [blurError, setBlurError] = useState(false);
 
   const handleFileSelected = useCallback(async (file: File) => {
+    // Pass 3 Fix #4: revoke previous object URL to prevent memory leak
+    setImageUrl(prev => { if (prev) URL.revokeObjectURL(prev); return ""; });
     const url = URL.createObjectURL(file);
     setImageUrl(url);
     setStep("scanning");
@@ -68,8 +70,8 @@ const ScannerPage = () => {
   }, []);
 
   const handleReset = () => {
+    setImageUrl(prev => { if (prev) URL.revokeObjectURL(prev); return ""; });
     setStep("upload");
-    setImageUrl("");
     setScanResult(null);
   };
 

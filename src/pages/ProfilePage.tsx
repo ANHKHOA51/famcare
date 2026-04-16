@@ -92,7 +92,13 @@ export default function ProfilePage() {
       const resp = await fetch(`/api/family/search?q=${encodeURIComponent(q)}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserResults(await resp.json());
+      // Pass 3 Fix #5: guard resp.ok — error response is an object, not an array → would crash .map()
+      if (resp.ok) {
+        const data = await resp.json();
+        setUserResults(Array.isArray(data) ? data : []);
+      } else {
+        setUserResults([]);
+      }
     } catch {}
     finally { setSearching2(false); }
   };

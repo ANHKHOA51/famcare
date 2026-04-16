@@ -6,7 +6,7 @@ import { toast } from "sonner";
 export default function SettingsPage() {
   const { logout } = useAuth();
   const [theme, setTheme] = useState(() => localStorage.getItem("famcare-theme") || "system");
-  const [notifications, setNotifications] = useState(true);
+  const [notifications, setNotifications] = useState(() => localStorage.getItem("famcare-notifications") !== "false");
 
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -34,6 +34,8 @@ export default function SettingsPage() {
   const handleNotificationToggle = () => {
     const newVal = !notifications;
     setNotifications(newVal);
+    // Pass 3 Fix #6: persist notification preference to survive reload
+    localStorage.setItem("famcare-notifications", String(newVal));
     if (newVal) {
       toast.success("Đã bật thông báo hệ thống");
     } else {

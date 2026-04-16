@@ -28,8 +28,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const savedUser = localStorage.getItem("aura_user");
 
     if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+      try {
+        setToken(savedToken);
+        setUser(JSON.parse(savedUser));
+      } catch {
+        // Pass 3 Fix #3: corrupted localStorage — clear it to prevent permanent white screen
+        localStorage.removeItem("aura_token");
+        localStorage.removeItem("aura_user");
+      }
     }
     setIsLoading(false);
   }, []);

@@ -266,29 +266,33 @@ app.get('/api/family/search', authenticateToken, async (req, res) => {
 });
 
 app.get('/api/family', authenticateToken, async (req, res) => {
-  // Return members owned by user + members in other families where this user is linked
-  const ownedMembers = await prisma.familyMember.findMany({
-    where: { userId: req.user.userId },
-    include: { linkedUser: { select: { id: true, name: true, email: true } } }
-  });
+  // Pass 3 Fix #1: added try/catch — previously would hang on DB error
+  try {
+    const ownedMembers = await prisma.familyMember.findMany({
+      where: { userId: req.user.userId },
+      include: { linkedUser: { select: { id: true, name: true, email: true } } }
+    });
 
-  const linkedMembers = await prisma.familyMember.findMany({
-    where: { linkedUserId: req.user.userId },
-    include: { user: { select: { id: true, name: true, email: true } } }
-  });
+    const linkedMembers = await prisma.familyMember.findMany({
+      where: { linkedUserId: req.user.userId },
+      include: { user: { select: { id: true, name: true, email: true } } }
+    });
 
-  // Format linkedMembers to be consumable by the frontend dropdowns
-  const formattedLinked = linkedMembers.map(m => ({
-    id: m.id, 
-    name: m.user.name || m.user.email,
-    relationship: 'Chủ hộ',
-    userId: m.userId,
-    linkedUserId: m.linkedUserId,
-    linkedUser: m.user,
-    isLinked: true
-  }));
+    const formattedLinked = linkedMembers.map(m => ({
+      id: m.id, 
+      name: m.user.name || m.user.email,
+      relationship: 'Chủ hộ',
+      userId: m.userId,
+      linkedUserId: m.linkedUserId,
+      linkedUser: m.user,
+      isLinked: true
+    }));
 
-  res.json([...ownedMembers, ...formattedLinked]);
+    res.json([...ownedMembers, ...formattedLinked]);
+  } catch (error) {
+    console.error('GET FAMILY ERROR:', error);
+    res.status(500).json({ error: 'Failed to fetch family members' });
+  }
 });
 
 app.post('/api/family/add', authenticateToken, async (req, res) => {
@@ -398,65 +402,58 @@ app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
 });
 
 app.get('/api/cabinet', authenticateToken, async (req, res) => {
-  // Find ownerIds of families I am linked to
-  const memberLinks = await prisma.familyMember.findMany({
-    where: { linkedUserId: req.user.userId },
-    select: { userId: true }
-  });
-  const ownerIds = memberLinks.map(link => link.userId);
-
-  // Medications from families I own + medications from families I'm linked to + medications of my owners
-  const medications = await prisma.medication.findMany({
-    where: {
-      familyMember: {
-        OR: [
-          { userId: req.user.userId },          // families I own
-          { linkedUserId: req.user.userId },    // families I'm linked to as a member
-          { userId: { in: ownerIds } }          // families of people who linked me
-        ]
-      }
-    },
-    include: {
-      familyMember: {
-        include: {
-          user: { select: { id: true, name: true, email: true } },
-          linkedUser: { select: { id: true, name: true, email: true } }
-        }
-      }
-    },
-    orderBy: { createdAt: 'desc' }
-  });
-
-  // Adjust display name for linked users seeing the owner's "Bản thân"
-  // Filter out private meds and decrypt
-  const formattedMedications = medications.reduce((acc, med) => {
-    // A medication is "owned" by the user if it belongs to a family member they own, or if they are the linked user.
-    // If not owned, it must be isShared === true
-    const isOwned = med.familyMember.userId === req.user.userId || med.familyMember.linkedUserId === req.user.userId;
-    
-    if (!isOwned && med.isShared === false) {
-      return acc;
-    }
-
-    let displayName = med.familyMember.name;
-    if (med.familyMember.userId !== req.user.userId && med.familyMember.linkedUserId === null) {
-      displayName = med.familyMember.user?.name || med.familyMember.user?.email || 'Chủ gia đình';
-    }
-
-    acc.push({
-      ...med,
-      name: decrypt(med.name),
-      diagnosis: decrypt(med.diagnosis),
-      familyMember: {
-        ...med.familyMember,
-        name: displayName
-      }
+  // Pass 3 Fix #2: added try/catch — previously would hang on DB error
+  try {
+    const memberLinks = await prisma.familyMember.findMany({
+      where: { linkedUserId: req.user.userId },
+      select: { userId: true }
     });
-    
-    return acc;
-  }, []);
+    const ownerIds = memberLinks.map(link => link.userId);
 
-  res.json(formattedMedications);
+    const medications = await prisma.medication.findMany({
+      where: {
+        familyMember: {
+          OR: [
+            { userId: req.user.userId },
+            { linkedUserId: req.user.userId },
+            { userId: { in: ownerIds } }
+          ]
+        }
+      },
+      include: {
+        familyMember: {
+          include: {
+            user: { select: { id: true, name: true, email: true } },
+            linkedUser: { select: { id: true, name: true, email: true } }
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const formattedMedications = medications.reduce((acc, med) => {
+      const isOwned = med.familyMember.userId === req.user.userId || med.familyMember.linkedUserId === req.user.userId;
+      if (!isOwned && med.isShared === false) return acc;
+
+      let displayName = med.familyMember.name;
+      if (med.familyMember.userId !== req.user.userId && med.familyMember.linkedUserId === null) {
+        displayName = med.familyMember.user?.name || med.familyMember.user?.email || 'Chủ gia đình';
+      }
+
+      acc.push({
+        ...med,
+        name: decrypt(med.name),
+        diagnosis: decrypt(med.diagnosis),
+        familyMember: { ...med.familyMember, name: displayName }
+      });
+      return acc;
+    }, []);
+
+    res.json(formattedMedications);
+  } catch (error) {
+    console.error('GET CABINET ERROR:', error);
+    res.status(500).json({ error: 'Failed to fetch cabinet' });
+  }
 });
 
 app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
@@ -489,8 +486,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
-  process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
-  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.5-flash,gemini-3.1-pro')
+  // Pass 3 Fix #8: Fixed default model name — 'gemini-3.1-flash-lite-preview' does not exist
+  process.env.GEMINI_MODEL_PRIMARY || 'gemini-1.5-flash',
+  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash,gemini-1.5-pro')
     .split(',')
     .map(model => model.trim())
     .filter(Boolean)
