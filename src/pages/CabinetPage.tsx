@@ -275,59 +275,88 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                <p className="text-slate-500 font-medium">Chưa có loại thuốc nào trong tủ.</p>
              </div>
           ) : (
-             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                {filteredMedications.map(med => (
-                 <div key={med.id} className="group bg-white border border-slate-100 p-3 rounded-2xl hover:shadow-md transition-shadow flex flex-col">
-                    <div className={`w-full aspect-[21/9] sm:h-24 rounded-xl overflow-hidden relative mb-3 bg-gradient-to-br flex items-center justify-center ${getMockColor(med.name)}`}>
-                      <Pill size={32} className="opacity-50 group-hover:scale-110 transition-transform duration-500" />
-                      
-                      {/* Bug #4 fix: stable badge — deterministic, not random */}
-                      {isNearExpiry(med.id) && (
-                        <div className="absolute top-2 right-2 bg-orange-400 text-white text-[0.55rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
-                          Sắp hết
+                 <div key={med.id} className="bg-white border border-slate-300 rounded-[1.25rem] p-5 flex flex-col hover:shadow-lg transition-all h-full">
+                    {/* Header */}
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1 pr-3">
+                        <h3 className="font-bold text-slate-800 text-lg leading-tight mb-2 break-words uppercase">
+                          {med.name}
+                        </h3>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                           <span className="bg-slate-100/80 text-slate-600 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                             {med.diagnosis || "Chưa phân loại"}
+                           </span>
+                           {isNearExpiry(med.id) && (
+                             <span className="bg-orange-50 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                               Sắp hết
+                             </span>
+                           )}
                         </div>
-                      )}
+                        <p className="text-blue-700 font-medium text-[0.9rem]">
+                          {med.dosage || "Chưa có liều lượng"}
+                        </p>
+                      </div>
+                      <div className="w-11 h-11 flex-shrink-0 rounded-[0.85rem] border border-slate-200 flex items-center justify-center text-blue-700 bg-[#f8fafc]">
+                        <Pill size={22} className="-rotate-45" />
+                      </div>
                     </div>
 
-                    <div className="space-y-0.5 pb-3 border-b border-slate-50 flex justify-between items-start">
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-slate-800 text-sm truncate" title={med.name}>{med.name}</h3>
-                        <div className="flex items-center gap-1.5">
-                          <span className="bg-blue-50 text-blue-600 text-[0.55rem] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded">Viên</span>
-                          <span className="text-[0.65rem] text-slate-500 truncate" title={med.symptoms_treated || ""}>{med.symptoms_treated || "Không rõ"}</span>
+                    {/* Middle Details Boxes */}
+                    <div className="space-y-2 mt-1 flex-grow">
+                      <div className="border border-slate-500 rounded-xl p-3">
+                        <div className="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1">
+                          Chữa triệu chứng
+                        </div>
+                        <div className="text-slate-800 text-[0.9rem] font-medium leading-snug">
+                          {med.symptoms_treated || "Chưa có thông tin"}
                         </div>
                       </div>
-                      <button 
-                        onClick={() => handleDeleteMedication(med.id)}
-                        className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-colors flex-shrink-0"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
 
-                    <div className="pt-3 space-y-1 text-[0.7rem]">
-                      <div className="flex justify-between items-center">
-                        <span className="text-slate-500">Hạn dùng:</span>
-                        <span className="font-semibold text-slate-800">--/--</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-slate-500">Liều dùng:</span>
-                        <div className="font-semibold text-slate-800 flex items-center gap-1">
-                          <span className="truncate max-w-[50px]">{med.dosage}</span>
+                      <div className="border border-slate-500 rounded-xl p-3">
+                        <div className="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1 flex justify-between items-center">
+                          <span>Cách dùng</span>
                           {getExplainableDosage(med.name) && (
                              <TooltipProvider>
                                <Tooltip delayDuration={300}>
                                  <TooltipTrigger asChild>
-                                   <HelpCircle size={10} className="text-blue-500 cursor-help flex-shrink-0" />
+                                   <HelpCircle size={14} className="text-blue-500 cursor-help" />
                                  </TooltipTrigger>
-                                 <TooltipContent side="top" className="max-w-[180px] text-[10px]">
+                                 <TooltipContent side="top" className="max-w-[200px] text-xs">
                                    <p>{getExplainableDosage(med.name)}</p>
                                  </TooltipContent>
                                </Tooltip>
                              </TooltipProvider>
                           )}
                         </div>
+                        <div className="text-slate-800 text-[0.9rem] italic leading-snug">
+                          {med.instructions || med.dosage || "Theo chỉ dẫn bác sĩ"}
+                        </div>
                       </div>
+                    </div>
+
+                    {/* Prescription Details & Divider */}
+                    <div className="w-full border-t border-slate-800 mt-6 pt-4 pb-4 text-center">
+                      <span className="text-[0.75rem] text-slate-400 font-medium italic">
+                        {(med.hospitalName || med.prescriptionCode) 
+                          ? `${med.hospitalName || ''} - Mã: ${med.prescriptionCode || ''}` 
+                          : "Không có thông tin đơn thuốc"
+                        }
+                      </span>
+                    </div>
+
+                    {/* Footer & Divider */}
+                    <div className="w-full border-t border-slate-400 pt-4 flex justify-between items-center">
+                       <span className="text-[0.8rem] text-slate-700 font-medium">
+                         Thêm vào {new Date(med.createdAt || Date.now()).toLocaleDateString('vi-VN')}
+                       </span>
+                       <button 
+                         onClick={() => handleDeleteMedication(med.id)}
+                         className="text-slate-500 hover:text-red-500 transition-colors"
+                       >
+                         <Trash2 size={18} />
+                       </button>
                     </div>
                  </div>
                ))}

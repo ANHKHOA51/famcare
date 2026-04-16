@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, X, Loader2 } from "lucide-react";
+import { Plus, X, Loader2, Pill } from "lucide-react";
 import { ScanResult } from "@/pages/ScannerPage";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
   const [members, setMembers] = useState<FamilyMember[]>([]);
   // Bug #3 fix: selectedMember now holds a real familyMemberId (string), defaulting to ""
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
+  const [isShared, setIsShared] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [medications, setMedications] = useState(result.medications);
   
@@ -107,7 +108,7 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
               familyMemberId: selectedMemberId,
               prescriptionCode: prescriptionCode,
               hospitalName: hospitalName,
-              isShared: true
+              isShared: isShared
             })
           });
           if (resp.ok) {
@@ -138,10 +139,41 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
     <div className="bg-[#e2e8f0]/40 rounded-[2.5rem] p-6 lg:p-8 h-full flex flex-col relative overflow-hidden">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-xl font-display font-bold text-slate-800">Thông tin trích xuất</h2>
-        <div className="bg-[#a5f3fc] text-[#0891b2] text-[0.625rem] font-bold tracking-wider uppercase px-4 py-2 rounded-full w-fit">
-          AI Verification Required
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-2">
+          <Pill className="text-[#0a429b]" size={20} strokeWidth={2.5} />
+          <h2 className="text-xl font-display font-medium text-slate-800">Đơn thuốc của bạn</h2>
+        </div>
+        
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Member Selector */}
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2">
+            <span className="text-[0.8rem] font-medium text-slate-600">Lưu cho:</span>
+            {members.length === 0 ? (
+              <span className="text-[0.8rem] text-slate-400 italic">Đang tải...</span>
+            ) : (
+              <select
+                value={selectedMemberId}
+                onChange={e => setSelectedMemberId(e.target.value)}
+                className="bg-transparent text-[0.8rem] font-medium text-slate-700 outline-none cursor-pointer max-w-[150px] truncate"
+              >
+                {members.map(m => (
+                  <option key={m.id} value={m.id}>{m.name}</option>
+                ))}
+              </select>
+            )}
+          </div>
+
+          {/* Share Toggle */}
+          <div className="flex items-center gap-3 bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2">
+            <span className="text-[0.8rem] font-medium text-slate-600">Chia sẻ với gia đình</span>
+            <button 
+              onClick={() => setIsShared(!isShared)}
+              className={`w-10 h-5 flex items-center rounded-full p-0.5 transition-colors ${isShared ? 'bg-[#0a429b]' : 'bg-slate-300'}`}
+            >
+              <div className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${isShared ? 'translate-x-5' : 'translate-x-0'}`}></div>
+            </button>
+          </div>
         </div>
       </div>
       
@@ -238,22 +270,9 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
 
       {/* Bottom Panel */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#e2e8f0]/95 backdrop-blur-md p-6 border-t border-white/20 rounded-b-[2.5rem] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        {/* Bug #3 fix: real family member selector from API */}
-        <div className="flex items-center gap-3">
-          <span className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">Gán cho:</span>
-          {members.length === 0 ? (
-            <span className="text-xs text-slate-400 italic">Đang tải thành viên...</span>
-          ) : (
-            <select
-              value={selectedMemberId}
-              onChange={e => setSelectedMemberId(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50 cursor-pointer"
-            >
-              {members.map(m => (
-                <option key={m.id} value={m.id}>{m.name} ({m.relationship})</option>
-              ))}
-            </select>
-          )}
+        {/* Verification Status Badge */}
+        <div className="bg-[#a5f3fc] text-[#0891b2] text-[0.625rem] font-bold tracking-wider uppercase px-4 py-2 rounded-full w-fit shadow-sm">
+          AI Verification Required
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
