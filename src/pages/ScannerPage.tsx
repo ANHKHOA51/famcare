@@ -15,6 +15,7 @@ export interface ScanResult {
     dosage: string;
     instructions?: string;
     suggested_symptoms?: string[];
+    confidence_score?: number;
   }[];
   nutrition: {
     recommended_foods: string[];

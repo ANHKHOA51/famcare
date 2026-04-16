@@ -8,6 +8,7 @@ import MarketplacePage from "@/pages/MarketplacePage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
 import FoodTestPage from "@/pages/FoodTestPage";
 import ProfilePage from "@/pages/ProfilePage";
+import MealPlanPage from "@/pages/MealPlanPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 const AppLayout = () => {
@@ -18,6 +19,7 @@ const AppLayout = () => {
       case "dashboard": return <DashboardPage />;
       case "scanner": return <ScannerPage />;
       case "cabinet": return <CabinetPage onNavigate={setActivePage} />;
+      case "meal-plan": return <MealPlanPage />;
       case "marketplace": return <MarketplacePage />;
       case "food-test": return <FoodTestPage />;
       case "profile": return <ProfilePage />;

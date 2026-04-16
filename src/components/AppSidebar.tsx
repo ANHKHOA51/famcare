@@ -1,4 +1,4 @@
-import { LayoutDashboard, ScanLine, ShoppingBag, Bell, Settings, HelpCircle, Pill, LogOut, User, Home as HomeIcon } from "lucide-react";
+import { LayoutDashboard, ScanLine, ShoppingBag, Bell, Settings, HelpCircle, Pill, LogOut, User, Home as HomeIcon, Utensils } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -13,6 +13,7 @@ const navItems = [
   { id: "dashboard", label: "Bảng điều khiển", icon: LayoutDashboard },
   { id: "scanner", label: "Đơn thuốc", icon: ScanLine },
   { id: "cabinet", label: "Tủ thuốc", icon: Pill },
+  { id: "meal-plan", label: "Dinh dưỡng", icon: Utensils },
   { id: "marketplace", label: "Chợ Dịch vụ", icon: ShoppingBag },
 ];
 

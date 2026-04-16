@@ -46,7 +46,7 @@ export default function PublicNavbar() {
               <Menu size={20} />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[80vw] sm:w-[350px]">
+          <SheetContent side="left" className="w-[80vw] sm:w-[350px]">
             <SheetTitle className="sr-only">Menu Điều hướng</SheetTitle>
             <SheetDescription className="sr-only">Menu liên kết trang</SheetDescription>
             <nav className="flex flex-col gap-4 mt-8">

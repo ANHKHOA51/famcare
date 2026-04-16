@@ -56,11 +56,18 @@ const UploadState = ({ onFileSelected }: UploadStateProps) => {
         </div>
         <p className="text-foreground font-semibold font-display text-base mb-1.5">Kéo & thả hình ảnh đơn thuốc vào đây</p>
         <p className="text-[0.8125rem] text-on-surface-variant mb-8">Hỗ trợ JPG, PNG, WEBP — Tối đa 10MB</p>
-        <Button variant="outline" className="gap-2">
-          <Upload size={16} />
-          Chọn file từ máy tính
-        </Button>
+        <div className="flex items-center justify-center gap-4">
+          <Button variant="outline" className="gap-2" onClick={(e) => { e.stopPropagation(); document.getElementById("file-input")?.click(); }}>
+            <Upload size={16} />
+            Chọn ảnh
+          </Button>
+          <Button variant="default" className="gap-2" onClick={(e) => { e.stopPropagation(); document.getElementById("camera-input")?.click(); }}>
+            <FileImage size={16} />
+            Chụp trực tiếp
+          </Button>
+        </div>
         <input id="file-input" type="file" accept="image/*" className="hidden" onChange={handleFileInput} />
+        <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={handleFileInput} />
       </div>
 
       {error && (

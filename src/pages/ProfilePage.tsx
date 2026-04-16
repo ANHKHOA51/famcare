@@ -202,6 +202,42 @@ export default function ProfilePage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Render calculated BMI
+  const renderBMI = () => {
+    if (!formData.height || !formData.weight) return null;
+    const heightInMeters = parseFloat(formData.height) / 100;
+    const weightInKg = parseFloat(formData.weight);
+    if (heightInMeters <= 0 || weightInKg <= 0 || isNaN(heightInMeters) || isNaN(weightInKg)) return null;
+    
+    const bmiNum = weightInKg / (heightInMeters * heightInMeters);
+    const bmi = bmiNum.toFixed(1);
+    let status = "";
+    let colorClass = "";
+    
+    if (bmiNum < 18.5) {
+      status = "Thiếu cân"; colorClass = "text-blue-700 bg-blue-100 border-blue-200 hover:bg-blue-200";
+    } else if (bmiNum < 22.9) {
+      status = "Bình thường"; colorClass = "text-emerald-700 bg-emerald-100 border-emerald-200 hover:bg-emerald-200";
+    } else if (bmiNum < 24.9) {
+      status = "Thừa cân"; colorClass = "text-amber-700 bg-amber-100 border-amber-200 hover:bg-amber-200";
+    } else {
+      status = "Béo phì"; colorClass = "text-red-700 bg-red-100 border-red-200 hover:bg-red-200";
+    }
+    
+    return (
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 p-3 rounded-lg bg-background border shadow-sm transition-all duration-300">
+        <div className="flex items-center gap-2">
+          <Activity className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">Chỉ số BMI:</span>
+          <span className="text-lg font-bold tracking-tight text-foreground">{bmi}</span>
+        </div>
+        <Badge variant="outline" className={`${colorClass} ml-0 sm:ml-auto w-fit shadow-none transition-colors`}>
+          {status}
+        </Badge>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -309,15 +345,18 @@ export default function ProfilePage() {
                     </Select>
                   </div>
                   
-                  <div className="flex gap-4">
-                    <div className="space-y-2 flex-1">
-                      <Label htmlFor="height">Chiều cao (cm)</Label>
-                      <Input id="height" name="height" type="number" value={formData.height} onChange={handleChange} placeholder="VD: 170" />
+                  <div className="space-y-4 md:col-span-2 bg-muted/30 p-4 rounded-xl border border-muted/50 transition-all hover:bg-muted/40">
+                    <div className="flex gap-4">
+                      <div className="space-y-2 flex-1">
+                        <Label htmlFor="height">Chiều cao (cm)</Label>
+                        <Input id="height" name="height" type="number" value={formData.height} onChange={handleChange} placeholder="VD: 170" className="bg-background shadow-sm" />
+                      </div>
+                      <div className="space-y-2 flex-1">
+                        <Label htmlFor="weight">Cân nặng (kg)</Label>
+                        <Input id="weight" name="weight" type="number" value={formData.weight} onChange={handleChange} placeholder="VD: 65" className="bg-background shadow-sm" />
+                      </div>
                     </div>
-                    <div className="space-y-2 flex-1">
-                      <Label htmlFor="weight">Cân nặng (kg)</Label>
-                      <Input id="weight" name="weight" type="number" value={formData.weight} onChange={handleChange} placeholder="VD: 65" />
-                    </div>
+                    {renderBMI()}
                   </div>
 
                   <div className="space-y-2 md:col-span-2">

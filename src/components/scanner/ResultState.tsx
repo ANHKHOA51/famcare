@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles, Save, User, Loader2, Check, Shield } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Pill, Utensils, RotateCcw, BookOpen, Sparkles, Save, User, Loader2, Check, Shield, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScanResult } from "@/pages/ScannerPage";
 import { useAuth } from "@/context/AuthContext";
@@ -31,6 +31,9 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
   const [isShared, setIsShared] = useState(true);
   const [prescriptionCode, setPrescriptionCode] = useState("");
   const [hospitalName, setHospitalName] = useState("");
+  const [editedMedications, setEditedMedications] = useState<Record<number, string>>({});
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState<string>("");
 
   useEffect(() => {
     fetchMembers();
@@ -52,11 +55,13 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
     }
   };
 
-  const handleSaveToCabinet = async (med: any) => {
+  const handleSaveToCabinet = async (med: any, index: number) => {
     if (!selectedMember) {
       toast.error("Vui lòng chọn thành viên");
       return;
     }
+
+    const finalName = editedMedications[index] || med.name;
 
     setIsSaving(true);
     try {
@@ -67,7 +72,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
           Authorization: `Bearer ${token}` 
         },
         body: JSON.stringify({
-          name: med.name,
+          name: finalName,
           dosage: med.dosage,
           instructions: med.instructions,
           diagnosis: result.diagnosis,
@@ -80,8 +85,8 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
       });
 
       if (resp.ok) {
-        setSavedMedications(prev => [...prev, med.name]);
-        toast.success(`Đã lưu ${med.name} vào tủ thuốc`);
+        setSavedMedications(prev => [...prev, finalName]);
+        toast.success(`Đã lưu ${finalName} vào tủ thuốc`);
       } else {
         toast.error("Lỗi khi lưu thuốc");
       }
@@ -175,37 +180,112 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
         </div>
 
         <div className="space-y-4">
-          {result.medications.map((med, i) => (
-            <div key={i} className="flex items-center gap-4 p-5 surface-1 rounded-xl transition-all duration-200 hover:surface-2 hover:shadow-patient group">
-              <div className="w-12 h-12 rounded-xl bg-primary/8 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
-                <Pill size={20} className="text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-foreground text-lg">{med.name}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[0.8125rem] font-bold text-primary px-2 py-0.5 bg-primary/5 rounded border border-primary/10">{med.dosage}</span>
-                  {med.instructions && (
-                    <span className="text-[0.8125rem] text-on-surface-variant italic truncate">
-                      • {med.instructions}
-                    </span>
-                  )}
+          {result.medications.map((med, i) => {
+            const isLowConfidence = med.confidence_score !== undefined && med.confidence_score < 75;
+            const hasBeenEdited = !!editedMedications[i];
+            const finalName = editedMedications[i] || med.name;
+            const showWarning = isLowConfidence && !hasBeenEdited;
+            const isEditing = editingIndex === i;
+
+            return (
+              <div key={i} className={`flex items-center gap-4 p-5 min-h-[88px] rounded-xl transition-all duration-300 hover:surface-2 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] group ${showWarning ? "surface-1 border-2 border-destructive/40 bg-destructive/5" : "surface-1 border border-transparent"}`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors shadow-[0_2px_8px_-4px_rgba(var(--primary),0.3)] ${showWarning ? "bg-destructive/10 text-destructive group-hover:bg-destructive/15" : "bg-primary/8 text-primary group-hover:bg-primary/15"}`}>
+                  <Pill size={20} className="group-hover:scale-110 transition-transform duration-300" />
                 </div>
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <div className="flex items-center gap-2">
+                    {isEditing ? (
+                      <Input
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onBlur={() => {
+                          if (editValue.trim() && editValue !== med.name) {
+                            setEditedMedications(prev => ({ ...prev, [i]: editValue.trim() }));
+                          }
+                          setEditingIndex(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            if (editValue.trim() && editValue !== med.name) {
+                              setEditedMedications(prev => ({ ...prev, [i]: editValue.trim() }));
+                            }
+                            setEditingIndex(null);
+                          } else if (e.key === 'Escape') {
+                            setEditingIndex(null);
+                          }
+                        }}
+                        autoFocus
+                        className="h-8 max-w-[200px] font-bold text-lg px-2"
+                      />
+                    ) : (
+                      <>
+                        <p 
+                          className={`font-bold text-lg tracking-tight line-clamp-1 cursor-pointer hover:underline decoration-dashed underline-offset-4 ${showWarning ? "text-destructive" : "text-foreground"}`}
+                          onClick={() => {
+                            setEditingIndex(i);
+                            setEditValue(finalName);
+                          }}
+                          title="Nhấn để sửa tên thuốc"
+                        >
+                          {finalName}
+                        </p>
+                        {showWarning && (
+                          <div 
+                            className="flex items-center gap-1.5 px-2 py-0.5 bg-destructive/10 rounded-md text-destructive text-xs font-semibold border border-destructive/20 cursor-pointer hover:bg-destructive/20 transition-colors"
+                            onClick={() => {
+                              setEditingIndex(i);
+                              setEditValue(finalName);
+                            }}
+                            title="Độ tin cậy thấp, vui lòng kiểm tra lại"
+                          >
+                            <AlertTriangle size={12} className="shrink-0" />
+                            <span>Sửa tên</span>
+                          </div>
+                        )}
+                        {(!showWarning) && (
+                          <button 
+                            onClick={() => {
+                              setEditingIndex(i);
+                              setEditValue(finalName);
+                            }}
+                            className="text-muted-foreground/70 hover:text-primary transition-colors p-1 rounded hover:bg-primary/10 ml-1"
+                            title="Sửa tên thuốc"
+                          >
+                            <Pencil size={14} />
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1.5 h-[24px] overflow-hidden">
+                    <span className="text-[0.8125rem] font-bold text-primary px-2.5 py-0.5 bg-primary/10 rounded-md border border-primary/15 whitespace-nowrap">{med.dosage}</span>
+                    {med.instructions ? (
+                      <span className="text-[0.8125rem] text-muted-foreground italic truncate">
+                        • {med.instructions}
+                      </span>
+                    ) : (
+                      <span className="text-[0.8125rem] text-muted-foreground/40 italic truncate">
+                        • Không có cách dùng cụ thể
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <Button 
+                  onClick={() => handleSaveToCabinet(med, i)}
+                  disabled={savedMedications.includes(finalName) || isSaving}
+                  variant={savedMedications.includes(finalName) ? "secondary" : "outline"}
+                  className={`gap-2 shrink-0 h-11 px-5 rounded-xl transition-all font-semibold ${savedMedications.includes(finalName) ? "bg-success/10 text-success border-transparent hover:bg-success/15" : "border-primary/20 hover:bg-primary/5 hover:border-primary/40 shadow-sm"}`}
+                >
+                  {savedMedications.includes(finalName) ? (
+                    <><Check size={16} className="text-success" /> Đã lưu</>
+                  ) : (
+                    <><Save size={16} className="text-primary" /> Lưu tủ thuốc</>
+                  )}
+                </Button>
               </div>
-              
-              <Button 
-                onClick={() => handleSaveToCabinet(med)}
-                disabled={savedMedications.includes(med.name) || isSaving}
-                variant={savedMedications.includes(med.name) ? "secondary" : "outline"}
-                className="gap-2 shrink-0 h-10 px-4 rounded-xl border-primary/20 hover:bg-primary/5"
-              >
-                {savedMedications.includes(med.name) ? (
-                  <><Check size={16} className="text-success" /> Đã lưu</>
-                ) : (
-                  <><Save size={16} className="text-primary" /> Lưu tủ thuốc</>
-                )}
-              </Button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

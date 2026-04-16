@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, Pill, UserPlus, Info, AlertTriangle, CheckCircle2, History, Loader2, User, Link2, Mail, Users, Trash2 } from "lucide-react";
+import { Search, Pill, UserPlus, Info, AlertTriangle, CheckCircle2, History, Loader2, User, Link2, Mail, Users, Trash2, Stethoscope, PackageOpen } from "lucide-react";
 
 interface FamilyMember {
   id: string;
@@ -522,20 +522,34 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                 <p className="text-muted-foreground text-sm animate-pulse">Đang tải tủ thuốc...</p>
               </div>
             ) : Object.keys(groupedMedications).length === 0 ? (
-              <div className="text-center py-24 px-6 border-2 border-dashed border-border rounded-3xl bg-muted/20">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner ring-4 ring-primary/5">
-                  <Pill className="text-primary w-10 h-10" />
+              <div className="flex flex-col items-center justify-center py-28 px-6 bg-gradient-to-b from-background to-muted/30 rounded-3xl border border-primary/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+                <div className="relative mb-8 group">
+                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110 opacity-70 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  <div className="w-28 h-28 bg-background rounded-full flex items-center justify-center mx-auto ring-1 ring-border shadow-2xl relative z-10 overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/10 before:to-transparent">
+                    <PackageOpen className="text-primary w-12 h-12 stroke-[1.5] group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <div className="w-14 h-14 bg-background rounded-full flex items-center justify-center shadow-lg ring-1 ring-border absolute -bottom-2 -right-2 z-20">
+                    <Stethoscope className="text-primary/70 w-6 h-6 stroke-[2]" />
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">Tủ thuốc đang trống</h3>
-                <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  Chưa có loại thuốc nào được thêm vào. Bắt đầu bằng cách quét đơn thuốc hoặc thêm thủ công.
+                <h3 className="text-2xl font-bold text-foreground mb-3 font-display tracking-tight">Tủ thuốc gia đình trống</h3>
+                <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed text-[15px]">
+                  Không tìm thấy loại thuốc nào. Bắt đầu xây dựng tủ thuốc thông minh bằng cách quét đơn thuốc mới.
                 </p>
-                <div className="mt-8 flex gap-3 justify-center">
-                  <Button onClick={() => onNavigate?.("home")} className="rounded-full shadow-md font-semibold font-display gap-2 group hover:shadow-lg transition-all h-11 px-6">
-                    <History className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                <div className="mt-10 flex gap-4 justify-center relative z-10">
+                  <Button 
+                    onClick={() => onNavigate?.("home")} 
+                    className="rounded-full shadow-[0_8px_20px_rgb(var(--primary)_/_0.25)] hover:shadow-[0_8px_25px_rgb(var(--primary)_/_0.35)] font-semibold font-display gap-2.5 group transition-all h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    <History className="w-4 h-4 group-hover:-rotate-12 transition-transform duration-300" />
                     Quét đơn thuốc ngay
                   </Button>
                 </div>
+                
+                {/* Decorative background elements */}
+                <div className="absolute top-1/4 -left-12 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-1/4 -right-12 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
               </div>
             ) : (
               <div className="space-y-12">
@@ -575,28 +589,40 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                               </div>
                             </div>
 
-                            <div className="space-y-3">
-                              {med.symptoms_treated && (
-                                <div className="bg-background rounded-xl p-3 border border-border/50 shadow-sm">
-                                  <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">Chữa triệu chứng</p>
-                                  <p className="text-sm font-medium text-foreground line-clamp-1">{med.symptoms_treated}</p>
+                            <div className="space-y-3 min-h-[160px] flex flex-col justify-start">
+                              {med.symptoms_treated ? (
+                                <div className="bg-background rounded-xl p-3 border border-border/50 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] h-[70px]">
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1">Chữa triệu chứng</p>
+                                  <p className="text-sm text-foreground font-medium line-clamp-1" title={med.symptoms_treated}>{med.symptoms_treated}</p>
+                                </div>
+                              ) : (
+                                <div className="h-[70px] bg-muted/10 rounded-xl border border-dashed border-border/30 flex items-center justify-center">
+                                  <span className="text-[10px] uppercase text-muted-foreground/50 font-bold">Chưa có triệu chứng</span>
                                 </div>
                               )}
 
-                              {med.instructions && (
-                                <div className="bg-background rounded-xl p-3 border border-border/50 shadow-sm">
-                                  <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">Cách dùng</p>
-                                  <p className="text-sm text-foreground italic leading-relaxed line-clamp-2">{med.instructions}</p>
+                              {med.instructions ? (
+                                <div className="bg-background rounded-xl p-3 border border-border/50 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] h-[70px]">
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1">Cách dùng</p>
+                                  <p className="text-sm text-foreground italic leading-tight line-clamp-2" title={med.instructions}>{med.instructions}</p>
+                                </div>
+                              ) : (
+                                <div className="h-[70px] bg-muted/10 rounded-xl border border-dashed border-border/30 flex items-center justify-center">
+                                  <span className="text-[10px] uppercase text-muted-foreground/50 font-bold">Chưa có cách dùng</span>
                                 </div>
                               )}
                             </div>
 
-                            {(med.prescriptionCode || med.hospitalName) && (
-                              <div className="mt-4 pt-4 border-t border-border/40 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                                {med.prescriptionCode && <div className="truncate"><span className="font-medium">Mã Đơn:</span> {med.prescriptionCode}</div>}
-                                {med.hospitalName && <div className="truncate"><span className="font-medium">Khám tại:</span> {med.hospitalName}</div>}
-                              </div>
-                            )}
+                            <div className="min-h-[44px] mt-4 pt-4 border-t border-border/40 flex flex-col justify-center">
+                              {med.prescriptionCode || med.hospitalName ? (
+                                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground w-full">
+                                  {med.prescriptionCode && <div className="truncate text-[11px]"><span className="font-medium">Đơn:</span> {med.prescriptionCode}</div>}
+                                  {med.hospitalName && <div className="truncate text-[11px]"><span className="font-medium">Nơi khám:</span> {med.hospitalName}</div>}
+                                </div>
+                              ) : (
+                                <div className="text-[11px] text-muted-foreground/40 italic text-center w-full">Không có thông tin đơn thuốc</div>
+                              )}
+                            </div>
 
                             <div className="mt-5 pt-4 border-t border-border/50 flex items-center justify-between">
                               <p className="text-[11px] font-medium text-muted-foreground">

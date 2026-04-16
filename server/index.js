@@ -433,8 +433,9 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
 
     const prompt = `Analyze prescription image. 
     If the image is entirely blurry, unreadable, or clearly not a medical document, return ONLY this JSON: { "error": "BLURRY" }.
-    Otherwise, extract diagnosis, medications, and nutrition advice. Link the nutrition advice directly to the diagnosis (e.g. if High Blood pressure, advise eating less salt/sodium). 
-    Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"] }], "nutrition": { "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
+    Otherwise, extract diagnosis, medications, and nutrition advice. Link the nutrition advice strictly to the diagnosis, providing specific dietary restrictions and warnings based on the identified condition (e.g. if High Blood pressure, explicitly state 'Giảm ăn muối/natri', if diabetes, 'Việc kiểm soát lượng đường là bắt buộc'). 
+    Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
+    Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }], "nutrition": { "general_dietary_advice": ["string"], "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
 
     const result = await model.generateContent([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }]);
     const response = await result.response;
@@ -475,10 +476,12 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     ${dbList}
     
     Hãy xây dựng thực đơn 3 ngày cho người bệnh: "${diagnosis}". 
-    Mỗi ngày chọn đúng 2 món (Sáng và Trưa/Tối) từ danh sách trên.
+    Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và đưa ra các cảnh báo/hạn chế ăn uống cụ thể (ví dụ: nếu huyết áp cao, yêu cầu "Hạn chế muối/natri"; nếu tiểu đường, yêu cầu "Kiểm soát lượng đường nghiêm ngặt"). TUYỆT ĐỐI tuân thủ các hạn chế này khi chọn món ăn chính và các món thay thế từ danh sách.
+
+    Mỗi ngày chọn đúng 2 món (Sáng và Trưa/Tối) từ danh sách trên sao cho phù hợp nhất với bệnh lý.
     Yêu cầu:
-    1. Trả về đúng định dạng JSON: { "meal_plan": [ { "day": "Ngày 1", "meals": [ { "type": "Sáng", "food_id": "MÃ_ID_TRONG_DANH_SÁCH", "reason": "Tại sao món này tốt cho bệnh lý này?" } ] } ] }.
-    2. "food_id" PHẢI khớp chính xác 100% với mã ID được cung cấp.
+    1. Trả về đúng định dạng JSON kèm số liệu macros (calories, protein, carbs, fat bằng số/grams), mảng \`alternatives\` (chứa 2 mã ID thay thế cho mỗi bữa) và \`general_dietary_advice\` (mảng các lời khuyên/cảnh báo kiêng cữ dinh dưỡng chung): { "general_dietary_advice": ["Lời khuyên 1", "Lời khuyên 2"], "meal_plan": [ { "day": "Ngày 1", "meals": [ { "type": "Sáng", "food_id": "MÃ_ID_TRONG_DANH_SÁCH", "reason": "Tại sao món này tốt cho bệnh lý này?", "macros": {"calories": 300, "protein": 15, "carbs": 40, "fat": 10}, "alternatives": ["ID_MON_THAY_THE_1", "ID_MON_THAY_THE_2"] } ] } ] }.
+    2. "food_id" và "alternatives" PHẢI khớp chính xác 100% với mã ID được cung cấp và tuân thủ tuyệt đối các giới hạn ăn uống của bệnh nhân.
     3. Phần "reason" viết tự nhiên, thuyết phục.
     4. KHÔNG TRẢ VỀ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
 
@@ -492,17 +495,36 @@ app.post('/api/generate-meal-plan', async (req, res) => {
       meals: d.meals.map(m => {
         // Find match or fallback to 'pho-ga' if AI messed up the ID
         const foodInfo = FOOD_DATABASE.find(f => f.id === m.food_id) || FOOD_DATABASE[0];
+        
+        // Hydrate alternatives if available
+        let hydratedAlternatives = [];
+        if (m.alternatives && Array.isArray(m.alternatives)) {
+          hydratedAlternatives = m.alternatives.map(altId => {
+            const altInfo = FOOD_DATABASE.find(f => f.id === altId) || FOOD_DATABASE[0];
+            return {
+              id: altInfo.id,
+              name: altInfo.name,
+              image: altInfo.image,
+              benefits: altInfo.benefits
+            };
+          });
+        }
+
         return { 
           ...m, 
           name: foodInfo.name,
           image: foodInfo.image,
           benefits: foodInfo.benefits,
-          reason: m.reason || `Món ăn này rất tốt cho tình trạng ${diagnosis}`
+          reason: m.reason || `Món ăn này rất tốt cho tình trạng ${diagnosis}`,
+          alternatives: hydratedAlternatives
         };
       })
     }));
 
-    res.json({ meal_plan: fullPlan });
+    res.json({ 
+      general_dietary_advice: cleanJson.general_dietary_advice || [],
+      meal_plan: fullPlan 
+    });
   } catch (error) {
     console.error('MEAL PLAN ERROR:', error);
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
