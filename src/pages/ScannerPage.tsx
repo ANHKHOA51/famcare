@@ -10,6 +10,8 @@ export type ScannerStep = "upload" | "scanning" | "result";
 
 export interface ScanResult {
   diagnosis: string;
+  prescription_code?: string;
+  hospital_name?: string;
   error?: string;
   medications: { 
     name: string; 

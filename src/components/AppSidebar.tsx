@@ -1,4 +1,4 @@
-import { LayoutDashboard, ScanLine, Pill, Calendar, MessageSquare, Utensils } from "lucide-react";
+import { LayoutDashboard, ScanLine, Pill, Calendar, MessageSquare, Utensils, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 
@@ -16,7 +16,7 @@ const navItems = [
 ];
 
 const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <aside className="w-[260px] h-full bg-[#f8fafc] flex flex-col pt-6 pb-8 border-r border-slate-200/50">
@@ -51,10 +51,17 @@ const AppSidebar = ({ activePage, onNavigate }: AppSidebarProps) => {
         })}
       </nav>
 
-      {/* Switch Mode Button */}
-      <div className="px-6 mt-auto">
-        <button className="w-full bg-[#bce3fe] hover:bg-[#a6d8fc] text-[#0f172a] font-semibold text-sm py-4 rounded-xl transition-colors shadow-sm">
+      {/* Action Buttons */}
+      <div className="px-6 mt-auto flex flex-col gap-3">
+        <button className="w-full bg-[#bce3fe] hover:bg-[#a6d8fc] text-[#0f172a] font-semibold text-[0.875rem] py-3.5 rounded-xl transition-colors shadow-sm">
           Chuyển sang<br/>chế độ Gia đình
+        </button>
+        <button 
+          onClick={logout} 
+          className="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-red-500 hover:bg-red-50 font-medium text-[0.875rem] py-3 rounded-xl transition-all"
+        >
+          <LogOut size={18} />
+          Đăng xuất
         </button>
       </div>
 

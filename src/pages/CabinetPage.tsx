@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Search, Loader2, Link2, Mail, Trash2, Camera, UploadCloud, Users, Sparkles, Filter, Info, Pill, X } from "lucide-react";
+import { Search, Loader2, Link2, Mail, Trash2, Camera, UploadCloud, Users, Sparkles, Filter, Info, Pill, X, HelpCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // (Keep existing interfaces)
 interface FamilyMember {
@@ -54,6 +55,23 @@ const isNearExpiry = (id: string) => {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
   return hash % 10 > 7; // ~20% chance, but stable for same id
+};
+
+const getExplainableDosage = (name: string) => {
+  const lowername = name.toLowerCase();
+  if (lowername.includes("paracetamol") || lowername.includes("panadol") || lowername.includes("hapacol")) {
+    return "Khuyến nghị AI: Người lớn 500mg - 1000mg/lần (cách 4-6h), trẻ em 10-15mg/kg/lần.";
+  }
+  if (lowername.includes("ibuprofen") || lowername.includes("advil") || lowername.includes("gofen")) {
+    return "Khuyến nghị AI: Người lớn 200-400mg/lần. Tránh dùng nếu đau dạ dày.";
+  }
+  if (lowername.includes("vitamin c") || lowername.includes("c sủi")) {
+    return "Khuyến nghị AI: Người lớn thường 500mg-1000mg/ngày. Tốt nhất uống sáng, sau ăn.";
+  }
+  if (lowername.includes("omeprazol") || lowername.includes("pantoprazol") || lowername.includes("nexium")) {
+    return "Khuyến nghị AI: Thường uống trước bữa ăn sáng 30-60 phút để đạt hiệu quả cao nhất.";
+  }
+  return null;
 };
 
 const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
@@ -259,13 +277,13 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
           ) : (
              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
                {filteredMedications.map(med => (
-                 <div key={med.id} className="group">
-                    <div className={`w-full aspect-square rounded-[2rem] overflow-hidden relative mb-4 bg-gradient-to-br flex items-center justify-center ${getMockColor(med.name)}`}>
-                      <Pill size={64} className="opacity-50 group-hover:scale-110 transition-transform duration-500" />
+                 <div key={med.id} className="group bg-white border border-slate-100 p-4 rounded-3xl hover:shadow-md transition-shadow">
+                    <div className={`w-full aspect-[21/9] sm:h-32 rounded-2xl overflow-hidden relative mb-4 bg-gradient-to-br flex items-center justify-center ${getMockColor(med.name)}`}>
+                      <Pill size={40} className="opacity-50 group-hover:scale-110 transition-transform duration-500" />
                       
                       {/* Bug #4 fix: stable badge — deterministic, not random */}
                       {isNearExpiry(med.id) && (
-                        <div className="absolute top-4 right-4 bg-orange-400 text-white text-[0.625rem] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">
+                        <div className="absolute top-3 right-3 bg-orange-400 text-white text-[0.625rem] font-bold uppercase tracking-wider px-2 py-1 rounded-md shadow-sm">
                           Hạn dùng gần
                         </div>
                       )}
@@ -291,8 +309,22 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                     <div className="pt-4 grid grid-cols-2 gap-2 text-sm">
                       <div className="text-slate-500">Hạn sử dụng:</div>
                       <div className="font-semibold text-slate-800 text-right">--/--/----</div>
-                      <div className="text-slate-500">Số lượng:</div>
-                      <div className="font-semibold text-slate-800 text-right">{med.dosage}</div>
+                      <div className="text-slate-500">Số lượng / Liều dẫn:</div>
+                      <div className="font-semibold text-slate-800 text-right flex items-center justify-end gap-1">
+                        <span className="truncate">{med.dosage}</span>
+                        {getExplainableDosage(med.name) && (
+                           <TooltipProvider>
+                             <Tooltip delayDuration={300}>
+                               <TooltipTrigger asChild>
+                                 <HelpCircle size={14} className="text-blue-500 cursor-help flex-shrink-0" />
+                               </TooltipTrigger>
+                               <TooltipContent side="top" className="max-w-[200px] text-xs">
+                                 <p>{getExplainableDosage(med.name)}</p>
+                               </TooltipContent>
+                             </Tooltip>
+                           </TooltipProvider>
+                        )}
+                      </div>
                       <div className="text-red-500">Chống chỉ định:</div>
                       <div className="font-semibold text-slate-800 text-right">—</div>
                     </div>

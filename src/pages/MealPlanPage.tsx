@@ -102,16 +102,19 @@ export default function MealPlanPage() {
       const todayMeals = data.meal_plan?.[0]?.meals ?? [];
       if (todayMeals.length > 0) {
         const mappedMeals: Meal[] = todayMeals.map((m: any, idx: number) => ({
-          // Bug #12: use String() to avoid accidental string concat producing bad keys
-          id: `${String(m.food_id ?? 'meal')}-${idx}`,
+          id: `meal-${idx}`,
           name: m.name || m.type || 'Món ăn',
           time: "20 phút",
           calories: m.macros?.calories ? `${m.macros.calories} kcal` : "N/A",
           difficulty: "Vừa",
           tags: [m.type, "Khuyên dùng"].filter(Boolean),
           description: m.reason || m.benefits || "",
-          ingredients: [],
-          steps: [],
+          ingredients: Array.isArray(m.ingredients) 
+            ? m.ingredients.map((ing: string) => ({ name: ing, amount: "Vừa đủ" }))
+            : [],
+          steps: Array.isArray(m.instructions)
+            ? m.instructions.map((ins: string, i: number) => ({ title: `Bước ${i + 1}`, desc: ins }))
+            : [],
           nutritionNotes: data.general_dietary_advice?.map((adv: string) => ({ title: "Lưu ý AI", desc: adv })) || []
         }));
         setGeneratedMeals(mappedMeals);

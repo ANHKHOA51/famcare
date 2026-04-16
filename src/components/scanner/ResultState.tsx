@@ -24,10 +24,11 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [medications, setMedications] = useState(result.medications);
+  
+  const [prescriptionCode, setPrescriptionCode] = useState(result.prescription_code || "");
+  const [hospitalName, setHospitalName] = useState(result.hospital_name || "");
+  
   const isMounted = useRef(true);
-
-  // Pending save warning
-  const [pendingSave, setPendingSave] = useState(false);
 
   useEffect(() => {
     isMounted.current = true;
@@ -104,6 +105,8 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
               diagnosis: result.diagnosis || "Chưa xác định",
               symptoms_treated: med.suggested_symptoms?.join(", ") || "",
               familyMemberId: selectedMemberId,
+              prescriptionCode: prescriptionCode,
+              hospitalName: hospitalName,
               isShared: true
             })
           });
@@ -135,17 +138,41 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
     <div className="bg-[#e2e8f0]/40 rounded-[2.5rem] p-6 lg:p-8 h-full flex flex-col relative overflow-hidden">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <h2 className="text-xl font-display font-bold text-slate-800">Thông tin trích xuất</h2>
         <div className="bg-[#a5f3fc] text-[#0891b2] text-[0.625rem] font-bold tracking-wider uppercase px-4 py-2 rounded-full w-fit">
           AI Verification Required
         </div>
       </div>
+      
+      {/* General Prescription Fields */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+         <div className="space-y-1.5">
+           <label className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider">Mã đơn thuốc</label>
+           <input 
+             type="text" 
+             value={prescriptionCode} 
+             onChange={(e) => setPrescriptionCode(e.target.value)}
+             className="w-full bg-white/70 border border-slate-200/50 rounded-full px-4 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+             placeholder="Nhập mã đơn thuốc (tùy chọn)"
+           />
+         </div>
+         <div className="space-y-1.5">
+           <label className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider">Tên bệnh viện / Phòng khám</label>
+           <input 
+             type="text" 
+             value={hospitalName} 
+             onChange={(e) => setHospitalName(e.target.value)}
+             className="w-full bg-white/70 border border-slate-200/50 rounded-full px-4 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+             placeholder="Nhập bệnh viện (tùy chọn)"
+           />
+         </div>
+      </div>
 
       {/* Meds List */}
       <div className="flex-1 overflow-auto space-y-4 pr-2 pb-24">
         {medications.map((med, index) => (
-          <div key={index} className="relative bg-white/40 backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-white/50">
+          <div key={index} className={`relative bg-white/40 backdrop-blur-sm rounded-3xl p-6 shadow-sm border ${med.confidence_score && med.confidence_score < 80 ? 'border-red-400/60' : 'border-white/50'}`}>
             <button 
               onClick={() => handleRemoveMed(index)}
               className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full text-white flex items-center justify-center shadow-sm hover:bg-red-600 transition-colors"
@@ -154,12 +181,26 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
             </button>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="space-y-1.5">
-                <label className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider">Tên thuốc</label>
+                <div className="flex items-center gap-2">
+                  <label className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider">Tên thuốc</label>
+                  {med.confidence_score && med.confidence_score < 80 && (
+                     <TooltipProvider>
+                      <Tooltip delayDuration={300}>
+                        <TooltipTrigger asChild>
+                          <span className="text-xs font-bold text-red-500 bg-red-100 rounded-full px-2 py-0.5 cursor-help">⚠️ AI không chắc chắn</span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          <p>Độ tin cậy: {med.confidence_score}%. Vui lòng kiểm tra lại!</p>
+                        </TooltipContent>
+                      </Tooltip>
+                     </TooltipProvider>
+                  )}
+                </div>
                 <input 
                   type="text" 
                   value={med.name} 
                   onChange={(e) => handleUpdateMed(index, 'name', e.target.value)}
-                  className="w-full bg-white border border-slate-200/50 rounded-full px-4 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+                  className={`w-full bg-white border ${med.confidence_score && med.confidence_score < 80 ? 'border-red-300 ring-1 ring-red-100' : 'border-slate-200/50'} rounded-full px-4 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50`}
                   placeholder="Nhập tên thuốc"
                 />
               </div>
