@@ -14,14 +14,17 @@ import crypto from 'crypto';
 
 dotenv.config();
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'aura_health_secret_key__2026_123'; // 32 bytes
+// Bug #1: Enforce 32-byte encryption key. Pad or slice to ensure AES-256 compatibility.
+const RAW_KEY = process.env.ENCRYPTION_KEY || 'aura_health_secret_key__2026_123';
+const ENCRYPTION_KEY = Buffer.alloc(32);
+Buffer.from(RAW_KEY).copy(ENCRYPTION_KEY); // fills exactly 32 bytes, safe for any key length
 const IV_LENGTH = 16;
 
 function encrypt(text) {
   if (!text) return text;
   try {
     const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    const cipher = crypto.createCipheriv('aes-256-cbc', ENCRYPTION_KEY, iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return iv.toString('hex') + ':' + encrypted.toString('hex');
@@ -38,7 +41,7 @@ function decrypt(text) {
     const textParts = text.split(':');
     const iv = Buffer.from(textParts.shift(), 'hex');
     const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', ENCRYPTION_KEY, iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
@@ -63,7 +66,19 @@ try {
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(cors());
+// Bug #8: Restrict CORS to known origins in production
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000').split(',');
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, same-origin)
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET || 'aura_health_secret_key_2026';
@@ -129,22 +144,28 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.get('/api/auth/profile', authenticateToken, async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: { id: req.user.userId },
-    include: { 
-      ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } },
-      linkedMembers: { include: { user: { select: { id: true, name: true, email: true } } } }
-    }
-  });
-  
-  if (user) {
-    delete user.password; // Don't send password hash
+  // Bug #2: Added try/catch + 404 guard to prevent crash on DB error or missing user
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      include: { 
+        ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } },
+        linkedMembers: { include: { user: { select: { id: true, name: true, email: true } } } }
+      }
+    });
+    
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    delete user.password;
     if (user.height && user.weight) {
       user.bmi = parseFloat((user.weight / ((user.height / 100) * (user.height / 100))).toFixed(1));
     }
+    
+    res.json(user);
+  } catch (error) {
+    console.error('GET PROFILE ERROR:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
   }
-  
-  res.json(user);
 });
 
 app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
@@ -184,11 +205,23 @@ app.put('/api/auth/profile', authenticateToken, async (req, res) => {
       parsedDob = new Date(dob);
     }
     
+    // Bug #5: Sanitize numeric fields — reject NaN to prevent Prisma crash
+    const parsedHeight = height ? parseFloat(height) : null;
+    const parsedWeight = weight ? parseFloat(weight) : null;
+    if (parsedHeight !== null && isNaN(parsedHeight)) {
+      return res.status(400).json({ error: 'Chiều cao không hợp lệ' });
+    }
+    if (parsedWeight !== null && isNaN(parsedWeight)) {
+      return res.status(400).json({ error: 'Cân nặng không hợp lệ' });
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: req.user.userId },
       data: {
         name, phone, address, dob: parsedDob, gender,
-        bloodType, allergies, chronicIllness, height: height ? parseFloat(height) : null, weight: weight ? parseFloat(weight) : null
+        bloodType, allergies, chronicIllness,
+        height: parsedHeight,
+        weight: parsedWeight
       }
     });
     

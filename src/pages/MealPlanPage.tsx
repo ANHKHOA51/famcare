@@ -65,6 +65,7 @@ export default function MealPlanPage() {
   const [generatedMeals, setGeneratedMeals] = useState<Meal[]>([]);
   const [generalAdvice, setGeneralAdvice] = useState<string[]>([]);
   const [aiTitle, setAiTitle] = useState("Gợi ý thực đơn hôm nay");
+  const { token } = useAuth();
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -80,7 +81,11 @@ export default function MealPlanPage() {
     try {
       const resp = await fetch("/api/generate-meal-plan", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          // Bug #2: send auth token so server can authenticate
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({ diagnosis })
       });
       
@@ -93,16 +98,17 @@ export default function MealPlanPage() {
       setGeneralAdvice(data.general_dietary_advice || []);
       setAiTitle(`Gợi ý thực đơn cho hồ sơ bệnh lý: ${diagnosis}`);
       
-      // Parse the first day's meals into our Meal interface
-      if (data.meal_plan && data.meal_plan.length > 0) {
-        const todayMeals = data.meal_plan[0].meals;
+      // Bug #3: use optional chaining — AI might return unexpected structure
+      const todayMeals = data.meal_plan?.[0]?.meals ?? [];
+      if (todayMeals.length > 0) {
         const mappedMeals: Meal[] = todayMeals.map((m: any, idx: number) => ({
-          id: m.food_id + idx,
-          name: m.name || m.type,
+          // Bug #12: use String() to avoid accidental string concat producing bad keys
+          id: `${String(m.food_id ?? 'meal')}-${idx}`,
+          name: m.name || m.type || 'Món ăn',
           time: "20 phút",
           calories: m.macros?.calories ? `${m.macros.calories} kcal` : "N/A",
           difficulty: "Vừa",
-          tags: [m.type, "Khuyên dùng"],
+          tags: [m.type, "Khuyên dùng"].filter(Boolean),
           description: m.reason || m.benefits || "",
           ingredients: [],
           steps: [],
@@ -262,8 +268,17 @@ export default function MealPlanPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
               <h2 className="text-xl font-display font-bold text-slate-800">Thực đơn trưa hôm nay</h2>
               <div className="flex gap-2 text-sm overflow-x-auto hide-scroll pb-2 md:pb-0">
+                {/* Bug #9: tab filter now functional with activeTab state */}
                 {["Tất cả", "Món mặn", "Món canh", "Tráng miệng"].map((tab, i) => (
-                  <button key={i} className={`px-4 py-2 rounded-full whitespace-nowrap font-semibold transition-colors ${i === 0 ? "bg-[#38bdf8] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
+                  <button
+                    key={i}
+                    onClick={() => setActiveTab(["all", "man", "canh", "trangmieng"][i])}
+                    className={`px-4 py-2 rounded-full whitespace-nowrap font-semibold transition-colors ${
+                      activeTab === ["all", "man", "canh", "trangmieng"][i]
+                        ? "bg-[#38bdf8] text-white"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
                     {tab}
                   </button>
                 ))}

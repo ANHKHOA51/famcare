@@ -131,7 +131,10 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const fetchCabinet = useCallback(async () => {
     try {
       const resp = await fetch("/api/cabinet", { headers: { Authorization: `Bearer ${token}` } });
-      if (resp.ok) setMedications(await resp.json());
+      if (resp.ok) {
+        const data = await resp.json();
+        setMedications(Array.isArray(data) ? data : []); // Bug #7: guard non-array response
+      }
     } catch {
       toast.error("Lỗi khi tải tủ thuốc");
     } finally {
@@ -334,7 +337,6 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
              </p>
            </div>
         </div>
-         </div>
       </div>
 
       {/* Manual Entry Dialog */}
