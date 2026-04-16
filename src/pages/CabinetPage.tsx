@@ -49,6 +49,13 @@ const getMockColor = (name: string) => {
   return "from-teal-100 to-teal-200 text-teal-500";
 };
 
+// Bug #4 fix: deterministic "near expiry" check based on med.id hash — stable across re-renders
+const isNearExpiry = (id: string) => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return hash % 10 > 7; // ~20% chance, but stable for same id
+};
+
 const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
   const { token, user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
@@ -253,8 +260,8 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                     <div className={`w-full aspect-square rounded-[2rem] overflow-hidden relative mb-4 bg-gradient-to-br flex items-center justify-center ${getMockColor(med.name)}`}>
                       <Pill size={64} className="opacity-50 group-hover:scale-110 transition-transform duration-500" />
                       
-                      {/* Warning tags */}
-                      {Math.random() > 0.7 && (
+                      {/* Bug #4 fix: stable badge — deterministic, not random */}
+                      {isNearExpiry(med.id) && (
                         <div className="absolute top-4 right-4 bg-orange-400 text-white text-[0.625rem] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">
                           Hạn dùng gần
                         </div>
@@ -381,17 +388,23 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
 
               <div>
                  <label className="block text-sm font-bold text-slate-700 mb-2">Chỉ định cho</label>
-                 <select 
-                   value={manualForm.familyMemberId}
-                   onChange={e => setManualForm({...manualForm, familyMemberId: e.target.value})}
-                   required
-                   className="w-full h-14 bg-slate-50 border-none rounded-2xl px-4 font-medium text-slate-700 focus:ring-2 focus:ring-teal-500 font-sans cursor-pointer"
-                 >
-                   <option value="" disabled>-- Chọn thành viên --</option>
-                   {members.map(m => (
-                     <option key={m.id} value={m.id}>{m.name} ({m.relationship})</option>
-                   ))}
-                 </select>
+                 {members.length === 0 ? (
+                   <div className="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl px-4 flex items-center text-sm text-slate-400 italic">
+                     Chưa có thành viên nào. Vui lòng thêm thành viên ở trang Hồ sơ trước.
+                   </div>
+                 ) : (
+                   <select 
+                     value={manualForm.familyMemberId}
+                     onChange={e => setManualForm({...manualForm, familyMemberId: e.target.value})}
+                     required
+                     className="w-full h-14 bg-slate-50 border-none rounded-2xl px-4 font-medium text-slate-700 focus:ring-2 focus:ring-teal-500 font-sans cursor-pointer"
+                   >
+                     <option value="" disabled>-- Chọn thành viên --</option>
+                     {members.map(m => (
+                       <option key={m.id} value={m.id}>{m.name} ({m.relationship})</option>
+                     ))}
+                   </select>
+                 )}
               </div>
 
               <div className="pt-4 flex gap-3">
@@ -404,8 +417,8 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                 </button>
                 <button 
                   type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 h-14 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-300 text-white font-bold rounded-2xl transition-colors"
+                  disabled={isSubmitting || members.length === 0}
+                  className="flex-1 h-14 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-300 disabled:cursor-not-allowed text-white font-bold rounded-2xl transition-colors"
                 >
                   {isSubmitting ? "Đang lưu..." : "Thêm thuốc"}
                 </button>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Plus, X, Loader2 } from "lucide-react";
 import { ScanResult } from "@/pages/ScannerPage";
 import { useAuth } from "@/context/AuthContext";
@@ -20,15 +20,19 @@ interface FamilyMember {
 const ResultState = ({ result, onReset }: ResultStateProps) => {
   const { token } = useAuth();
   const [members, setMembers] = useState<FamilyMember[]>([]);
-  const [selectedMember, setSelectedMember] = useState<string>("Bo"); // Defaulting for visual
+  // Bug #3 fix: selectedMember now holds a real familyMemberId (string), defaulting to ""
+  const [selectedMemberId, setSelectedMemberId] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [medications, setMedications] = useState(result.medications);
-  
+  const isMounted = useRef(true);
+
   // Pending save warning
   const [pendingSave, setPendingSave] = useState(false);
 
   useEffect(() => {
+    isMounted.current = true;
     fetchMembers();
+    return () => { isMounted.current = false; }; // Bug #10 fix: cleanup prevent state update on unmount
   }, []);
 
   const fetchMembers = async () => {
@@ -36,8 +40,15 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
       const resp = await fetch("/api/family", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await resp.json();
+      if (!resp.ok) return;
+      const data: FamilyMember[] = await resp.json();
+      if (!isMounted.current) return;
       setMembers(data);
+      // Bug #3 fix: auto-select "Bản thân" member, or first member if available
+      if (data.length > 0) {
+        const selfMember = data.find(m => m.relationship === "Bản thân");
+        setSelectedMemberId(selfMember ? selfMember.id : data[0].id);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -59,14 +70,65 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
     setMedications([...medications, { name: "", dosage: "", instructions: "" }]);
   };
 
+  // Bug #2 fix: real API call instead of fake setTimeout
   const handleSaveAll = async () => {
+    if (!selectedMemberId) {
+      toast.error("Vui lòng chọn thành viên gia đình để gán thuốc");
+      return;
+    }
+
+    const validMeds = medications.filter(m => m.name.trim());
+    if (validMeds.length === 0) {
+      toast.error("Không có thuốc nào để lưu");
+      return;
+    }
+
     setIsSaving(true);
-    // Simulate save
-    setTimeout(() => {
+    let savedCount = 0;
+    let failCount = 0;
+
+    try {
+      // Save each medication as a separate entry
+      await Promise.all(validMeds.map(async (med) => {
+        try {
+          const resp = await fetch("/api/cabinet/save", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              name: med.name,
+              dosage: med.dosage || "Chưa rõ",
+              instructions: med.instructions || "",
+              diagnosis: result.diagnosis || "Chưa xác định",
+              symptoms_treated: med.suggested_symptoms?.join(", ") || "",
+              familyMemberId: selectedMemberId,
+              isShared: true
+            })
+          });
+          if (resp.ok) {
+            savedCount++;
+          } else {
+            failCount++;
+          }
+        } catch {
+          failCount++;
+        }
+      }));
+
+      if (savedCount > 0) {
+        toast.success(`Đã lưu ${savedCount} thuốc vào tủ thành công!`);
+        onReset();
+      }
+      if (failCount > 0) {
+        toast.error(`${failCount} thuốc không thể lưu. Vui lòng thử lại.`);
+      }
+    } catch {
+      toast.error("Lỗi kết nối, không thể lưu đơn thuốc");
+    } finally {
       setIsSaving(false);
-      toast.success("Đã phân tích và lưu đơn thuốc thành công!");
-      onReset();
-    }, 1500);
+    }
   };
 
   return (
@@ -135,18 +197,22 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
 
       {/* Bottom Panel */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#e2e8f0]/95 backdrop-blur-md p-6 border-t border-white/20 rounded-b-[2.5rem] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <span className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider w-16 sm:w-auto">Gán nhắc nhở cho:</span>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="member" checked={selectedMember === "Bo"} onChange={() => setSelectedMember("Bo")} className="w-4 h-4 text-slate-800 focus:ring-slate-800" />
-              <span className="text-sm font-medium text-slate-800">Bố</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="member" checked={selectedMember === "Toi"} onChange={() => setSelectedMember("Toi")} className="w-4 h-4 text-slate-800 focus:ring-slate-800" />
-              <span className="text-sm font-medium text-slate-800">Tôi</span>
-            </label>
-          </div>
+        {/* Bug #3 fix: real family member selector from API */}
+        <div className="flex items-center gap-3">
+          <span className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">Gán cho:</span>
+          {members.length === 0 ? (
+            <span className="text-xs text-slate-400 italic">Đang tải thành viên...</span>
+          ) : (
+            <select
+              value={selectedMemberId}
+              onChange={e => setSelectedMemberId(e.target.value)}
+              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50 cursor-pointer"
+            >
+              {members.map(m => (
+                <option key={m.id} value={m.id}>{m.name} ({m.relationship})</option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -158,8 +224,8 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
           </button>
           <button 
             onClick={handleSaveAll}
-            disabled={isSaving}
-            className="flex-1 sm:flex-none bg-gradient-to-r from-[#60a5fa] to-[#3b82f6] hover:opacity-90 text-white font-semibold px-8 py-3.5 rounded-2xl transition-opacity shadow-lg shadow-blue-500/20 text-sm flex items-center justify-center min-w-[140px]"
+            disabled={isSaving || !selectedMemberId}
+            className="flex-1 sm:flex-none bg-gradient-to-r from-[#60a5fa] to-[#3b82f6] hover:opacity-90 disabled:opacity-50 text-white font-semibold px-8 py-3.5 rounded-2xl transition-opacity shadow-lg shadow-blue-500/20 text-sm flex items-center justify-center min-w-[140px]"
           >
             {isSaving ? <Loader2 size={18} className="animate-spin" /> : "Lưu đơn thuốc"}
           </button>

@@ -52,7 +52,7 @@ export default function SettingsPage() {
     
     setIsLoading(true);
     try {
-      const token = localStorage.getItem("famcare_token");
+      const token = localStorage.getItem("aura_token"); // Fix #1: correct key
       const res = await fetch("/api/auth/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -63,15 +63,21 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error(data.error || "Đã có lỗi xảy ra");
       
       toast.success(data.message || "Đổi mật khẩu thành công!");
-      setIsChangingPassword(false);
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      closePasswordModal();
     } catch (err: any) {
       setPasswordError(err.message);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Fix #5: helper to close modal AND reset all state including error
+  const closePasswordModal = () => {
+    setIsChangingPassword(false);
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
   };
 
   return (
@@ -183,7 +189,7 @@ export default function SettingsPage() {
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <h3 className="font-bold text-slate-800 text-xl">Đổi mật khẩu</h3>
               <button 
-                onClick={() => setIsChangingPassword(false)}
+                onClick={() => closePasswordModal()}
                 className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-slate-100"
               >
                 <X size={20} />
@@ -238,7 +244,7 @@ export default function SettingsPage() {
               <div className="pt-4 flex gap-3">
                 <button 
                   type="button"
-                  onClick={() => setIsChangingPassword(false)}
+                  onClick={() => closePasswordModal()}
                   className="flex-1 h-14 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-colors"
                 >
                   Hủy
