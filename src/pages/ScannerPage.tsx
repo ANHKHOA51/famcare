@@ -99,7 +99,7 @@ const ScannerPage = () => {
           
           {step === "scanning" && (
             <div className="bg-[#e2e8f0]/40 rounded-3xl h-full min-h-[400px] flex items-center justify-center">
-               <ScanningState imageUrl={""} minimal={true} />
+               <ScanningState imageUrl={imageUrl} minimal={true} />
             </div>
           )}
 

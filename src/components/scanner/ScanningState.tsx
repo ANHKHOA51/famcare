@@ -4,9 +4,10 @@ import { Brain } from "lucide-react";
 
 interface ScanningStateProps {
   imageUrl: string;
+  minimal?: boolean;
 }
 
-const ScanningState = ({ imageUrl }: ScanningStateProps) => {
+const ScanningState = ({ imageUrl, minimal = false }: ScanningStateProps) => {
   const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
@@ -17,14 +18,17 @@ const ScanningState = ({ imageUrl }: ScanningStateProps) => {
   }, []);
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-up">
-      <div className="text-center mb-10">
-        <h2 className="text-[2rem] font-display font-bold text-foreground mb-3 tracking-tight">AI đang phân tích...</h2>
-        <p className="text-on-surface-variant text-[0.875rem]">Chúng tôi đang xử lý đơn thuốc và tạo kế hoạch dinh dưỡng chuyên biệt cho bạn.</p>
-      </div>
+    <div className={`max-w-2xl mx-auto animate-fade-up ${minimal ? 'w-full' : ''}`}>
+      {!minimal && (
+        <div className="text-center mb-10">
+          <h2 className="text-[2rem] font-display font-bold text-foreground mb-3 tracking-tight">AI đang phân tích...</h2>
+          <p className="text-on-surface-variant text-[0.875rem]">Chúng tôi đang xử lý đơn thuốc và tạo kế hoạch dinh dưỡng chuyên biệt cho bạn.</p>
+        </div>
+      )}
 
-      <div className="relative rounded-2xl overflow-hidden surface-2 shadow-elevated border border-primary/10">
-        <img src={imageUrl} alt="Prescription" className="w-full max-h-[500px] object-contain opacity-70" />
+      <div className={`relative rounded-2xl overflow-hidden surface-2 shadow-elevated border border-primary/10 ${minimal && !imageUrl ? 'h-64 flex items-center justify-center' : ''}`}>
+        {imageUrl && <img src={imageUrl} alt="Prescription" className="w-full max-h-[500px] object-contain opacity-70" />}
+        {!imageUrl && minimal && <div className="absolute inset-0 bg-slate-100/50 flex items-center justify-center"><Brain className="text-primary/20" size={80} /></div>}
 
         {/* Laser Scan Line */}
         <div className="absolute left-0 right-0 animate-scan-line z-10" style={{ height: "4px" }}>
