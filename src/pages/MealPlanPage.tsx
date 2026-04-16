@@ -11,6 +11,7 @@ interface Macros {
   protein: number;
   carbs: number;
   fat: number;
+  sugar: number;
 }
 
 interface Meal {
@@ -238,7 +239,7 @@ const MealPlanPage = ({ diagnosis, recommendedFoods = [], onBack }: MealPlanPage
                     </div>
 
                     {meal.macros && (
-                      <div className="grid grid-cols-4 gap-2 pt-2 pb-1 border-t border-border">
+                      <div className="grid grid-cols-5 gap-2 pt-2 pb-1 border-t border-border">
                         <div className="flex flex-col items-center p-2 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400">
                            <span className="text-xs font-medium uppercase opacity-70">Kcal</span>
                            <span className="text-sm font-bold">{meal.macros.calories}</span>
@@ -254,6 +255,10 @@ const MealPlanPage = ({ diagnosis, recommendedFoods = [], onBack }: MealPlanPage
                         <div className="flex flex-col items-center p-2 rounded-lg bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400">
                            <span className="text-xs font-medium uppercase opacity-70">Fat</span>
                            <span className="text-sm font-bold">{meal.macros.fat}g</span>
+                        </div>
+                        <div className="flex flex-col items-center p-2 rounded-lg bg-fuchsia-50 dark:bg-fuchsia-950/20 text-fuchsia-600 dark:text-fuchsia-400">
+                           <span className="text-xs font-medium uppercase opacity-70">Đường</span>
+                           <span className="text-sm font-bold">{meal.macros.sugar}g</span>
                         </div>
                       </div>
                     )}

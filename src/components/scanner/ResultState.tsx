@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface ResultStateProps {
   result: ScanResult;
@@ -34,6 +35,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
   const [editedMedications, setEditedMedications] = useState<Record<number, string>>({});
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>("");
+  const [pendingMed, setPendingMed] = useState<{ med: any, index: number, finalName: string } | null>(null);
 
   useEffect(() => {
     fetchMembers();
@@ -215,7 +217,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
                           }
                         }}
                         autoFocus
-                        className="h-8 max-w-[200px] font-bold text-lg px-2"
+                        className="w-full h-auto py-1 font-bold text-lg px-2 shadow-none border-dashed border-primary/50"
                       />
                     ) : (
                       <>
@@ -272,7 +274,7 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
                 </div>
                 
                 <Button 
-                  onClick={() => handleSaveToCabinet(med, i)}
+                  onClick={() => handleSaveToCabinet(med, i, showWarning)}
                   disabled={savedMedications.includes(finalName) || isSaving}
                   variant={savedMedications.includes(finalName) ? "secondary" : "outline"}
                   className={`gap-2 shrink-0 h-11 px-5 rounded-xl transition-all font-semibold ${savedMedications.includes(finalName) ? "bg-success/10 text-success border-transparent hover:bg-success/15" : "border-primary/20 hover:bg-primary/5 hover:border-primary/40 shadow-sm"}`}
@@ -286,39 +288,6 @@ const ResultState = ({ result, onReset, onGenerateMealPlan }: ResultStateProps) 
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Nutrition Plan */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="surface-2 rounded-2xl p-8 shadow-patient">
-          <div className="flex items-center gap-2.5 mb-6 text-success">
-            <Utensils size={20} />
-            <h3 className="text-lg font-semibold font-display text-foreground">Thực phẩm nên ăn</h3>
-          </div>
-          <div className="space-y-2.5">
-            {result.nutrition.recommended_foods.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-success/5 border border-success/10">
-                <CheckCircle2 size={16} className="text-success" />
-                <p className="font-medium text-foreground text-[0.875rem]">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="surface-2 rounded-2xl p-8 shadow-patient">
-          <div className="flex items-center gap-2.5 mb-6 text-destructive">
-            <AlertTriangle size={20} />
-            <h3 className="text-lg font-semibold font-display text-foreground">Thực phẩm nên tránh</h3>
-          </div>
-          <div className="space-y-2.5">
-            {result.nutrition.foods_to_avoid.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-destructive/5 border border-destructive/10">
-                <AlertTriangle size={16} className="text-destructive" />
-                <p className="font-medium text-foreground text-[0.875rem]">{item}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

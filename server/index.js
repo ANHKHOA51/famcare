@@ -139,6 +139,9 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
   
   if (user) {
     delete user.password; // Don't send password hash
+    if (user.height && user.weight) {
+      user.bmi = parseFloat((user.weight / ((user.height / 100) * (user.height / 100))).toFixed(1));
+    }
   }
   
   res.json(user);
@@ -166,6 +169,9 @@ app.put('/api/auth/profile', authenticateToken, async (req, res) => {
     });
     
     delete updatedUser.password;
+    if (updatedUser.height && updatedUser.weight) {
+      updatedUser.bmi = parseFloat((updatedUser.weight / ((updatedUser.height / 100) * (updatedUser.height / 100))).toFixed(1));
+    }
     res.json(updatedUser);
   } catch (error) {
     console.error('PROFILE UPDATE ERROR:', error);
@@ -571,9 +577,9 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
 
     const prompt = `Analyze prescription image. 
     If the image is entirely blurry, unreadable, or clearly not a medical document, return ONLY this JSON: { "error": "BLURRY" }.
-    Otherwise, extract diagnosis, medications, and nutrition advice. Link the nutrition advice strictly to the diagnosis, providing specific dietary restrictions and warnings based on the identified condition (e.g. if High Blood pressure, explicitly state 'Giảm ăn muối/natri', if diabetes, 'Việc kiểm soát lượng đường là bắt buộc'). 
+    Otherwise, extract diagnosis and medications. 
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
-    Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }], "nutrition": { "general_dietary_advice": ["string"], "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
+    Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }] }. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
     const response = await result.response;
@@ -630,7 +636,7 @@ app.post('/api/generate-meal-plan', async (req, res) => {
 
     Mỗi ngày chọn đúng 2 món (Sáng và Trưa/Tối) từ danh sách trên sao cho phù hợp nhất với bệnh lý.
     Yêu cầu:
-    1. Trả về đúng định dạng JSON kèm số liệu macros (calories, protein, carbs, fat bằng số/grams), mảng \`alternatives\` (chứa 2 mã ID thay thế cho mỗi bữa) và \`general_dietary_advice\` (mảng các lời khuyên/cảnh báo kiêng cữ dinh dưỡng chung): { "general_dietary_advice": ["Lời khuyên 1", "Lời khuyên 2"], "meal_plan": [ { "day": "Ngày 1", "meals": [ { "type": "Sáng", "food_id": "MÃ_ID_TRONG_DANH_SÁCH", "reason": "Tại sao món này tốt cho bệnh lý này?", "macros": {"calories": 300, "protein": 15, "carbs": 40, "fat": 10}, "alternatives": ["ID_MON_THAY_THE_1", "ID_MON_THAY_THE_2"] } ] } ] }.
+    1. Trả về đúng định dạng JSON kèm số liệu macros (calories, protein, carbs, fat, sugar bằng số/grams), mảng \`alternatives\` (chứa 2 mã ID thay thế cho mỗi bữa) và \`general_dietary_advice\` (mảng các lời khuyên/cảnh báo kiêng cữ dinh dưỡng chung): { "general_dietary_advice": ["Lời khuyên 1", "Lời khuyên 2"], "meal_plan": [ { "day": "Ngày 1", "meals": [ { "type": "Sáng", "food_id": "MÃ_ID_TRONG_DANH_SÁCH", "reason": "Tại sao món này tốt cho bệnh lý này?", "macros": {"calories": 300, "protein": 15, "carbs": 40, "fat": 10, "sugar": 5}, "alternatives": ["ID_MON_THAY_THE_1", "ID_MON_THAY_THE_2"] } ] } ] }.
     2. "food_id" và "alternatives" PHẢI khớp chính xác 100% với mã ID được cung cấp và tuân thủ tuyệt đối các giới hạn ăn uống của bệnh nhân.
     3. Phần "reason" viết tự nhiên, thuyết phục.
     4. KHÔNG TRẢ VỀ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;

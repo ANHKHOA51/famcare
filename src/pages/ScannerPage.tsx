@@ -89,7 +89,7 @@ const ScannerPage = () => {
       {step === "meal-plan" && scanResult && (
         <MealPlanPage 
           diagnosis={scanResult.diagnosis}
-          recommendedFoods={scanResult.nutrition.recommended_foods}
+          recommendedFoods={scanResult.nutrition?.recommended_foods || []}
           onBack={() => setStep("result")}
         />
       )}

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Upload, FileImage, AlertCircle } from "lucide-react";
+import { Upload, FileImage, AlertCircle, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface UploadStateProps {
@@ -62,7 +62,7 @@ const UploadState = ({ onFileSelected }: UploadStateProps) => {
             Chọn ảnh
           </Button>
           <Button variant="default" className="gap-2" onClick={(e) => { e.stopPropagation(); document.getElementById("camera-input")?.click(); }}>
-            <FileImage size={16} />
+            <Camera size={16} />
             Chụp trực tiếp
           </Button>
         </div>

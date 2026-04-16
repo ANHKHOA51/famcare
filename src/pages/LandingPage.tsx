@@ -48,16 +48,16 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative group rounded-3xl overflow-hidden">
             <img
               src={heroCare}
               alt="Chăm sóc người cao tuổi"
-              className="rounded-3xl w-full object-cover"
+              className="w-full object-cover transition-transform duration-1000 group-hover:scale-110"
               width={800}
               height={640}
             />
             {/* Vitals overlay — glass */}
-            <div className="absolute bottom-8 left-6 right-6 surface-glass rounded-2xl px-6 py-5 shadow-elevated flex items-center justify-between">
+            <div className="absolute bottom-8 left-6 right-6 surface-glass rounded-2xl px-6 py-5 shadow-elevated flex items-center justify-between transition-transform duration-700 group-hover:-translate-y-2">
               <div>
                 <p className="text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">Chỉ số sinh tồn</p>
                 <p className="text-[2rem] font-bold text-foreground font-display leading-none mt-1">98 <span className="text-sm font-normal text-on-surface-variant">bpm</span></p>
@@ -93,8 +93,8 @@ const LandingPage = () => {
             </div>
 
             {/* Center image */}
-            <div className="rounded-2xl overflow-hidden min-h-[300px]">
-              <img src={serviceScanner} alt="Medical technology" className="w-full h-full object-cover" loading="lazy" width={640} height={512} />
+            <div className="rounded-2xl overflow-hidden min-h-[300px] group">
+              <img src={serviceScanner} alt="Medical technology" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" width={640} height={512} />
             </div>
 
             {/* 24/7 Monitoring — primary tonal */}
