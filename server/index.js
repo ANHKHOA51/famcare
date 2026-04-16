@@ -424,12 +424,7 @@ app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
 // --- AI & Scanner Routes ---
 const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
-const OPENAI_JSON_SYSTEM_PROMPT = `You are a strict JSON API.
-Return valid JSON only.
-Do not wrap output in markdown code fences.
-Do not include any explanation, prefix, or suffix text.`;
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
   process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
   ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash')
@@ -454,20 +449,13 @@ const isRetryableGeminiError = (error) => {
   );
 };
 
-const isOpenAIInsufficientQuotaError = (error) => {
-  const details = `${error?.details || ''}`.toLowerCase();
-  const message = `${error?.message || ''}`.toLowerCase();
-  return details.includes('insufficient_quota') || message.includes('insufficient_quota');
-};
-
 const isProviderTemporaryFailure = (error) => {
   const status = error?.status ?? error?.response?.status;
-  const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase();
+  const message = `${error?.message || ''}`.toLowerCase();
   return (
     status === 429 ||
     status === 503 ||
     message.includes('quota') ||
-    message.includes('insufficient_quota') ||
     message.includes('overload') ||
     message.includes('high demand') ||
     message.includes('service unavailable')
@@ -555,7 +543,7 @@ const extractJsonFromText = (text) => {
 const parseJsonStrict = (text) => JSON.parse(extractJsonFromText(text));
 
 const generateWithFallbackModels = async (contents, options = {}) => {
-  const { task = 'generic', strictJson = true } = options;
+  const { task = 'generic' } = options;
   let lastError;
 
   for (const modelName of GEMINI_MODEL_CANDIDATES) {
@@ -569,98 +557,6 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       console.warn(`[AI][Gemini][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
 
       // Continue to next provider/model even on non-retryable Gemini errors (e.g. 404 model not found).
-      continue;
-    }
-  }
-
-  if (!OPENAI_API_KEY) {
-    throw lastError;
-  }
-
-  const openAiModels = Array.from(new Set([
-    process.env.OPENAI_MODEL_PRIMARY || 'gpt-4o-mini',
-    ...(process.env.OPENAI_MODEL_FALLBACKS || 'gpt-4.1-mini,gpt-4o').split(',').map(model => model.trim()).filter(Boolean)
-  ])).filter(Boolean);
-
-  const openAiMessages = Array.isArray(contents)
-    ? [{
-        role: 'user',
-        content: contents.flatMap(part => {
-          if (typeof part === 'string') {
-            return [{ type: 'text', text: part }];
-          }
-
-          if (part?.inlineData?.data) {
-            return [{
-              type: 'image_url',
-              image_url: {
-                url: `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`
-              }
-            }];
-          }
-
-          return [];
-        })
-      }]
-    : [{ role: 'user', content: [{ type: 'text', text: String(contents) }] }];
-
-  for (const modelName of openAiModels) {
-    try {
-      const contentForOpenAI = [
-        {
-          type: 'text',
-          text: strictJson
-            ? `${OPENAI_JSON_SYSTEM_PROMPT}\n\nFollow the user instruction and keep the exact JSON schema requested.`
-            : 'Follow the user instruction carefully.',
-        },
-        ...openAiMessages[0].content,
-      ];
-
-      const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: modelName,
-          messages: [{ role: 'user', content: contentForOpenAI }],
-          temperature: 0.2,
-          ...(strictJson ? { response_format: { type: 'json_object' } } : {}),
-        }),
-      });
-
-      if (!openAiResponse.ok) {
-        const errorText = await openAiResponse.text();
-        const error = new Error(`OpenAI request failed (${openAiResponse.status})`);
-        error.status = openAiResponse.status;
-        error.details = errorText;
-        throw error;
-      }
-
-      const data = await openAiResponse.json();
-      const content = data?.choices?.[0]?.message?.content || '';
-      console.info(`[AI][OpenAI][${task}] success model=${modelName}`);
-
-      if (strictJson) {
-        parseJsonStrict(content);
-      }
-
-      return {
-        response: {
-          text: () => content,
-        },
-      };
-    } catch (error) {
-      lastError = error;
-      console.warn(`[AI][OpenAI][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
-
-      if (isOpenAIInsufficientQuotaError(error)) {
-        console.warn(`[AI][OpenAI][${task}] quota exhausted, stop retrying OpenAI models.`);
-        break;
-      }
-
-      // Keep trying remaining OpenAI models for maximum availability.
       continue;
     }
   }
@@ -698,9 +594,6 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
       }
     }
 
-    if (isOpenAIInsufficientQuotaError(error)) {
-      return res.status(429).json({ error: 'Hệ thống AI đang quá tải do nhu cầu cao. Vui lòng thử lại sau giây lát!' });
-    }
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
       return res.status(429).json({ error: 'Hệ thống AI đang quá tải do nhu cầu cao. Vui lòng thử lại sau giây lát!' });
     }
@@ -784,9 +677,6 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     });
   } catch (error) {
     console.error('MEAL PLAN ERROR:', error);
-    if (isOpenAIInsufficientQuotaError(error)) {
-      return res.status(429).json({ error: 'OpenAI đã hết quota hiện tại. Vui lòng nạp quota hoặc dùng nhà cung cấp AI khác.' });
-    }
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
       return res.status(429).json({ error: 'Hệ thống AI tạo thực đơn đang quá tải. Vui lòng thử lại sau!' });
     }
@@ -853,9 +743,6 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     res.json(parseJsonStrict(result.response.text()));
   } catch (error) {
     console.error('AI SEARCH ERROR:', error);
-    if (isOpenAIInsufficientQuotaError(error)) {
-      return res.status(429).json({ error: 'OpenAI đã hết quota hiện tại. Vui lòng nạp quota hoặc dùng nhà cung cấp AI khác.' });
-    }
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
       return res.status(429).json({ error: 'AI tìm kiếm của tủ thuốc đang quá tải. Vui lòng thử lại sau.' });
     }
