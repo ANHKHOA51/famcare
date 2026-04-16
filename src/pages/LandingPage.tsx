@@ -1,11 +1,10 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { ScanLine, Monitor, Home, Utensils, ArrowRight, AlertCircle } from "lucide-react";
+import { ScanLine, Crosshair, Calendar, Pill, ShieldCheck, Users, PhoneCall } from "lucide-react";
 import heroCare from "@/assets/hero-care.jpg";
-import serviceScanner from "@/assets/service-scanner.jpg";
 import PublicNavbar from "@/components/PublicNavbar";
-
+import PublicFooter from "@/components/PublicFooter";
 import PricingSection from "@/components/PricingSection";
 
 const LandingPage = () => {
@@ -21,175 +20,121 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen surface-2">
+    <div className="min-h-screen bg-white">
       <PublicNavbar />
 
       {/* Hero */}
-      <section className="px-8 lg:px-16 py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+      <section className="px-8 lg:px-16 py-20 lg:py-28 relative overflow-hidden bg-gradient-to-r from-slate-50 to-cyan-50/30">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
           <div>
-            <div className="inline-block bg-success-container text-success-on-container text-[0.6875rem] font-semibold px-4 py-1.5 rounded-full mb-8 tracking-wider uppercase">
-              FamCare · Kỷ nguyên y tế mới
-            </div>
-            <h2 className="text-5xl lg:text-[3.5rem] font-display font-extrabold text-foreground leading-[1.08] mb-7 tracking-tight">
-              Chăm sóc cha mẹ<br />
-              <span className="text-primary">từ bất cứ đâu.</span>
-            </h2>
-            <p className="text-on-surface-variant text-[1rem] mb-10 max-w-md leading-[1.7]">
-              Giải pháp y tế thông minh dành cho người bận rộn. Theo dõi sức khỏe thời gian thực và kết nối bác sĩ tận tâm cho người thân yêu của bạn.
+            <h1 className="text-5xl lg:text-[4rem] font-display font-extrabold text-[#1a202c] leading-[1.1] mb-6 tracking-tight">
+              Chăm sóc cha mẹ <br />
+              từ <span className="text-[#0ea5e9]">bất cứ đâu</span>
+            </h1>
+            <p className="text-slate-500 text-[1.125rem] mb-10 max-w-md leading-relaxed">
+              Giải pháp y tế thông minh cho gia đình và bản thân từ bất cứ đâu! Khám phá ngay bây giờ cùng FamCare!
             </p>
-            <div className="flex gap-4">
-              <Button onClick={handleCtaClick} size="lg" className="rounded-full">
-                {isAuthenticated ? "Vào ứng dụng" : "Bắt đầu ngay"}
+            <div className="flex flex-wrap gap-4">
+              <Button onClick={handleCtaClick} size="lg" className="rounded-xl px-8 h-12 bg-[#0ea5e9] hover:bg-[#0284c7] text-white shadow-lg shadow-cyan-500/25">
+                Truy cập vào ứng dụng
               </Button>
-              <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/app")}>
+              <Button variant="secondary" size="lg" className="rounded-xl px-8 h-12 bg-slate-100 hover:bg-slate-200 text-slate-700" onClick={() => navigate("/app")}>
                 Xem cách hoạt động
               </Button>
             </div>
           </div>
 
-          <div className="relative group rounded-3xl overflow-hidden">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
             <img
               src={heroCare}
               alt="Chăm sóc người cao tuổi"
-              className="w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              className="w-full h-auto object-cover"
               width={800}
               height={640}
             />
-            {/* Vitals overlay — glass */}
-            <div className="absolute bottom-8 left-6 right-6 surface-glass rounded-2xl px-6 py-5 shadow-elevated flex items-center justify-between transition-transform duration-700 group-hover:-translate-y-2">
-              <div>
-                <p className="text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">Chỉ số sinh tồn</p>
-                <p className="text-[2rem] font-bold text-foreground font-display leading-none mt-1">98 <span className="text-sm font-normal text-on-surface-variant">bpm</span></p>
-              </div>
-              <span className="bg-success-container text-success-on-container text-[0.6875rem] font-semibold px-4 py-2 rounded-full">
-                Trạng thái: Ổn định
-              </span>
-            </div>
           </div>
         </div>
-
       </section>
 
       {/* Pricing Section */}
       <PricingSection />
 
-      {/* Services — surface shift to Level 0 */}
-      <section id="services" className="px-8 lg:px-16 py-20 surface-0">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl lg:text-[2.5rem] font-display font-bold text-foreground tracking-tight mb-3">Dịch vụ chăm sóc 5 sao</h2>
-            <p className="text-on-surface-variant text-[0.875rem]">Kết hợp giữa công nghệ AI tiên tiến và sự thấu cảm trong y đức.</p>
+      {/* Services - 4 Squares (Figma) */}
+      <section className="px-8 lg:px-16 py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-transform hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-full border border-cyan-100 bg-cyan-50 flex items-center justify-center mb-6">
+              <ScanLine size={24} className="text-[#0ea5e9]" />
+            </div>
+            <h3 className="text-lg font-bold font-display text-slate-800 mb-3">Quét đơn thuốc AI</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">Trích xuất dữ liệu từ ảnh chụp đơn thuốc ngay lập tức với độ chính xác cao.</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6 mb-6">
-            {/* AI Scanner */}
-            <div className="surface-2 rounded-2xl p-8 flex flex-col justify-end min-h-[300px] shadow-patient transition-shadow duration-300 hover:shadow-elevated">
-              <div className="w-11 h-11 rounded-xl bg-primary/8 flex items-center justify-center mb-5">
-                <ScanLine size={20} className="text-primary" />
-              </div>
-              <h3 className="text-lg font-bold font-display text-foreground mb-2">Quét đơn thuốc AI</h3>
-              <p className="text-[0.8125rem] text-on-surface-variant leading-relaxed">Công nghệ nhận diện văn bản giúp chuyển đổi đơn thuốc viết tay thành lời nhắc uống thuốc thông minh trên điện thoại.</p>
+          <div className="bg-white rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-transform hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-full border border-orange-100 bg-orange-50 flex items-center justify-center mb-6">
+              <Crosshair size={24} className="text-orange-500" />
             </div>
-
-            {/* Center image */}
-            <div className="rounded-2xl overflow-hidden min-h-[300px] group">
-              <img src={serviceScanner} alt="Medical technology" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" width={640} height={512} />
-            </div>
-
-            {/* 24/7 Monitoring — primary tonal */}
-            <div className="gradient-primary rounded-2xl p-8 flex flex-col justify-end min-h-[300px] text-primary-foreground shadow-patient">
-              <div className="w-11 h-11 rounded-xl bg-primary-foreground/15 flex items-center justify-center mb-5">
-                <Monitor size={20} />
-              </div>
-              <h3 className="text-lg font-bold font-display mb-2">Giám sát 24/7</h3>
-              <p className="text-sm opacity-80 leading-relaxed">Theo dõi nhịp tim, giấc ngủ và cảnh báo té ngã ngay lập tức qua ứng dụng của bạn.</p>
-              <div className="flex items-center gap-1 mt-5">
-                <div className="w-8 h-8 rounded-full bg-primary-foreground/25" />
-                <div className="w-8 h-8 rounded-full bg-primary-foreground/25 -ml-2" />
-                <div className="w-8 h-8 rounded-full bg-primary-foreground/15 -ml-2 flex items-center justify-center text-[10px] font-bold">+12</div>
-              </div>
-              <p className="text-[0.75rem] mt-2 opacity-65">Đội ngũ y sĩ luôn sẵn sàng</p>
-            </div>
+            <h3 className="text-lg font-bold font-display text-slate-800 mb-3">Chuyên gia dinh dưỡng AI</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">Lên kế hoạch ăn uống cá nhân hóa dựa trên tình trạng sức khỏe của từng cá nhân.</p>
           </div>
 
-          <div className="grid lg:grid-cols-5 gap-6">
-            {/* Home Care — primary dark */}
-            <div className="lg:col-span-2 gradient-primary rounded-2xl p-8 min-h-[220px] flex flex-col justify-end text-primary-foreground shadow-patient">
-              <div className="w-11 h-11 rounded-xl bg-primary-foreground/15 flex items-center justify-center mb-5">
-                <Home size={20} />
-              </div>
-              <h3 className="text-lg font-bold font-display mb-2">Chăm sóc tại nhà</h3>
-              <p className="text-sm opacity-80 mb-5 leading-relaxed">Đặt lịch điều dưỡng tới tận nhà để thay băng, tiêm thuốc hoặc hỗ trợ sinh hoạt.</p>
-              <button onClick={() => navigate("/app")} className="flex items-center gap-1.5 text-sm font-semibold opacity-85 hover:opacity-100 transition-opacity w-fit">
-                Khám phá ngay <ArrowRight size={14} />
-              </button>
+          <div className="bg-white rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-transform hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-full border border-blue-100 bg-blue-50 flex items-center justify-center mb-6">
+              <Pill size={24} className="text-blue-500" />
             </div>
+            <h3 className="text-lg font-bold font-display text-slate-800 mb-3">Tủ thuốc AI</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">Quản lý tủ thuốc gia đình và cài đặt nhắc nhở uống thuốc thông minh.</p>
+          </div>
 
-            {/* Personalized Nutrition — tertiary */}
-            <div className="lg:col-span-3 bg-tertiary rounded-2xl p-8 min-h-[220px] flex flex-col justify-end text-tertiary-foreground shadow-patient">
-              <div className="w-11 h-11 rounded-xl bg-tertiary-foreground/15 flex items-center justify-center mb-5">
-                <Utensils size={20} />
+          <div className="bg-white rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-transform hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-full border border-slate-100 bg-slate-50 flex items-center justify-center mb-6">
+              <Calendar size={24} className="text-slate-500" />
+            </div>
+            <h3 className="text-lg font-bold font-display text-slate-800 mb-3">Đặt lịch khám bệnh</h3>
+            <p className="text-sm text-slate-500 leading-relaxed">Đặt lịch nhanh chóng với các chuyên gia hàng đầu trong hệ thống.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Split Section - Smartwatch + Stats */}
+      <section className="px-8 lg:px-16 py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-6">
+          <div className="relative rounded-2xl overflow-hidden min-h-[400px]">
+            <img 
+              src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=800" 
+              alt="Smartwatch" 
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
+            <p className="absolute bottom-6 left-8 right-8 text-white font-display font-medium text-lg">
+              Kết nối hiệu quả với gia đình
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <div className="bg-[#2a4365] rounded-2xl p-10 flex-1 flex flex-col justify-center text-white">
+              <ShieldCheck size={32} className="mb-4 text-cyan-300" />
+              <h3 className="text-2xl font-display font-bold mb-2">Bảo mật tuyệt đối</h3>
+              <p className="text-slate-300 text-sm">Dữ liệu y tế của gia đình bạn được mã hóa theo tiêu chuẩn quốc tế.</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-6 flex-1">
+              <div className="bg-[#0ea5e9] rounded-2xl p-8 flex flex-col items-center justify-center text-center text-white">
+                <Users size={28} className="mb-3 opacity-90" />
+                <h3 className="text-3xl font-display font-bold mb-1">200+</h3>
+                <p className="text-xs font-semibold uppercase tracking-wider opacity-90">Bác sĩ chuyên khoa</p>
               </div>
-              <h3 className="text-lg font-bold font-display mb-2">Dinh dưỡng cá nhân hóa</h3>
-              <p className="text-sm opacity-80 leading-relaxed">Thực đơn được thiết kế bởi chuyên gia dinh dưỡng dựa trên bệnh lý và khẩu vị của người cao tuổi.</p>
+              <div className="bg-[#6b4676] rounded-2xl p-8 flex flex-col items-center justify-center text-center text-white">
+                <PhoneCall size={28} className="mb-3 opacity-90" />
+                <h3 className="text-3xl font-display font-bold mb-1">24/7</h3>
+                <p className="text-xs font-semibold uppercase tracking-wider opacity-90">Hỗ trợ khẩn cấp</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section — tertiary tonal */}
-      <section className="px-8 lg:px-16 py-20 surface-2">
-        <div className="max-w-7xl mx-auto bg-tertiary rounded-3xl p-12 lg:p-18 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="text-tertiary-foreground">
-            <h2 className="text-3xl lg:text-[2.5rem] font-display font-extrabold leading-[1.1] mb-5 tracking-tight">
-              Yên tâm làm việc,<br />FamCare sẽ lo phần còn lại.
-            </h2>
-            <p className="text-sm opacity-75 mb-10 max-w-md leading-[1.7]">
-              Hệ thống thông báo thông minh tự động nhận diện các bất thường và liên hệ ngay với bạn hoặc đội cứu thương trong trường hợp khẩn cấp.
-            </p>
-            <Button
-              variant="outline-light"
-              size="lg"
-              className="rounded-full border-tertiary-foreground/30 text-tertiary-foreground"
-              onClick={() => navigate("/app")}
-            >
-              Dùng thử miễn phí
-            </Button>
-          </div>
-
-          <div className="bg-tertiary-foreground/10 backdrop-blur-sm rounded-2xl p-7">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-full bg-destructive flex items-center justify-center">
-                <AlertCircle size={18} className="text-destructive-foreground" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm text-tertiary-foreground">Cảnh báo khẩn cấp</p>
-                <p className="text-[0.6875rem] opacity-60 text-tertiary-foreground">Vừa xảy ra lúc 10:24 AM</p>
-              </div>
-            </div>
-            <p className="text-sm text-tertiary-foreground/80 italic leading-relaxed">
-              "Phát hiện nhịp tim của Mẹ không ổn định. Điều dưỡng đang trên đường tới hỗ trợ. Vui lòng kiểm tra ứng dụng."
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="px-8 lg:px-16 py-10 surface-2">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="font-display font-bold text-foreground text-lg">FamCare</h3>
-            <p className="text-[0.6875rem] text-on-surface-variant mt-1 uppercase tracking-wider">© 2026 FamCare. ALL RIGHTS RESERVED.</p>
-          </div>
-          <div className="flex gap-8 text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">
-            <Link to="/" className="hover:text-foreground transition-colors">Về chúng tôi</Link>
-            <Link to="/" className="hover:text-foreground transition-colors">Tài liệu</Link>
-            <Link to="/" className="hover:text-foreground transition-colors">Điều khoản</Link>
-            <Link to="/" className="hover:text-foreground transition-colors">Liên hệ</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 };

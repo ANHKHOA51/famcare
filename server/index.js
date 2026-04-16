@@ -147,6 +147,30 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
   res.json(user);
 });
 
+app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    
+    // Find user to verify old password
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+    if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
+      return res.status(401).json({ error: 'Mật khẩu cũ không đúng' });
+    }
+
+    // Hash and update new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: req.user.userId },
+      data: { password: hashedNewPassword }
+    });
+
+    res.json({ message: 'Đổi mật khẩu thành công' });
+  } catch (error) {
+    console.error('CHANGE PASSWORD ERROR:', error);
+    res.status(500).json({ error: 'Lỗi khi đổi mật khẩu' });
+  }
+});
+
 app.put('/api/auth/profile', authenticateToken, async (req, res) => {
   try {
     const { 

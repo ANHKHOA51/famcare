@@ -1,118 +1,296 @@
-import { Heart, Activity, Wind, AlertTriangle, CheckCircle2, Footprints } from "lucide-react";
+import { Search, AlertTriangle, CheckCircle2, Clock, Info, User, ChevronRight, Activity, XCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const vitals = [
-  { label: "Nhịp tim", value: "78", unit: "BPM", status: "Ổn định", statusClass: "bg-success-container text-success-on-container", icon: Heart },
-  { label: "Huyết áp", value: "135/85", unit: "mmHg", status: "Hơi cao", statusClass: "bg-warning/10 text-warning", icon: Activity },
-  { label: "Chỉ số SpO2", value: "98", unit: "%", status: "Tốt", statusClass: "bg-success-container text-success-on-container", icon: Wind },
-];
-
-const activities = [
-  { icon: CheckCircle2, color: "text-success", title: "Uống thuốc buổi sáng", time: "07:00 · Glucophage 500mg" },
-  { icon: Footprints, color: "text-primary", title: "Đi bộ nhẹ nhàng", time: "06:15 · 1,500 bước (20 phút)" },
-  { icon: Activity, color: "text-destructive", title: "Cập nhật huyết áp", time: "08:30 · 135/85 mmHg" },
-];
-
-const DashboardPage = () => {
+export default function DashboardPage() {
   return (
-    <div className="p-4 md:p-10 animate-fade-up">
+    <div className="p-8 lg:p-10 max-w-7xl mx-auto space-y-10 bg-[#f8fafc]">
       {/* Header */}
-      <div className="mb-10">
-        <h2 className="text-[2rem] font-display font-bold text-foreground tracking-tight">
-          Sức khỏe của người thân
-        </h2>
-        <p className="text-on-surface-variant text-[0.875rem] mt-1.5 leading-relaxed">
-          Chào bạn, các chỉ số sinh tồn hiện tại đang được theo dõi trực tiếp. Mọi thứ đều trong tầm kiểm soát.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-2xl font-display font-bold text-slate-800">
+          Chào Lan Anh, hôm nay gia đình thế nào?
+        </h1>
+        <div className="relative w-full md:w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input 
+            type="text" 
+            placeholder="Tìm kiếm hồ sơ, thuốc..." 
+            className="w-full bg-slate-200/50 border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all text-slate-600"
+          />
+        </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8 mb-8">
-        {/* Vitals */}
-        <div className="lg:col-span-2 grid sm:grid-cols-3 gap-4">
-          {vitals.map((v, i) => (
-            <div key={i} className="surface-2 rounded-2xl p-6 shadow-patient transition-shadow duration-300 hover:shadow-elevated">
-              <div className="flex items-center justify-between mb-4">
-                <v.icon size={20} className="text-primary" />
-                <span className={`text-[0.6875rem] font-semibold px-2.5 py-1 rounded-full ${v.statusClass}`}>{v.status}</span>
+      {/* Family Health Status */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-display font-bold text-teal-500">Tình trạng sức khỏe gia đình</h2>
+          <span className="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">Tháng 10, 2026</span>
+        </div>
+        
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Card 1 */}
+          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4">
+              <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100" alt="Ba" className="w-full h-full object-cover" />
               </div>
-              <p className="text-[0.6875rem] text-on-surface-variant uppercase tracking-wider">{v.label}</p>
-              <p className="text-[2.25rem] font-bold text-foreground font-display leading-none mt-1">
-                {v.value} <span className="text-sm font-normal text-on-surface-variant">{v.unit}</span>
-              </p>
+              <span className="text-[0.625rem] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wider">Mức ổn định</span>
             </div>
-          ))}
-        </div>
-
-        {/* Health Alerts — Tertiary treatment */}
-        <div className="bg-tertiary rounded-2xl p-6 text-tertiary-foreground">
-          <div className="flex items-center justify-between mb-5">
-            <AlertTriangle size={20} />
-            <span className="text-[0.6875rem] font-bold bg-tertiary-foreground/20 px-3 py-1 rounded-full uppercase tracking-wider">Khẩn cấp</span>
-          </div>
-          <h3 className="text-[1.25rem] font-display font-bold mb-4">Cảnh báo sức khỏe</h3>
-          <div className="space-y-3">
-            <div className="bg-tertiary-foreground/10 rounded-xl p-4">
-              <p className="font-semibold text-sm">Huyết áp cao</p>
-              <p className="text-[0.75rem] opacity-75 mt-1 leading-relaxed">Vượt ngưỡng 140/90 lúc 08:30 sáng nay. Cần theo dõi thêm.</p>
-            </div>
-            <div className="bg-tertiary-foreground/10 rounded-xl p-4">
-              <p className="font-semibold text-sm">Bỏ lỡ bữa trưa</p>
-              <p className="text-[0.75rem] opacity-75 mt-1 leading-relaxed">Cảm biến tủ lạnh không ghi nhận hoạt động. Vui lòng kiểm tra.</p>
+            <h3 className="font-bold text-slate-800">Ba (Hoàng Nam)</h3>
+            <p className="text-sm text-slate-500 mb-6 flex-1">Cao Huyết Áp</p>
+            <div className="flex items-center gap-2 text-xs font-medium text-teal-600 bg-teal-50 w-fit px-3 py-1.5 rounded-lg">
+              <Clock size={14} /> Kiểm tra 2 ngày trước
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Heart Rate Chart — tonal surface shift */}
-      <div className="surface-2 rounded-2xl p-8 shadow-patient mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-[1.125rem] font-display font-semibold text-foreground">Biểu đồ nhịp tim 24h</h3>
-            <p className="text-[0.8125rem] text-on-surface-variant mt-1">Theo dõi thời gian thực đồng bộ từ thiết bị đeo</p>
+          {/* Card 2 */}
+          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4">
+              <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100" alt="Mẹ" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-[0.625rem] font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full uppercase tracking-wider">Cần lưu ý</span>
+            </div>
+            <h3 className="font-bold text-slate-800">Mẹ (Thanh Vân)</h3>
+            <p className="text-sm text-slate-500 mb-6 flex-1">Tiền Tiểu đường</p>
+            <div className="flex items-center gap-2 text-xs font-bold text-red-500">
+              <AlertTriangle size={14} /> Theo dõi chế độ ăn
+            </div>
           </div>
-          <div className="flex gap-1 surface-1 rounded-xl p-1">
-            {["Giờ", "Ngày", "Tuần"].map((t) => (
-              <button
-                key={t}
-                className={`px-4 py-1.5 text-[0.75rem] rounded-lg font-medium transition-all duration-200 ${
-                  t === "Giờ" ? "surface-2 text-foreground shadow-patient" : "text-on-surface-variant hover:text-foreground"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="h-52 flex items-end gap-2.5 px-4">
-          {[40, 35, 30, 45, 38, 65, 50, 42, 55, 70, 48, 36].map((h, i) => (
-            <div
-              key={i}
-              className="flex-1 bg-primary/12 rounded-t-md hover:bg-primary/25 transition-colors duration-200"
-              style={{ height: `${h}%` }}
-            />
-          ))}
-        </div>
-        <div className="flex justify-between mt-3 px-4 text-[0.6875rem] text-on-surface-variant">
-          {["00:00", "06:00", "12:00", "18:00", "HIỆN TẠI"].map((t) => <span key={t}>{t}</span>)}
-        </div>
-      </div>
 
-      {/* Recent Activities */}
-      <div className="surface-2 rounded-2xl p-8 shadow-patient">
-        <h3 className="text-[1.125rem] font-display font-semibold text-foreground mb-6">Hoạt động gần đây</h3>
-        <div className="space-y-1">
-          {activities.map((a, i) => (
-            <div key={i} className="flex items-center gap-4 p-4 rounded-xl transition-colors duration-200 hover:surface-1">
-              <a.icon size={18} className={a.color} />
+          {/* Card 3 */}
+          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4">
+              <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1595454223600-91fb0ba16c14?auto=format&fit=crop&q=80&w=100" alt="Con" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-[0.625rem] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Khỏe mạnh</span>
+            </div>
+            <h3 className="font-bold text-slate-800">Con (Minh Khôi)</h3>
+            <p className="text-sm text-slate-500 mb-6 flex-1">Cân nặng: 32kg (+1kg)</p>
+            <div className="flex items-center gap-2 text-xs font-medium text-blue-600 bg-blue-50 w-fit px-3 py-1.5 rounded-lg">
+              <CheckCircle2 size={14} /> Phát triển tốt
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* BMI Column (Col Span 2) */}
+        <section className="lg:col-span-2 space-y-4">
+          <h2 className="text-xl font-display font-bold text-slate-800">Chỉ số BMI & Theo dõi</h2>
+          <div className="bg-white rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100/50">
+            <div className="grid sm:grid-cols-3 gap-6 mb-8">
+              {/* BMI 1 */}
               <div>
-                <p className="font-medium text-foreground text-[0.875rem]">{a.title}</p>
-                <p className="text-[0.75rem] text-on-surface-variant mt-0.5">{a.time}</p>
+                <p className="text-sm text-slate-500 mb-1">Ba</p>
+                <p className="text-3xl font-display font-bold text-slate-800 mb-3">23.5</p>
+                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+                  <div className="h-full bg-blue-500 w-[60%] rounded-full"></div>
+                </div>
+                <p className="text-[0.625rem] text-slate-400 font-medium">Bình thường</p>
+              </div>
+              {/* BMI 2 */}
+              <div className="sm:border-l sm:border-slate-100 sm:pl-6">
+                <p className="text-sm text-slate-500 mb-1">Mẹ</p>
+                <p className="text-3xl font-display font-bold max-text text-amber-600 mb-3">26.1</p>
+                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+                  <div className="h-full bg-amber-500 w-[75%] rounded-full"></div>
+                </div>
+                <p className="text-[0.625rem] text-slate-400 font-medium">Tiền béo phì</p>
+              </div>
+              {/* BMI 3 */}
+              <div className="sm:border-l sm:border-slate-100 sm:pl-6">
+                <p className="text-sm text-slate-500 mb-1">Con</p>
+                <p className="text-3xl font-display font-bold text-slate-800 mb-3">18.4</p>
+                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+                  <div className="h-full bg-blue-500 w-[40%] rounded-full"></div>
+                </div>
+                <p className="text-[0.625rem] text-slate-400 font-medium">Bình thường</p>
               </div>
             </div>
-          ))}
-        </div>
+            
+            <button className="w-full bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-semibold flex items-center justify-center gap-2 py-3.5 rounded-xl transition-colors text-sm">
+              Cập nhật chỉ số hôm nay
+            </button>
+          </div>
+        </section>
+
+        {/* Calendar Column */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-display font-bold text-slate-800">Lịch khám sắp tới</h2>
+          <div className="bg-white rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100/50">
+            <div className="space-y-6 mb-8">
+              {/* Event 1 */}
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex flex-col items-center justify-center text-blue-600 flex-shrink-0">
+                  <span className="text-[0.625rem] font-bold uppercase">T10</span>
+                  <span className="text-lg font-bold leading-none">25</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-bold text-sm text-slate-800">Khám nội tổng quát</h4>
+                    <span className="text-[0.625rem] font-medium text-blue-500 bg-blue-50 px-2 py-0.5 rounded">08:30 AM</span>
+                  </div>
+                  <p className="text-[0.8rem] text-slate-500 line-clamp-1">Bệnh viện Vinmec - Ba Nam</p>
+                </div>
+              </div>
+              
+              {/* Event 2 */}
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex flex-col items-center justify-center text-slate-600 flex-shrink-0">
+                  <span className="text-[0.625rem] font-bold uppercase">T10</span>
+                  <span className="text-lg font-bold leading-none">28</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-bold text-sm text-slate-800">Kiểm tra đường huyết</h4>
+                    <span className="text-[0.625rem] font-medium text-slate-500">14:15 PM</span>
+                  </div>
+                  <p className="text-[0.8rem] text-slate-500 line-clamp-1">Phòng khám Đa khoa - Mẹ Vân</p>
+                </div>
+              </div>
+            </div>
+
+            <button className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-blue-600 font-semibold py-3 rounded-xl transition-colors text-sm">
+              Xem toàn bộ lịch
+            </button>
+          </div>
+        </section>
       </div>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        <section className="lg:col-span-2 space-y-4">
+          <h2 className="text-xl font-display font-bold text-slate-800">Bệnh lý & Giai đoạn</h2>
+          <div className="bg-white rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100/50 space-y-8">
+            <div>
+              <div className="flex justify-between items-center text-sm mb-2">
+                <span className="font-bold text-slate-800">Huyết áp (Ba Nam)</span>
+                <span className="text-slate-500 text-xs">Giai đoạn 1</span>
+              </div>
+              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-3">
+                <div className="h-full bg-blue-600 w-[30%] rounded-full"></div>
+              </div>
+              <p className="text-xs text-slate-500">Lưu ý: Chỉ số đang có xu hướng giảm nhẹ, duy trì lối sống hiện tại.</p>
+            </div>
+            
+            <div>
+              <div className="flex justify-between items-center text-sm mb-2">
+                <span className="font-bold text-slate-800">Tiền tiểu đường (Mẹ Vân)</span>
+                <span className="text-amber-600 font-bold text-xs uppercase tracking-wider">Cảnh báo</span>
+              </div>
+              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-3">
+                <div className="h-full bg-amber-600 w-[65%] rounded-full"></div>
+              </div>
+              <p className="text-xs text-slate-500">Lưu ý: Cần kiểm soát chặt chẽ lượng tinh bột trong 2 tuần tới.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-xl font-display font-bold text-slate-800">Thực phẩm</h2>
+          <div className="bg-[#bfdbfe] rounded-[2rem] p-6 lg:p-8 shadow-sm relative overflow-hidden h-[calc(100%-40px)]">
+            <div className="absolute inset-0 right-0 top-1/2 -bottom-10 opacity-30 pointer-events-none" 
+                 style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=800)', backgroundSize: 'cover', backgroundPosition: 'bottom right' }}>
+            </div>
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="space-y-4 flex-1">
+                <div className="flex items-center gap-2 text-[#1e3a8a] font-bold text-sm">
+                  <Utensils size={16} /> Chế độ ăn
+                </div>
+                
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2 text-sm text-[#1e3a8a]">
+                    <div className="mt-1 w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-white flex-shrink-0"><Plus size={10} /></div>
+                    <span className="font-medium">Bổ sung Omega-3 <span className="block text-xs font-normal text-blue-800 tracking-wide">Cá hồi, các loại hạt (Bố)</span></span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm text-[#1e3a8a]">
+                    <div className="mt-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white flex-shrink-0"><Minus size={10} /></div>
+                    <span className="font-medium">Kiêng đường tinh luyện <span className="block text-xs font-normal text-blue-800 tracking-wide">Bánh kẹo, nước ngọt (Mẹ)</span></span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-blue-300/30">
+                <button className="text-sm font-bold text-[#1e3a8a] hover:text-blue-900 transition-colors flex items-center gap-1">
+                  Xem thực đơn chi tiết <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section className="space-y-4">
+        <h2 className="text-xl font-display font-bold text-slate-800">Lịch sử hoạt động</h2>
+        <div className="bg-white rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100/50">
+          <div className="space-y-8 relative before:absolute before:inset-0 before:ml-12 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-slate-200 before:to-transparent">
+            
+            {/* Timeline item */}
+            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-4 md:left-1/2 -mt-5 md:mt-0"></div>
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-[4rem] md:ml-0 p-4 rounded-2xl bg-slate-50 border border-slate-100 flex gap-4 items-center">
+                <div className="w-16 flex-shrink-0 text-center">
+                   <p className="text-sm font-bold text-blue-600">Hôm nay</p>
+                </div>
+                <div>
+                   <p className="text-sm font-medium text-slate-800">Ba Nam đã uống thuốc Amlodipin 5mg</p>
+                   <p className="text-xs text-slate-500 mt-0.5">Ghi nhận lúc: 08:00 AM kèm nước lọc</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Timeline item */}
+            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-200 text-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-4 md:left-1/2 -mt-5 md:mt-0"></div>
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-[4rem] md:ml-0 p-4 rounded-2xl bg-white border border-slate-100 flex gap-4 items-center">
+                <div className="w-16 flex-shrink-0 text-center">
+                   <p className="text-sm font-bold text-slate-500">Hôm qua</p>
+                </div>
+                <div>
+                   <p className="text-sm font-medium text-slate-800">Cập nhật kết quả xét nghiệm máu cho Mẹ Vân</p>
+                   <p className="text-xs text-slate-500 mt-0.5">Hệ thống AI đã phân tích và cập nhật biểu đồ</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Timeline item */}
+            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-200 text-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 absolute left-4 md:left-1/2 -mt-5 md:mt-0"></div>
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ml-[4rem] md:ml-0 p-4 rounded-2xl bg-white border border-slate-100 flex gap-4 items-center">
+                 <div className="w-16 flex-shrink-0 text-center">
+                   <p className="text-sm font-bold text-slate-500">20 Th.10</p>
+                </div>
+                <div>
+                   <p className="text-sm font-medium text-slate-800">Hoàn thành tiêm chủng định kỳ cho Con Khôi</p>
+                   <p className="text-xs text-slate-500 mt-0.5">Địa điểm: Trung tâm tiêm chủng VNVC</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Info */}
+      <div className="bg-slate-100 border border-slate-200 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <h4 className="font-bold text-slate-800 text-sm">Trợ giúp 24/7</h4>
+          <p className="text-xs text-slate-500 max-w-sm mt-1">Kết nối ngay với bác sĩ nếu có dấu hiệu hoặc diễn biến bất thường bất kỳ.</p>
+        </div>
+        <Button variant="outline" className="bg-white">Gọi Hotline Y tế</Button>
+      </div>
+
     </div>
   );
-};
+}
 
-export default DashboardPage;
+// Inline Utensils Icon for local component, missing imports in previous scope
+function Utensils(props: any) {
+  return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+}
+function Plus(props: any) {
+  return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+}
+function Minus(props: any) {
+  return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+}

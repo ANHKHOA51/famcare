@@ -1,5 +1,7 @@
+import { Bell, Settings, User, Menu } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Phone, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import AppSidebar from "./AppSidebar";
 
@@ -9,28 +11,48 @@ interface TopNavProps {
 }
 
 const TopNav = ({ activePage = "scanner", onNavigate = () => {} }: TopNavProps) => {
+  const { user } = useAuth();
+
   return (
-    <header className="h-16 surface-glass sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 border-b md:border-b-0">
-      <div className="flex items-center gap-3">
+    <header className="h-16 bg-gradient-to-r from-[#dbeafe] to-[#e0f2fe]/50 flex items-center justify-between px-6 lg:px-10 border-b border-white/50 sticky top-0 z-40">
+      {/* Brand & Mobile Menu */}
+      <div className="flex items-center gap-4">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu size={20} />
+              <Menu size={20} className="text-slate-700" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 border-r-0 max-w-64">
             <AppSidebar activePage={activePage} onNavigate={onNavigate} />
           </SheetContent>
         </Sheet>
-        <p className="text-[11px] text-on-surface-variant uppercase tracking-[0.1em] font-medium hidden sm:block">
-          Cập nhật lúc hiện tại
-        </p>
+        
+        <Link to="/" className="text-xl font-bold font-display text-[#0f172a] tracking-tight">
+          FamCare
+        </Link>
       </div>
-      <Button size="sm" className="gap-2">
-        <Phone size={14} />
-        <span className="hidden sm:inline">Liên hệ bác sĩ</span>
-        <span className="sm:hidden">Gọi y tế</span>
-      </Button>
+
+      {/* Desktop Links (Center) */}
+      <nav className="hidden md:flex items-center gap-8">
+        <Link to="/" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Trang chủ</Link>
+        <Link to="/about" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Về chúng tôi</Link>
+        <Link to="/resources" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Tài liệu & Hỗ trợ</Link>
+        <Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Liên hệ</Link>
+      </nav>
+
+      {/* Right Icons */}
+      <div className="flex items-center gap-5">
+        <button className="text-slate-600 hover:text-slate-900 transition-colors">
+          <Bell size={20} />
+        </button>
+        <button onClick={() => onNavigate("settings")} className={`transition-colors ${activePage === "settings" ? "text-slate-900" : "text-slate-600 hover:text-slate-900"}`}>
+          <Settings size={20} />
+        </button>
+        <button onClick={() => onNavigate("profile")} className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-white overflow-hidden shadow-sm transition-transform hover:scale-105">
+          {user?.name ? user.name[0].toUpperCase() : <User size={16} />}
+        </button>
+      </div>
     </header>
   );
 };

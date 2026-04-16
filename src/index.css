@@ -110,6 +110,15 @@
   }
 }
 
+html.dark {
+  filter: invert(1) hue-rotate(180deg);
+  background: #111; /* fallback back to avoid bright edges */
+}
+
+html.dark img, html.dark video, html.dark svg:not(.lucide), html.dark .no-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 @layer utilities {
   .font-display {
     font-family: var(--font-display);

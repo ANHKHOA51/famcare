@@ -1,19 +1,19 @@
 import { useCallback, useState } from "react";
-import { Upload, FileImage, AlertCircle, Camera } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FileUp, Info } from "lucide-react";
 
 interface UploadStateProps {
   onFileSelected: (file: File) => void;
+  imageUrl?: string;
 }
 
-const UploadState = ({ onFileSelected }: UploadStateProps) => {
+const UploadState = ({ onFileSelected, imageUrl }: UploadStateProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const validateAndSelect = (file: File) => {
     setError(null);
-    if (!file.type.startsWith("image/")) {
-      setError("Vui lòng tải lên file hình ảnh (JPG, PNG, WEBP).");
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+      setError("Vui lòng tải lên file hình ảnh (JPG, PNG) hoặc PDF.");
       return;
     }
     onFileSelected(file);
@@ -30,52 +30,66 @@ const UploadState = ({ onFileSelected }: UploadStateProps) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-up">
-      {/* Header */}
-      <div className="text-center mb-10">
-        <h2 className="text-[2rem] font-display font-bold text-foreground mb-3 tracking-tight">Quét đơn thuốc AI</h2>
-        <p className="text-on-surface-variant text-[0.875rem] leading-relaxed max-w-md mx-auto">
-          Tải lên hình ảnh đơn thuốc để AI phân tích và tạo kế hoạch dinh dưỡng phù hợp.
-        </p>
-      </div>
-
-      {/* Drop zone — no hard borders, background shift */}
+    <div className="flex flex-col h-full gap-4">
+      {/* Upload Box */}
       <div
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
-        className={`rounded-2xl p-18 text-center transition-all duration-300 cursor-pointer ${
+        className={`flex-1 min-h-[400px] border-2 border-dashed rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center transition-all duration-300 cursor-pointer overflow-hidden ${
           isDragging
-            ? "surface-2 shadow-elevated scale-[1.01]"
-            : "surface-1 hover:surface-2 hover:shadow-patient"
+            ? "border-blue-500 bg-blue-50 scale-[1.01]"
+            : "border-slate-300 hover:border-blue-400 hover:bg-slate-50/50"
         }`}
-        onClick={() => document.getElementById("file-input")?.click()}
+        onClick={() => !imageUrl && document.getElementById("file-input")?.click()}
       >
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/8 flex items-center justify-center mb-6">
-          <FileImage className="text-primary" size={28} />
-        </div>
-        <p className="text-foreground font-semibold font-display text-base mb-1.5">Kéo & thả hình ảnh đơn thuốc vào đây</p>
-        <p className="text-[0.8125rem] text-on-surface-variant mb-8">Hỗ trợ JPG, PNG, WEBP — Tối đa 10MB</p>
-        <div className="flex items-center justify-center gap-4">
-          <Button variant="outline" className="gap-2" onClick={(e) => { e.stopPropagation(); document.getElementById("file-input")?.click(); }}>
-            <Upload size={16} />
-            Chọn ảnh
-          </Button>
-          <Button variant="default" className="gap-2 md:hidden" onClick={(e) => { e.stopPropagation(); document.getElementById("camera-input")?.click(); }}>
-            <Camera size={16} />
-            Chụp trực tiếp
-          </Button>
-        </div>
-        <input id="file-input" type="file" accept="image/*" className="hidden" onChange={handleFileInput} />
-        <input id="camera-input" type="file" accept="image/*" capture="environment" className="hidden" onChange={handleFileInput} />
+        {imageUrl ? (
+          <div className="w-full h-full rounded-2xl overflow-hidden relative group">
+             <img src={imageUrl} alt="Document Preview" className="w-full h-full object-cover" />
+             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); document.getElementById("file-input")?.click(); }}
+                  className="bg-white text-slate-800 px-6 py-3 rounded-full font-bold shadow-lg"
+                >
+                  Thay đổi ảnh
+                </button>
+             </div>
+          </div>
+        ) : (
+          <>
+            <div className="w-20 h-24 bg-[#bfdbfe] rounded-2xl flex items-center justify-center mb-6 text-blue-600">
+              <FileUp size={40} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 mb-2">Tải lên hoặc kéo thả đơn thuốc</h3>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto mb-8 leading-relaxed">
+              Hỗ trợ các định dạng JPG, PNG hoặc PDF. AI sẽ tự động nhận diện thông tin y tế.
+            </p>
+            <button 
+              className="bg-[#0f172a] hover:bg-slate-800 text-white font-semibold px-8 py-3.5 rounded-full transition-colors"
+              onClick={(e) => { e.stopPropagation(); document.getElementById("file-input")?.click(); }}
+            >
+              Chọn tệp tin
+            </button>
+            <input id="file-input" type="file" accept="image/*,.pdf" className="hidden" onChange={handleFileInput} />
+          </>
+        )}
       </div>
 
       {error && (
-        <div className="mt-6 flex items-center gap-2 text-destructive text-sm bg-destructive/6 px-5 py-3.5 rounded-xl">
-          <AlertCircle size={16} />
+        <div className="text-red-500 text-sm text-center font-medium bg-red-50 py-2 rounded-xl">
           {error}
         </div>
       )}
+
+      {/* Tip Banner */}
+      <div className="bg-[#ccfbf1] rounded-2xl p-5 flex items-start gap-4">
+        <div className="mt-0.5 text-teal-600 flex-shrink-0">
+          <Info size={20} />
+        </div>
+        <p className="text-sm text-teal-800 font-medium">
+          Mẹo: Đảm bảo ảnh chụp đủ sáng và không bị nhòe để đạt kết quả tốt nhất.
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Activity, Users, UserPlus, Search, Mail, Link2 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, User, Activity, Users, UserPlus, Search, Mail, Link2, Calendar, Phone, MapPin, Edit3, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('personal');
 
   // Modal State
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -39,14 +33,7 @@ export default function ProfilePage() {
     chronicIllness: ''
   });
 
-  const [familyMembers, setFamilyMembers] = useState<{
-    id: string;
-    name: string;
-    relationship: string;
-    linkedUser: { email: string } | null;
-    isLinked?: boolean;
-    originalUserId?: string;
-  }[]>([]);
+  const [familyMembers, setFamilyMembers] = useState<any[]>([]);
 
   const fetchProfile = async () => {
     setLoading(true);
@@ -85,11 +72,7 @@ export default function ProfilePage() {
         setFamilyMembers([...owned, ...linked]);
       }
     } catch (error) {
-      toast({
-        title: "Lỗi",
-        description: "Không thể lấy thông tin cá nhân",
-        variant: "destructive"
-      });
+      toast({ title: "Lỗi", description: "Không thể lấy thông tin cá nhân", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -97,9 +80,8 @@ export default function ProfilePage() {
 
   useEffect(() => {
     fetchProfile();
-  }, [toast]);
+  }, []);
 
-  // Handle Add Member
   const handleUserSearch = async (q: string) => {
     setUserQuery(q);
     setSelectedUser(null);
@@ -143,9 +125,8 @@ export default function ProfilePage() {
     finally { setAdding(false); }
   };
 
-  // Handle Remove Member
   const handleRemoveMember = async (id: string, name: string) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa "${name}" khỏi gia đình? Toàn bộ hồ sơ thuốc của họ cũng sẽ bị xóa.`)) return;
+    if (!window.confirm(`Bạn có chắc muốn xóa "${name}" khỏi gia đình?`)) return;
     try {
       const token = localStorage.getItem('aura_token');
       const resp = await fetch(`/api/family/${id}`, {
@@ -154,10 +135,9 @@ export default function ProfilePage() {
       });
       if (resp.ok) {
         toast({ title: "Thành công", description: `Đã xóa ${name} khỏi gia đình.` });
-        fetchProfile(); // Refresh the list
+        fetchProfile();
       } else {
-        const data = await resp.json();
-        toast({ title: "Lỗi", description: data.error || "Không thể xóa thành viên", variant: "destructive" });
+        toast({ title: "Lỗi", description: "Không thể xóa thành viên", variant: "destructive" });
       }
     } catch {
       toast({ title: "Lỗi", description: "Lỗi kết nối", variant: "destructive" });
@@ -179,30 +159,22 @@ export default function ProfilePage() {
       });
       
       if (res.ok) {
-        toast({
-          title: "Thành công",
-          description: "Đã cập nhật thông tin cá nhân",
-        });
+        toast({ title: "Thành công", description: "Đã cập nhật hồ sơ cá nhân", });
       } else {
-        throw new Error('Failed to save');
+        toast({ title: "Lỗi", description: "Lỗi khi lưu thông tin.", variant: "destructive" });
       }
-    } catch (error) {
-      toast({
-        title: "Lỗi",
-        description: "Có lỗi xảy ra khi lưu thông tin. Vui lòng thử lại sau.",
-        variant: "destructive"
-      });
+    } catch {
+      toast({ title: "Lỗi", description: "Không thể kết nối lưu trữ.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Render calculated BMI
   const renderBMI = () => {
     if (!formData.height || !formData.weight) return null;
     const heightInMeters = parseFloat(formData.height) / 100;
@@ -215,342 +187,228 @@ export default function ProfilePage() {
     let colorClass = "";
     
     if (bmiNum < 18.5) {
-      status = "Thiếu cân"; colorClass = "text-blue-700 bg-blue-100 border-blue-200 hover:bg-blue-200";
+      status = "Thiếu cân"; colorClass = "bg-blue-100 text-blue-700";
     } else if (bmiNum < 22.9) {
-      status = "Bình thường"; colorClass = "text-emerald-700 bg-emerald-100 border-emerald-200 hover:bg-emerald-200";
+      status = "Bình thường"; colorClass = "bg-emerald-100 text-emerald-700";
     } else if (bmiNum < 24.9) {
-      status = "Thừa cân"; colorClass = "text-amber-700 bg-amber-100 border-amber-200 hover:bg-amber-200";
+      status = "Thừa cân"; colorClass = "bg-amber-100 text-amber-700";
     } else {
-      status = "Béo phì"; colorClass = "text-red-700 bg-red-100 border-red-200 hover:bg-red-200";
+      status = "Béo phì"; colorClass = "bg-rose-100 text-rose-700";
     }
     
     return (
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4 p-3 rounded-lg bg-background border shadow-sm transition-all duration-300">
+      <div className={`mt-4 p-4 rounded-xl flex items-center justify-between ${colorClass}`}>
         <div className="flex items-center gap-2">
-          <Activity className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground">Chỉ số BMI:</span>
-          <span className="text-lg font-bold tracking-tight text-foreground">{bmi}</span>
+          <Activity size={20} />
+          <span className="font-bold text-sm">Chỉ số BMI: {bmi}</span>
         </div>
-        <Badge variant="outline" className={`${colorClass} ml-0 sm:ml-auto w-fit shadow-none transition-colors`}>
-          {status}
-        </Badge>
+        <span className="text-[0.6875rem] font-bold uppercase tracking-wider px-2 py-1 bg-white/50 rounded-lg">{status}</span>
       </div>
     );
   };
 
   if (loading) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+        <Loader2 className="h-10 w-10 animate-spin text-teal-400" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Hồ sơ cá nhân</h1>
-        <p className="text-muted-foreground mt-1">Quản lý thông tin chung, hồ sơ y tế và kết nối gia đình của bạn.</p>
+    <div className="p-6 md:p-10 max-w-6xl mx-auto animate-fade-in relative container-fluid bg-[#f8fafc] min-h-screen">
+      
+      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900 tracking-tight mb-2">Hồ sơ cá nhân</h1>
+          <p className="text-slate-500">Quản lý định danh, dữ liệu y tế và thành viên gia đình.</p>
+        </div>
+        {activeTab !== 'family' && (
+           <button onClick={handleSave} disabled={saving} className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-2xl flex items-center justify-center gap-2 shadow-sm transition-transform hover:scale-105 whitespace-nowrap">
+             {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Edit3 size={18} />}
+             Lưu thay đổi hồ sơ
+           </button>
+        )}
       </div>
 
-      <Tabs defaultValue="personal" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="personal" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            <span className="hidden sm:inline">Thông tin chung</span>
-          </TabsTrigger>
-          <TabsTrigger value="medical" className="flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            <span className="hidden sm:inline">Dữ liệu y tế</span>
-          </TabsTrigger>
-          <TabsTrigger value="family" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            <span className="hidden sm:inline">Gia đình</span>
-          </TabsTrigger>
-        </TabsList>
+      <div className="grid lg:grid-cols-12 gap-8 items-start">
+        <div className="lg:col-span-3 space-y-2">
+           <button onClick={() => setActiveTab('personal')} className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold transition-all text-sm ${activeTab === 'personal' ? 'bg-[#0f172a] text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent'}`}>
+              <User size={20} /> Thực thể & Liên hệ
+           </button>
+           <button onClick={() => setActiveTab('medical')} className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold transition-all text-sm ${activeTab === 'medical' ? 'bg-[#0f172a] text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent'}`}>
+              <Activity size={20} /> Hồ sơ Y tế
+           </button>
+           <button onClick={() => setActiveTab('family')} className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold transition-all text-sm ${activeTab === 'family' ? 'bg-[#0f172a] text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent'}`}>
+              <Users size={20} /> Thành viên gia đình
+           </button>
+        </div>
 
-        <form onSubmit={handleSave}>
-          <TabsContent value="personal">
-            <Card>
-              <CardHeader>
-                <CardTitle>Thông tin chung</CardTitle>
-                <CardDescription>Cập nhật thông tin nhận diện cơ bản của bạn</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Họ và tên</Label>
-                    <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="VD: Nguyễn Văn A" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value={formData.email} disabled className="bg-muted" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Số điện thoại</Label>
-                    <Input id="phone" name="phone" value={formData.phone} onChange={handleChange} placeholder="VD: 0912345678" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="dob">Ngày sinh</Label>
-                    <Input id="dob" name="dob" type="date" value={formData.dob} onChange={handleChange} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">Giới tính</Label>
-                    <Select value={formData.gender} onValueChange={(v) => setFormData(p => ({ ...p, gender: v }))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn giới tính" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nam">Nam</SelectItem>
-                        <SelectItem value="nu">Nữ</SelectItem>
-                        <SelectItem value="khac">Khác</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="address">Địa chỉ</Label>
-                    <Input id="address" name="address" value={formData.address} onChange={handleChange} placeholder="VD: 123 Đường ABC, Quận XYZ..." />
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-end border-t p-4">
-                <Button type="submit" disabled={saving}>
-                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Lưu thay đổi
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="medical">
-            <Card>
-              <CardHeader>
-                <CardTitle>Dữ liệu y tế</CardTitle>
-                <CardDescription>Hồ sơ sức khỏe giúp các bác sĩ và hệ thống AI tối ưu tư vấn cho bạn.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                   <div className="space-y-2">
-                    <Label htmlFor="bloodType">Nhóm máu</Label>
-                    <Select value={formData.bloodType} onValueChange={(v) => setFormData(p => ({ ...p, bloodType: v }))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn nhóm máu" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="a">A</SelectItem>
-                        <SelectItem value="b">B</SelectItem>
-                        <SelectItem value="ab">AB</SelectItem>
-                        <SelectItem value="o">O</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-4 md:col-span-2 bg-muted/30 p-4 rounded-xl border border-muted/50 transition-all hover:bg-muted/40">
-                    <div className="flex gap-4">
-                      <div className="space-y-2 flex-1">
-                        <Label htmlFor="height">Chiều cao (cm)</Label>
-                        <Input id="height" name="height" type="number" value={formData.height} onChange={handleChange} placeholder="VD: 170" className="bg-background shadow-sm" />
-                      </div>
-                      <div className="space-y-2 flex-1">
-                        <Label htmlFor="weight">Cân nặng (kg)</Label>
-                        <Input id="weight" name="weight" type="number" value={formData.weight} onChange={handleChange} placeholder="VD: 65" className="bg-background shadow-sm" />
-                      </div>
-                    </div>
-                    {renderBMI()}
-                  </div>
-
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="allergies">Dị ứng thuốc/thức ăn</Label>
-                    <Input id="allergies" name="allergies" value={formData.allergies} onChange={handleChange} placeholder="VD: Dị ứng Penicillin, Hải sản..." />
-                  </div>
-                  
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="chronicIllness">Tiểu sử bệnh mãn tính</Label>
-                    <Input id="chronicIllness" name="chronicIllness" value={formData.chronicIllness} onChange={handleChange} placeholder="VD: Huyết áp cao, Tiểu đường type 2..." />
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-end border-t p-4">
-                <Button type="submit" disabled={saving}>
-                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Lưu hồ sơ y tế
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </form>
-
-        <TabsContent value="family">
-          <Card>
-            <CardHeader>
-              <CardTitle>Kết nối gia đình</CardTitle>
-              <CardDescription>Những tài khoản gia đình được quản lý bởi bạn.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {familyMembers.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  Chưa có thành viên gia đình nào được liên kết.
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {familyMembers.map((member) => (
-                    <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">
-                          {member.name}
-                          {member.isLinked && (
-                            <Badge variant="secondary" className="ml-2 font-normal text-xs bg-primary/10 text-primary border-primary/20">
-                              Người đã thêm bạn
-                            </Badge>
-                          )}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Quan hệ: {member.relationship} {member.linkedUser && !member.isLinked ? `(${member.linkedUser.email})` : ''}
-                        </p>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        {member.relationship !== 'Bản thân' && !member.isLinked && (
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => handleRemoveMember(member.id, member.name)}
-                            className="text-destructive hover:bg-destructive hover:text-white"
-                          >
-                            Xóa
-                          </Button>
-                        )}
-                        {member.isLinked && (
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => handleRemoveMember(member.id, member.name)}
-                            className="text-destructive hover:bg-destructive hover:text-white"
-                          >
-                            Rời khỏi
-                          </Button>
-                        )}
-                        <Button variant="outline" size="sm">Xem hồ sơ</Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="flex justify-start border-t p-4">
-              <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="gap-2">
-                    <UserPlus className="w-4 h-4" />
-                    Thêm thành viên
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-primary" />
-                      Thêm thành viên gia đình
-                    </DialogTitle>
-                    <DialogDescription>
-                      Tìm thành viên bằng email hoặc tên (Yêu cầu phải có tài khoản FamCare).
-                    </DialogDescription>
-                  </DialogHeader>
-      
-                  <div className="space-y-4 py-2">
+        <div className="lg:col-span-9">
+           <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
+             
+             {activeTab === 'personal' && (
+                <div className="space-y-6 animate-fade-in">
+                  <h2 className="text-xl font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Thông tin nhận diện</h2>
+                  <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                        Bước 1: Tìm kiếm người dùng
-                      </Label>
-                      <div className="relative">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          placeholder="Nhập email hoặc tên..."
-                          value={userQuery}
-                          onChange={e => handleUserSearch(e.target.value)}
-                          className="pl-9"
-                        />
-                        {searching2 && <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground" />}
-                      </div>
-      
-                      {userResults.length > 0 && !selectedUser && (
-                        <div className="border border-border rounded-xl overflow-hidden shadow-sm">
-                          {userResults.map(u => (
-                            <button
-                              key={u.id}
-                              onClick={() => { setSelectedUser(u); setUserResults([]); }}
-                              className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 transition-colors text-left border-b border-border last:border-0"
-                            >
-                              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
-                                {u.name ? u.name[0].toUpperCase() : u.email[0].toUpperCase()}
-                              </div>
-                              <div>
-                                <p className="font-bold text-sm">{u.name || "Chưa đặt tên"}</p>
-                                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                  <Mail className="w-3 h-3" />{u.email}
-                                </p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-      
-                      {userQuery.length >= 2 && userResults.length === 0 && !searching2 && !selectedUser && (
-                        <p className="text-sm text-muted-foreground text-center py-3 border border-dashed border-border rounded-xl">
-                          Không tìm thấy người dùng nào
-                        </p>
-                      )}
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Họ và tên</label>
+                      <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500/30 font-medium text-slate-800" placeholder="VD: Nguyễn Văn A" />
                     </div>
-      
-                    {selectedUser && (
-                      <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                            {(selectedUser.name || selectedUser.email)[0].toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="font-bold text-sm">{selectedUser.name || "Chưa đặt tên"}</p>
-                            <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
-                          </div>
-                        </div>
-                        <Badge className="bg-primary text-white gap-1">
-                          <Link2 className="w-3 h-3" /> Đã chọn
-                        </Badge>
-                      </div>
-                    )}
-      
-                    {selectedUser && (
-                      <div className="space-y-2">
-                        <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                          Bước 2: Mối quan hệ
-                        </Label>
-                        <Select onValueChange={setRelationship} value={relationship}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Họ là ai với bạn?" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {["Vợ", "Chồng", "Con", "Bố", "Mẹ", "Anh", "Chị", "Em", "Ông", "Bà", "Khác"].map(r => (
-                              <SelectItem key={r} value={r}>{r}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Email (Cố định)</label>
+                      <input type="email" value={formData.email} disabled className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-500 cursor-not-allowed" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Điện thoại</label>
+                      <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500/30 font-medium text-slate-800" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Giới tính</label>
+                      <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500/30 font-medium text-slate-800">
+                         <option value="">Chưa chọn</option>
+                         <option value="nam">Nam</option>
+                         <option value="nu">Nữ</option>
+                         <option value="khac">Khác</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Ngày sinh</label>
+                      <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500/30 font-medium text-slate-800" />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Địa chỉ cư trú</label>
+                      <textarea name="address" value={formData.address} onChange={handleChange} rows={3} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500/30 font-medium text-slate-800" placeholder="Số nhà, đường, quận, thành phố..." />
+                    </div>
                   </div>
-      
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => { setAddDialogOpen(false); setSelectedUser(null); setUserQuery(""); setRelationship(""); }}>
-                      Hủy
-                    </Button>
-                    <Button onClick={handleAddMember} disabled={!selectedUser || !relationship || adding}>
-                      {adding ? <Loader2 className="animate-spin w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
-                      Thêm vào gia đình
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                </div>
+             )}
+
+             {activeTab === 'medical' && (
+                <div className="space-y-6 animate-fade-in">
+                  <h2 className="text-xl font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Chỉ số sức khỏe AI</h2>
+                  
+                  <div className="bg-gradient-to-br from-[#f8fafc] to-[#e0f2fe]/30 p-6 rounded-2xl border border-blue-100 mb-8">
+                     <div className="grid md:grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                         <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Chiều cao (cm)</label>
+                         <input type="number" name="height" value={formData.height} onChange={handleChange} className="w-full bg-white border border-blue-200/50 rounded-xl px-4 py-3 font-medium text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400/30" />
+                       </div>
+                       <div className="space-y-2">
+                         <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Cân nặng (kg)</label>
+                         <input type="number" name="weight" value={formData.weight} onChange={handleChange} className="w-full bg-white border border-blue-200/50 rounded-xl px-4 py-3 font-medium text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400/30" />
+                       </div>
+                     </div>
+                     {renderBMI()}
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Nhóm máu</label>
+                      <select name="bloodType" value={formData.bloodType} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-800">
+                         <option value="">Chưa chọn</option><option value="a">A</option><option value="b">B</option><option value="ab">AB</option><option value="o">O</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-red-500">Dị ứng (Thuốc/Thức ăn)</label>
+                      <input type="text" name="allergies" value={formData.allergies} onChange={handleChange} className="w-full bg-rose-50/50 border border-red-200 rounded-xl px-4 py-3 font-medium text-slate-800" placeholder="VD: Dị ứng Penicillin, Hải sản..." />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Bệnh lý nền / Mãn tính</label>
+                      <textarea name="chronicIllness" value={formData.chronicIllness} onChange={handleChange} rows={3} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-800" placeholder="VD: Huyết áp cao, Gout..." />
+                    </div>
+                  </div>
+                </div>
+             )}
+
+             {activeTab === 'family' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <h2 className="text-xl font-bold text-slate-800">Liên kết gia đình</h2>
+                    <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+                      <DialogTrigger asChild>
+                        <button className="bg-[#0f172a] hover:bg-slate-800 text-white font-semibold py-2 px-4 rounded-xl text-sm transition-colors flex items-center gap-2">
+                           <UserPlus size={16} /> Thêm người mới
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md bg-white rounded-[2rem]">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center gap-2 text-xl font-display font-bold">
+                             Thêm thành viên gia đình
+                          </DialogTitle>
+                          <DialogDescription>Nhập email tài khoản FamCare của họ</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                           <div className="space-y-2">
+                             <label className="text-xs font-bold uppercase text-slate-500">Bước 1: Tìm kiếm</label>
+                             <div className="relative">
+                               <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
+                               <input type="text" value={userQuery} onChange={e => handleUserSearch(e.target.value)} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl" placeholder="Email người dùng..." />
+                               {searching2 && <Loader2 className="absolute right-3 top-3.5 animate-spin text-slate-400" size={18} />}
+                             </div>
+                             {userResults.map(u => (
+                               <button key={u.id} onClick={() => { setSelectedUser(u); setUserResults([]); }} className="w-full mt-2 p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-3 text-left hover:border-teal-400">
+                                 <div className="w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center">{u.email[0].toUpperCase()}</div>
+                                 <div className="flex-1 overflow-hidden"><p className="font-bold text-sm text-slate-800 truncate">{u.name || u.email}</p><p className="text-xs text-slate-500 truncate">{u.email}</p></div>
+                               </button>
+                             ))}
+                           </div>
+                           
+                           {selectedUser && (
+                             <div className="space-y-2 mt-4">
+                               <label className="text-xs font-bold uppercase text-slate-500">Bước 2: Mối quan hệ</label>
+                               <select value={relationship} onChange={e => setRelationship(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+                                 <option value="">Chọn quan hệ...</option>
+                                 <option value="Bố">Bố</option><option value="Mẹ">Mẹ</option><option value="Vợ">Vợ</option><option value="Chồng">Chồng</option><option value="Con">Con</option>
+                               </select>
+                             </div>
+                           )}
+                        </div>
+                        <DialogFooter>
+                          <button onClick={handleAddMember} disabled={adding || !selectedUser || !relationship} className="bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white font-bold py-3 px-6 rounded-xl w-full">
+                            {adding ? "Đang thêm..." : "Liên kết ngay"}
+                          </button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+
+                  {familyMembers.length === 0 ? (
+                    <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                      <p className="text-slate-500">Chưa có thành viên nào.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {familyMembers.map((member) => (
+                        <div key={member.id} className="flex items-center justify-between p-5 bg-white border border-slate-100 shadow-sm rounded-2xl group hover:border-blue-200 transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-lg">
+                              {member.name[0].toUpperCase()}
+                            </div>
+                            <div>
+                               <p className="font-bold text-slate-800 flex items-center gap-2">
+                                 {member.name}
+                                 {member.isLinked && <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[0.625rem] font-bold uppercase">Người thân</span>}
+                               </p>
+                               <p className="text-sm text-slate-500">{member.relationship} • {member.linkedUser ? member.linkedUser.email : 'Tài khoản giả định'}</p>
+                            </div>
+                          </div>
+                          
+                          {member.relationship !== 'Bản thân' && (
+                             <button onClick={() => handleRemoveMember(member.id, member.name)} className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors">
+                               <Trash2 size={18} />
+                             </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+             )}
+
+           </div>
+        </div>
+      </div>
     </div>
   );
 }

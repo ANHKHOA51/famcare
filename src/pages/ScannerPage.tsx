@@ -2,12 +2,11 @@ import { useState, useCallback } from "react";
 import UploadState from "@/components/scanner/UploadState";
 import ScanningState from "@/components/scanner/ScanningState";
 import ResultState from "@/components/scanner/ResultState";
-import MealPlanPage from "./MealPlanPage";
 import { toast } from "sonner";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AlertCircle } from "lucide-react";
 
-export type ScannerStep = "upload" | "scanning" | "result" | "meal-plan";
+export type ScannerStep = "upload" | "scanning" | "result";
 
 export interface ScanResult {
   diagnosis: string;
@@ -74,45 +73,59 @@ const ScannerPage = () => {
     setScanResult(null);
   };
 
-  const handleGenerateMealPlan = () => {
-    setStep("meal-plan");
-  };
-
   return (
-    <div className="p-4 md:p-10">
-      {step === "upload" && <UploadState onFileSelected={handleFileSelected} />}
-      {step === "scanning" && <ScanningState imageUrl={imageUrl} />}
-      {step === "result" && scanResult && (
-        <ResultState 
-          result={scanResult} 
-          onReset={handleReset} 
-          onGenerateMealPlan={handleGenerateMealPlan}
-        />
-      )}
-      {step === "meal-plan" && scanResult && (
-        <MealPlanPage 
-          diagnosis={scanResult.diagnosis}
-          recommendedFoods={scanResult.nutrition?.recommended_foods || []}
-          onBack={() => setStep("result")}
-        />
-      )}
+    <div className="p-4 md:p-10 max-w-7xl mx-auto space-y-8">
+      {/* Banner */}
+      <div className="bg-[#e0f2fe] rounded-3xl p-6 md:p-8 flex flex-col justify-center">
+        <h1 className="text-3xl font-display font-bold text-[#0f172a] mb-2">Máy quét đơn thuốc AI</h1>
+        <p className="text-slate-600 text-sm">Số hóa đơn thuốc của bạn chỉ trong vài giây với công nghệ AI chuẩn xác.</p>
+      </div>
+
+      <div className="grid lg:grid-cols-12 gap-8">
+        {/* Left Column: Upload or Preview */}
+        <div className="lg:col-span-5 h-full">
+          <UploadState onFileSelected={handleFileSelected} imageUrl={imageUrl} />
+        </div>
+
+        {/* Right Column: Results */}
+        <div className="lg:col-span-7 h-full">
+          {step === "upload" && !imageUrl && (
+            <div className="bg-[#e2e8f0]/40 rounded-3xl border-2 border-dashed border-slate-300 h-full min-h-[400px] flex flex-col items-center justify-center p-8 text-center text-slate-500">
+              <span className="text-sm">Vui lòng tải lên đơn thuốc để xem thông tin trích xuất</span>
+            </div>
+          )}
+          
+          {step === "scanning" && (
+            <div className="bg-[#e2e8f0]/40 rounded-3xl h-full min-h-[400px] flex items-center justify-center">
+               <ScanningState imageUrl={""} minimal={true} />
+            </div>
+          )}
+
+          {step === "result" && scanResult && (
+            <ResultState 
+              result={scanResult} 
+              onReset={handleReset} 
+            />
+          )}
+        </div>
+      </div>
 
       <AlertDialog open={blurError} onOpenChange={setBlurError}>
-        <AlertDialogContent className="rounded-2xl border-destructive/20 animate-in fade-in zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95 max-w-sm">
+        <AlertDialogContent className="rounded-2xl border-destructive/20 max-w-sm">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-destructive">
               <AlertCircle className="h-5 w-5" /> Không nhận diện được
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-on-surface-variant text-[15px] pt-2">
-              Chất lượng ảnh đưa vào quá mờ, không phải ảnh y tế hoặc bị mất góc khiến AI không thể phân tích được chữ và kê đơn. Vui lòng chụp lại một tấm ảnh mới rõ ràng và đúng trung tâm hơn.
+            <AlertDialogDescription className="text-slate-600 pt-2">
+              Chất lượng ảnh đưa vào quá mờ. Vui lòng chụp lại ảnh rõ ràng hơn!
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="mt-4 pt-4 border-t">
-            <AlertDialogAction 
+          <AlertDialogFooter>
+             <AlertDialogAction 
               onClick={() => setBlurError(false)}
-              className="rounded-xl w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl w-full"
             >
-              Tôi đã hiểu, chụp lại màn hình
+              Chụp lại
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

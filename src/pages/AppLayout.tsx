@@ -9,6 +9,8 @@ import ComingSoonPage from "@/pages/ComingSoonPage";
 import FoodTestPage from "@/pages/FoodTestPage";
 import ProfilePage from "@/pages/ProfilePage";
 import MealPlanPage from "@/pages/MealPlanPage";
+import AppointmentsPage from "@/pages/AppointmentsPage";
+import SettingsPage from "@/pages/SettingsPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 const AppLayout = () => {
@@ -23,6 +25,8 @@ const AppLayout = () => {
       case "marketplace": return <MarketplacePage />;
       case "food-test": return <FoodTestPage />;
       case "profile": return <ProfilePage />;
+      case "appointment": return <AppointmentsPage />;
+      case "settings": return <SettingsPage />;
       case "nutrition": return <ComingSoonPage title="Dinh dưỡng" />;
       default: return <ComingSoonPage title="Coming Soon" />;
     }
@@ -30,13 +34,18 @@ const AppLayout = () => {
 
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen bg-background">
-        <div className="hidden md:flex">
-          <AppSidebar activePage={activePage} onNavigate={setActivePage} />
-        </div>
-        <div className="flex-1 flex flex-col min-w-0 w-full overflow-hidden">
-          <TopNav activePage={activePage} onNavigate={setActivePage} />
-          <main className="flex-1 overflow-auto">
+      <div className="flex flex-col min-h-screen bg-[#f8fafc]">
+        {/* Top Navigation Spanning Full Width */}
+        <TopNav activePage={activePage} onNavigate={setActivePage} />
+        
+        <div className="flex flex-1 overflow-hidden">
+          {/* Sidebar */}
+          <div className="hidden md:flex w-[260px] flex-shrink-0">
+            <AppSidebar activePage={activePage} onNavigate={setActivePage} />
+          </div>
+          
+          {/* Main Content Area */}
+          <main className="flex-1 overflow-auto bg-[#f8fafc] md:rounded-tl-2xl">
             {renderPage()}
           </main>
         </div>
