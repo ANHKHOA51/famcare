@@ -425,6 +425,7 @@ app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
 const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
 const OPENAI_JSON_SYSTEM_PROMPT = `You are a strict JSON API.
 Return valid JSON only.
 Do not wrap output in markdown code fences.
@@ -451,6 +452,85 @@ const isRetryableGeminiError = (error) => {
     message.includes('quota') ||
     message.includes('temporarily unavailable')
   );
+};
+
+const isOpenAIInsufficientQuotaError = (error) => {
+  const details = `${error?.details || ''}`.toLowerCase();
+  const message = `${error?.message || ''}`.toLowerCase();
+  return details.includes('insufficient_quota') || message.includes('insufficient_quota');
+};
+
+const isProviderTemporaryFailure = (error) => {
+  const status = error?.status ?? error?.response?.status;
+  const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase();
+  return (
+    status === 429 ||
+    status === 503 ||
+    message.includes('quota') ||
+    message.includes('insufficient_quota') ||
+    message.includes('overload') ||
+    message.includes('high demand') ||
+    message.includes('service unavailable')
+  );
+};
+
+const ocrSpaceExtractText = async (file) => {
+  if (!OCR_SPACE_API_KEY || !file?.buffer) return '';
+
+  const formData = new FormData();
+  formData.append('apikey', OCR_SPACE_API_KEY);
+  formData.append('language', 'eng');
+  formData.append('OCREngine', '2');
+
+  const blob = new Blob([file.buffer], { type: file.mimetype || 'image/jpeg' });
+  formData.append('file', blob, file.originalname || 'prescription.jpg');
+
+  const response = await fetch('https://api.ocr.space/parse/image', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`OCR.space request failed (${response.status})`);
+  }
+
+  const data = await response.json();
+  const rawText = Array.isArray(data?.ParsedResults)
+    ? data.ParsedResults.map(item => item?.ParsedText || '').join('\n')
+    : '';
+
+  return rawText.trim();
+};
+
+const buildFallbackScanJsonFromOcr = (ocrText) => {
+  const lines = String(ocrText || '')
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean)
+    .filter(line => /[a-zA-Z\u00C0-\u1EF9]/.test(line))
+    .filter(line => line.length >= 3 && line.length <= 80)
+    .slice(0, 5);
+
+  const medications = lines.map((line) => ({
+    name: line,
+    dosage: 'Chưa rõ (OCR fallback)',
+    instructions: 'Vui lòng kiểm tra và sửa lại thủ công',
+    suggested_symptoms: [],
+    confidence_score: 40,
+  }));
+
+  return {
+    diagnosis: 'Chưa xác định (OCR fallback)',
+    medications,
+    nutrition: {
+      general_dietary_advice: [
+        'Kết quả OCR có thể thiếu chính xác, cần xác nhận lại với bác sĩ/dược sĩ.',
+      ],
+      recommended_foods: [],
+      foods_to_avoid: [],
+    },
+    ocr_fallback: true,
+  };
 };
 
 const extractJsonFromText = (text) => {
@@ -575,6 +655,11 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       lastError = error;
       console.warn(`[AI][OpenAI][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
 
+      if (isOpenAIInsufficientQuotaError(error)) {
+        console.warn(`[AI][OpenAI][${task}] quota exhausted, stop retrying OpenAI models.`);
+        break;
+      }
+
       // Keep trying remaining OpenAI models for maximum availability.
       continue;
     }
@@ -600,6 +685,22 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     res.json(jsonResponse);
   } catch (error) {
     console.error('SCAN ERROR:', error);
+
+    if (isProviderTemporaryFailure(error) && OCR_SPACE_API_KEY && req.file) {
+      try {
+        const ocrText = await ocrSpaceExtractText(req.file);
+        if (ocrText) {
+          console.info('[AI][OCR][scan] success provider=ocr.space');
+          return res.json(buildFallbackScanJsonFromOcr(ocrText));
+        }
+      } catch (ocrError) {
+        console.warn('[AI][OCR][scan] failed provider=ocr.space:', ocrError?.message || ocrError);
+      }
+    }
+
+    if (isOpenAIInsufficientQuotaError(error)) {
+      return res.status(429).json({ error: 'Hệ thống AI đang quá tải do nhu cầu cao. Vui lòng thử lại sau giây lát!' });
+    }
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
       return res.status(429).json({ error: 'Hệ thống AI đang quá tải do nhu cầu cao. Vui lòng thử lại sau giây lát!' });
     }
@@ -683,6 +784,9 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     });
   } catch (error) {
     console.error('MEAL PLAN ERROR:', error);
+    if (isOpenAIInsufficientQuotaError(error)) {
+      return res.status(429).json({ error: 'OpenAI đã hết quota hiện tại. Vui lòng nạp quota hoặc dùng nhà cung cấp AI khác.' });
+    }
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
       return res.status(429).json({ error: 'Hệ thống AI tạo thực đơn đang quá tải. Vui lòng thử lại sau!' });
     }
@@ -749,6 +853,9 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     res.json(parseJsonStrict(result.response.text()));
   } catch (error) {
     console.error('AI SEARCH ERROR:', error);
+    if (isOpenAIInsufficientQuotaError(error)) {
+      return res.status(429).json({ error: 'OpenAI đã hết quota hiện tại. Vui lòng nạp quota hoặc dùng nhà cung cấp AI khác.' });
+    }
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
       return res.status(429).json({ error: 'AI tìm kiếm của tủ thuốc đang quá tải. Vui lòng thử lại sau.' });
     }
