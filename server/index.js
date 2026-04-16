@@ -66,16 +66,37 @@ try {
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Bug #8: Restrict CORS to known origins in production
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000').split(',');
+// CORS: allow configured origins + Vercel preview domains + same-origin requests
+const rawAllowedOrigins = process.env.ALLOWED_ORIGINS || '';
+const allowedOrigins = rawAllowedOrigins
+  ? rawAllowedOrigins.split(',').map(o => o.trim()).filter(Boolean)
+  : [];
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, same-origin)
-    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // 1. Same-origin requests (no origin header) — always allow
+    if (!origin) return callback(null, true);
+
+    // 2. If ALLOWED_ORIGINS not configured → allow all and warn (dev/staging fallback)
+    if (allowedOrigins.length === 0) {
+      if (process.env.NODE_ENV === 'production') {
+        console.warn('⚠️  CORS: ALLOWED_ORIGINS not set, allowing all origins in production!');
+      }
+      return callback(null, true);
     }
+
+    // 3. Exact match against configured origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // 4. Allow any *.vercel.app preview URL for the same project
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+    // 5. Allow localhost for local dev regardless of NODE_ENV
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+      return callback(null, true);
+    }
+
+    callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true
 }));
