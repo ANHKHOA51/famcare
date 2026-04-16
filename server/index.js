@@ -424,11 +424,130 @@ app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
 // --- AI & Scanner Routes ---
 const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
+  process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
+  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.0-flash,gemini-1.5-flash,gemini-1.5-pro')
+    .split(',')
+    .map(model => model.trim())
+    .filter(Boolean)
+]))
+  .filter(Boolean);
+
+const isRetryableGeminiError = (error) => {
+  const status = error?.status ?? error?.response?.status;
+  const message = `${error?.message || ''} ${error?.statusText || ''}`.toLowerCase();
+
+  return (
+    status === 429 ||
+    status === 503 ||
+    message.includes('service unavailable') ||
+    message.includes('high demand') ||
+    message.includes('overload') ||
+    message.includes('quota') ||
+    message.includes('temporarily unavailable')
+  );
+};
+
+const generateWithFallbackModels = async (contents) => {
+  let lastError;
+
+  for (const modelName of GEMINI_MODEL_CANDIDATES) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      return await model.generateContent(contents);
+    } catch (error) {
+      lastError = error;
+      console.warn(`Gemini model failed (${modelName}):`, error?.status || error?.message || error);
+
+      if (!isRetryableGeminiError(error)) {
+        throw error;
+      }
+    }
+  }
+
+  if (!OPENAI_API_KEY) {
+    throw lastError;
+  }
+
+  const openAiModels = Array.from(new Set([
+    process.env.OPENAI_MODEL_PRIMARY || 'gpt-4o-mini',
+    ...(process.env.OPENAI_MODEL_FALLBACKS || 'gpt-4.1-mini,gpt-4o').split(',').map(model => model.trim()).filter(Boolean)
+  ])).filter(Boolean);
+
+  const openAiMessages = Array.isArray(contents)
+    ? [{
+        role: 'user',
+        content: contents.flatMap(part => {
+          if (typeof part === 'string') {
+            return [{ type: 'text', text: part }];
+          }
+
+          if (part?.inlineData?.data) {
+            return [{
+              type: 'image_url',
+              image_url: {
+                url: `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`
+              }
+            }];
+          }
+
+          return [];
+        })
+      }]
+    : [{ role: 'user', content: [{ type: 'text', text: String(contents) }] }];
+
+  for (const modelName of openAiModels) {
+    try {
+      const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: modelName,
+          messages: openAiMessages,
+          temperature: 0.2,
+        }),
+      });
+
+      if (!openAiResponse.ok) {
+        const errorText = await openAiResponse.text();
+        const error = new Error(`OpenAI request failed (${openAiResponse.status})`);
+        error.status = openAiResponse.status;
+        error.details = errorText;
+        throw error;
+      }
+
+      const data = await openAiResponse.json();
+      const content = data?.choices?.[0]?.message?.content || '';
+
+      return {
+        response: {
+          text: () => content,
+        },
+      };
+    } catch (error) {
+      lastError = error;
+      console.warn(`OpenAI model failed (${modelName}):`, error?.status || error?.message || error);
+
+      const status = error?.status;
+      const message = `${error?.message || ''} ${error?.details || ''}`.toLowerCase();
+      const retryable = status === 429 || status === 500 || status === 503 || message.includes('overloaded') || message.includes('temporarily unavailable') || message.includes('rate limit');
+
+      if (!retryable) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
+};
 
 app.post('/api/scan', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No image file provided' });
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
     const base64Image = req.file.buffer.toString('base64');
 
     const prompt = `Analyze prescription image. 
@@ -437,7 +556,7 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
     Return ONLY JSON: { "diagnosis": "string", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }], "nutrition": { "general_dietary_advice": ["string"], "recommended_foods": ["string"], "foods_to_avoid": ["string"] } }. All text in natural Vietnamese.`;
 
-    const result = await model.generateContent([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }]);
+    const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }]);
     const response = await result.response;
     const jsonResponse = JSON.parse(response.text().replace(/```json|```/g, '').trim());
     res.json(jsonResponse);
@@ -469,8 +588,7 @@ const FOOD_DATABASE = [
 app.post('/api/generate-meal-plan', async (req, res) => {
   try {
     const { diagnosis } = req.body;
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
-    
+
     const dbList = FOOD_DATABASE.map(f => `- ID: "${f.id}", Tên: "${f.name}", Lợi ích: "${f.benefits}"`).join('\n');
     const prompt = `Bạn là chuyên gia dinh dưỡng. Dựa trên danh sách món ăn sau:
     ${dbList}
@@ -485,7 +603,7 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     3. Phần "reason" viết tự nhiên, thuyết phục.
     4. KHÔNG TRẢ VỀ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
 
-    const result = await model.generateContent(prompt);
+    const result = await generateWithFallbackModels(prompt);
     const rawText = result.response.text();
     const cleanJson = JSON.parse(rawText.replace(/```json|```/g, '').trim());
     
@@ -578,7 +696,6 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
 
     if (validCabinet.length === 0) return res.json({ message: 'Tủ thuốc của bạn đang trống.' });
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
     const cabinetList = validCabinet.map(m => {
       let ownerName = m.familyMember.name;
       if (m.familyMember.userId !== req.user.userId && m.familyMember.linkedUserId === null) {
@@ -590,7 +707,7 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     const prompt = `Based on this family medicine cabinet:\n${cabinetList}\n\nPatient symptom: "${symptom}". 
     Find the best medicine(s) to treat this symptom. Return ONLY JSON: { "top_match": { "name": "string", "reason": "string", "instructions": "string", "owner": "string" }, "alternatives": [{ "name": "string", "reason": "string" }], "warning": "string" }. If no match found, explain why. All text in natural Vietnamese.`;
 
-    const result = await model.generateContent(prompt);
+    const result = await generateWithFallbackModels(prompt);
     res.json(JSON.parse(result.response.text().replace(/```json|```/g, '').trim()));
   } catch (error) {
     console.error('AI SEARCH ERROR:', error);
