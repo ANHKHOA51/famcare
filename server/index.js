@@ -555,7 +555,7 @@ const ocrSpaceExtractText = async (file) => {
 
   const formData = new FormData();
   formData.append('apikey', OCR_SPACE_API_KEY);
-  formData.append('language', 'eng');
+  formData.append('language', 'vie'); // Đổi sang tiếng Việt để đọc đơn thuốc chuẩn xác
   formData.append('OCREngine', '2');
 
   const blob = new Blob([file.buffer], { type: file.mimetype || 'image/jpeg' });
@@ -693,10 +693,10 @@ const generateWithFallbackModels = async (contents, options = {}) => {
     }
 
     // Target specific models for specific tasks:
-    // Meal Plan needs massive reasoning power -> Try 70b first, fallback to 8b
-    // Generic tasks can rely on 8b
+    // Meal Plan: Prioritize 8B-Instant for speed on Vercel, then fallback to 70B.
+    // Generic tasks: 8B is fine
     const groqModelsToTry = (task === 'meal-plan')
-      ? ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant']
+      ? ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile']
       : ['llama-3.1-8b-instant'];
 
     if (imageBase64) {
