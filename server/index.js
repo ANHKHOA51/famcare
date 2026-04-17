@@ -513,14 +513,9 @@ const groq = new OpenAI({
 
 const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
 
-const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
-  process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
-  ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.5-flash,gemini-3.1-pro')
-    .split(',')
-    .map(model => model.trim())
-    .filter(Boolean)
-]))
-  .filter(Boolean);
+const GEMINI_MODEL_CANDIDATES = [
+  process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview'
+].filter(Boolean);
 
 const GROQ_MODEL_CANDIDATES = [
   'llama-3.2-11b-vision-preview', // Good for scanning
@@ -768,8 +763,8 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
           if (process.env.GROQ_API_KEY) {
              console.info('[AI][Fallback][scan] Parsing OCR text with Groq...');
              
-             // Cascading fallback: Try the smartest model first to fix OCR medical typos, then fallback to high-limit tier
-             const groqOcrModels = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+             // Optimization for Vercel speed: Skip 70b and use Instant model directly for OCR cleanup
+             const groqOcrModels = ['llama-3.1-8b-instant'];
 
              for (const gModel of groqOcrModels) {
                 try {
