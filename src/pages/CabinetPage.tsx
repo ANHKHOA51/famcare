@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Search, Loader2, Link2, Mail, Trash2, Camera, UploadCloud, Users, Sparkles, Filter, Info, Pill, X, HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import MedicineAutocomplete from "@/components/MedicineAutocomplete";
 
 // (Keep existing interfaces)
 interface FamilyMember {
@@ -421,11 +422,9 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
             <form onSubmit={handleManualSubmit} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Tên thuốc</label>
-                <input 
-                  type="text" 
-                  required
+                <MedicineAutocomplete 
                   value={manualForm.name}
-                  onChange={(e) => setManualForm({...manualForm, name: e.target.value})}
+                  onChange={(val) => setManualForm({...manualForm, name: val})}
                   className="w-full h-14 bg-slate-50 border-none rounded-2xl px-4 font-medium text-slate-700 focus:ring-2 focus:ring-teal-500"
                   placeholder="VD: Paracetamol 500mg"
                 />
