@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -505,7 +506,13 @@ app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
 // --- AI & Scanner Routes ---
 const upload = multer({ storage: multer.memoryStorage() });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: 'https://api.groq.com/openai/v1',
+});
+
 const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY;
+
 const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
   process.env.GEMINI_MODEL_PRIMARY || 'gemini-3.1-flash-lite-preview',
   ...(process.env.GEMINI_MODEL_FALLBACKS || 'gemini-2.5-flash,gemini-3.1-pro')
@@ -514,6 +521,12 @@ const GEMINI_MODEL_CANDIDATES = Array.from(new Set([
     .filter(Boolean)
 ]))
   .filter(Boolean);
+
+const GROQ_MODEL_CANDIDATES = [
+  'llama-3.2-11b-vision-preview', // Good for scanning
+  'llama-3.3-70b-versatile',      // Good for reasoning
+  'llama-3.1-8b-instant'          // High limits
+];
 
 const isRetryableGeminiError = (error) => {
   const status = error?.status ?? error?.response?.status;
@@ -624,21 +637,88 @@ const extractJsonFromText = (text) => {
 const parseJsonStrict = (text) => JSON.parse(extractJsonFromText(text));
 
 const generateWithFallbackModels = async (contents, options = {}) => {
-  const { task = 'generic' } = options;
+  const { task = 'generic', strictJson = false } = options;
   let lastError;
 
+  // Step 1: Try Gemini models
   for (const modelName of GEMINI_MODEL_CANDIDATES) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName });
       const result = await model.generateContent(contents);
       console.info(`[AI][Gemini][${task}] success model=${modelName}`);
-      return result;
+      return { 
+        text: () => result.response.text(),
+        provider: 'gemini',
+        model: modelName
+      };
     } catch (error) {
       lastError = error;
-      console.warn(`[AI][Gemini][${task}] failed model=${modelName}:`, error?.status || error?.message || error);
-
-      // Continue to next provider/model even on non-retryable Gemini errors (e.g. 404 model not found).
+      const errorMsg = error?.message || '';
+      console.warn(`[AI][Gemini][${task}] failed model=${modelName}:`, error?.status || errorMsg);
+      
+      // If intentional error (safety, etc), don't retry same provider but maybe move to fallback
+      if (errorMsg.includes('safety') || errorMsg.includes('blocked')) {
+         break; 
+      }
       continue;
+    }
+  }
+
+  // Step 2: Try Groq as fallback
+  if (process.env.GROQ_API_KEY) {
+    console.info(`[AI][Fallback][${task}] Trying Groq...`);
+    
+    // Prepare prompt and data for OpenAI format
+    let messages = [];
+    let textPrompt = '';
+    let imageBase64 = null;
+    let imageMime = '';
+
+    if (Array.isArray(contents)) {
+      contents.forEach(part => {
+        if (typeof part === 'string') textPrompt += part;
+        if (part.inlineData) {
+          imageBase64 = part.inlineData.data;
+          imageMime = part.inlineData.mimeType;
+        }
+      });
+    } else {
+      textPrompt = contents;
+    }
+
+    if (imageBase64) {
+      messages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: textPrompt },
+          { type: 'image_url', image_url: { url: `data:${imageMime};base64,${imageBase64}` } }
+        ]
+      });
+    } else {
+      messages.push({ role: 'user', content: textPrompt });
+    }
+
+    // Use task to pick best Groq model
+    const groqModel = (task === 'scan' && imageBase64) 
+      ? 'llama-3.2-11b-vision-preview' 
+      : 'llama-3.3-70b-versatile';
+
+    try {
+      const completion = await groq.chat.completions.create({
+        model: groqModel,
+        messages: messages,
+        response_format: strictJson ? { type: 'json_object' } : undefined,
+      });
+
+      console.info(`[AI][Groq][${task}] success model=${groqModel}`);
+      return {
+        text: () => completion.choices[0].message.content,
+        provider: 'groq',
+        model: groqModel
+      };
+    } catch (groqError) {
+      console.warn(`[AI][Groq][${task}] failed:`, groqError?.message || groqError);
+      lastError = groqError;
     }
   }
 
@@ -657,9 +737,9 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }] }. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
-    const response = await result.response;
-    // Bug fix: parseJsonStrict is inside try — SyntaxError from bad Gemini JSON also hits catch and triggers OCR
-    const jsonResponse = parseJsonStrict(response.text());
+    
+    // Bug fix: parseJsonStrict is inside try — SyntaxError from bad AI JSON also hits catch and triggers OCR
+    const jsonResponse = parseJsonStrict(result.text());
     if (jsonResponse.error) {
       return res.status(400).json({ error: jsonResponse.error === 'BLURRY' ? 'Ảnh quá mờ hoặc không phải là đơn thuốc y tế. Vui lòng thử lại.' : jsonResponse.error });
     }
@@ -763,7 +843,7 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
     4. CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON, KHÔNG MARKDOWN, KHÔNG TEXT DƯ THỪA.`;
 
     const result = await generateWithFallbackModels(prompt, { task: 'meal-plan', strictJson: true });
-    const rawText = result.response.text();
+    const rawText = result.text();
     const cleanJson = parseJsonStrict(rawText);
     
     if (cleanJson.error) {
