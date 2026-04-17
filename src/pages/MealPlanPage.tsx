@@ -142,22 +142,22 @@ export default function MealPlanPage() {
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         {/* Left Column */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="relative rounded-[2.5rem] overflow-hidden bg-slate-900 aspect-[16/9] md:aspect-[21/9]">
+          <div className="relative rounded-[2rem] overflow-hidden bg-slate-900 h-48 md:h-64">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-slate-800 to-emerald-900"></div>
             <div className="absolute inset-0 opacity-10 flex items-center justify-center">
-               <Utensils size={180} />
+               <Utensils size={80} />
             </div>
-            <div className="absolute bottom-10 left-10 right-10">
-              <div className="flex gap-2 mb-4">
+            <div className="absolute bottom-6 left-8 right-8">
+              <div className="flex gap-2 mb-3">
                 {meal.tags.map((t, i) => (
-                   <span key={i} className="bg-blue-500/20 text-blue-100 border border-blue-400/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">{t}</span>
+                   <span key={i} className="bg-blue-500/20 text-blue-100 border border-blue-400/30 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold uppercase tracking-wider">{t}</span>
                 ))}
               </div>
-              <h1 className="text-3xl md:text-5xl font-display font-bold text-white mb-3 tracking-tight">{meal.name}</h1>
-              <p className="text-slate-300 md:text-lg max-w-2xl line-clamp-2">{meal.description}</p>
+              <h1 className="text-2xl md:text-3xl font-display font-bold text-white mb-2 tracking-tight">{meal.name}</h1>
+              <p className="text-slate-300 text-sm max-w-2xl line-clamp-2">{meal.description}</p>
             </div>
-            <button onClick={() => setSelectedMeal(null)} className="absolute top-6 left-6 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-3 rounded-full transition-colors">
-               <ArrowLeft size={20} />
+            <button onClick={() => setSelectedMeal(null)} className="absolute top-4 left-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-2 rounded-full transition-colors">
+               <ArrowLeft size={18} />
             </button>
           </div>
 
@@ -198,7 +198,7 @@ export default function MealPlanPage() {
         <div className="lg:col-span-4 space-y-6 sticky top-24">
           <div className="bg-[#f0f9ff] rounded-[2.5rem] p-8 border border-blue-100">
             <h3 className="font-bold text-slate-800 flex items-center gap-2 mb-6">Nguyên liệu</h3>
-            <ul className="space-y-4 mb-8">
+            <ul className="space-y-4">
               {meal.ingredients.map((ing, i) => (
                 <li key={i} className="flex justify-between text-sm font-medium border-b border-blue-200/50 pb-3">
                   <span className="text-slate-700">{ing.name}</span>
@@ -206,9 +206,6 @@ export default function MealPlanPage() {
                 </li>
               ))}
             </ul>
-            <button className="w-full bg-[#60a5fa] hover:bg-[#3b82f6] text-white font-semibold py-3.5 rounded-2xl transition-colors shadow-sm flex items-center justify-center gap-2 text-sm">
-              <ShoppingBag size={18} /> Thêm vào giỏ hàng
-            </button>
           </div>
 
           <div className="bg-[#f0fdf4] rounded-[2.5rem] p-8 border border-green-100">
@@ -315,11 +312,11 @@ export default function MealPlanPage() {
               ) : (
                 displayMeals.map((meal) => (
                   <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md transition-shadow flex flex-col">
-                    <div className="aspect-video bg-gradient-to-br from-indigo-100 to-blue-50 relative overflow-hidden flex items-center justify-center text-blue-200">
-                      <Utensils size={32} className="group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
+                    <div className="h-28 bg-gradient-to-br from-indigo-100 to-blue-50 relative overflow-hidden flex items-center justify-center text-blue-200">
+                      <Utensils size={24} className="group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
                       <div className="absolute top-2 left-2 flex flex-wrap gap-1">
                          {meal.tags.slice(0, 1).map((t, i) => (
-                           <span key={i} className="bg-blue-500/80 text-white backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
+                            <span key={i} className="bg-blue-500/80 text-white backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
                          ))}
                       </div>
                     </div>
