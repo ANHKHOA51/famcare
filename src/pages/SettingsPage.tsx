@@ -118,6 +118,16 @@ export default function SettingsPage() {
               <span className="text-sm font-bold">Hệ thống</span>
             </button>
           </div>
+
+          <div className="mt-6 flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
+            <div>
+              <p className="font-bold text-slate-800 text-sm">Tùy chỉnh cỡ chữ & Font</p>
+              <p className="text-xs text-slate-500 mt-1">Sắp ra mắt (Coming soon)</p>
+            </div>
+            <select disabled className="bg-white border text-sm border-slate-200 rounded-lg px-3 py-1.5 text-slate-500 cursor-not-allowed hidden md:block">
+              <option>Mặc định</option>
+            </select>
+          </div>
         </div>
 
         {/* Notifications */}

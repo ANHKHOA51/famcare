@@ -432,13 +432,20 @@ app.get('/api/cabinet', authenticateToken, async (req, res) => {
     });
     const ownerIds = memberLinks.map(link => link.userId);
 
+    const myLinkedMembers = await prisma.familyMember.findMany({
+      where: { userId: req.user.userId, linkedUserId: { not: null } },
+      select: { linkedUserId: true }
+    });
+    const linkedUserIds = myLinkedMembers.map(link => link.linkedUserId);
+
     const medications = await prisma.medication.findMany({
       where: {
         familyMember: {
           OR: [
             { userId: req.user.userId },
             { linkedUserId: req.user.userId },
-            { userId: { in: ownerIds } }
+            { userId: { in: ownerIds } },
+            { userId: { in: linkedUserIds } }
           ]
         }
       },
