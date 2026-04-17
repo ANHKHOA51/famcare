@@ -698,27 +698,37 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       messages.push({ role: 'user', content: textPrompt });
     }
 
-    // Use task to pick best Groq model
-    const groqModel = (task === 'scan' && imageBase64) 
-      ? 'llama-3.2-11b-vision-preview' 
-      : 'llama-3.3-70b-versatile';
+    // Target specific models for specific tasks:
+    // Meal Plan needs massive reasoning power -> Try 70b first, fallback to 8b
+    // Generic tasks can rely on 8b
+    const groqModelsToTry = (task === 'meal-plan')
+      ? ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant']
+      : ['llama-3.1-8b-instant'];
 
-    try {
-      const completion = await groq.chat.completions.create({
-        model: groqModel,
-        messages: messages,
-        response_format: strictJson ? { type: 'json_object' } : undefined,
-      });
+    if (imageBase64) {
+      // Groq text models cannot process images directly in this tier.
+      // Throw an error to bubble up to the route's OCR + Groq text parsing fallback.
+      throw new Error(`Groq text models do not support vision. Falling back to OCR.`);
+    }
 
-      console.info(`[AI][Groq][${task}] success model=${groqModel}`);
-      return {
-        text: () => completion.choices[0].message.content,
-        provider: 'groq',
-        model: groqModel
-      };
-    } catch (groqError) {
-      console.warn(`[AI][Groq][${task}] failed:`, groqError?.message || groqError);
-      lastError = groqError;
+    for (const groqModel of groqModelsToTry) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model: groqModel,
+          messages: messages,
+          response_format: strictJson ? { type: 'json_object' } : undefined,
+        });
+
+        console.info(`[AI][Groq][${task}] success model=${groqModel}`);
+        return {
+          text: () => completion.choices[0].message.content,
+          provider: 'groq',
+          model: groqModel
+        };
+      } catch (groqError) {
+        lastError = groqError;
+        console.warn(`[AI][Groq][${task}] failed model=${groqModel}:`, groqError?.message || groqError);
+      }
     }
   }
 
@@ -754,6 +764,50 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
         const ocrText = await ocrSpaceExtractText(req.file);
         if (ocrText) {
           console.info('[AI][OCR][scan] success provider=ocr.space');
+          
+          if (process.env.GROQ_API_KEY) {
+             console.info('[AI][Fallback][scan] Parsing OCR text with Groq...');
+             
+             // Cascading fallback: Try the smartest model first to fix OCR medical typos, then fallback to high-limit tier
+             const groqOcrModels = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+
+             for (const gModel of groqOcrModels) {
+                try {
+                  const groqPrompt = `Đây là văn bản được quét (OCR) từ một đơn thuốc hoặc nhãn thuốc y tế bằng tiếng Việt. Có thể có lỗi nhận diện chính tả. Bạn là một dược sĩ thông minh, hãy đọc hiểu và sửa lỗi từ ngữ.
+                  Trích xuất các thông tin sau và trả về DUY NHẤT một JSON hợp lệ:
+                  {
+                    "diagnosis": "Chẩn đoán bệnh (nếu có, không thì để 'Không rõ')",
+                    "prescription_code": "Mã đơn thuốc (nếu có)",
+                    "hospital_name": "Tên bệnh viện/phòng khám (nếu có)",
+                    "medications": [
+                      {
+                        "name": "Tên thuốc chính xác",
+                        "dosage": "Liều lượng và cách dùng",
+                        "instructions": "Hướng dẫn sử dụng",
+                        "suggested_symptoms": ["Triệu chứng thuốc này điều trị"],
+                        "confidence_score": 90
+                      }
+                    ]
+                  }
+                  
+                  Văn bản OCR:\n"""\n${ocrText}\n"""`;
+
+                  const completion = await groq.chat.completions.create({
+                    model: gModel,
+                    messages: [{ role: 'user', content: groqPrompt }],
+                    response_format: { type: 'json_object' }
+                  });
+                  
+                  console.info(`[AI][Fallback][scan] Groq parsing success model=${gModel}`);
+                  return res.json(parseJsonStrict(completion.choices[0].message.content));
+                } catch (groqOcrErr) {
+                  console.warn(`[AI][Fallback][scan] Groq parsing failed model=${gModel}:`, groqOcrErr?.message);
+                }
+             }
+             
+             console.warn('[AI][Fallback][scan] All Groq models failed, falling back to dumb mapping');
+          }
+
           return res.json(buildFallbackScanJsonFromOcr(ocrText));
         }
         // Bug fix 2: OCR ran but returned empty (unreadable image) — return explicit error instead of silently falling through
