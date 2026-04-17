@@ -194,15 +194,23 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
 
   const filteredMedications = medications.filter(m => {
     if (activeTab === "all") return true;
+    
+    // "Mine" tab: Show meds where I am the target OR meds in my personal cabinet
     if (activeTab === "mine") {
-      const isOwnMedication =
-        m.familyMember.linkedUserId === user?.id ||
-        (m.familyMember.userId === user?.id && !m.familyMember.linkedUserId && m.familyMember.relationship === "Bản thân");
-      const isSharedToMe = m.familyMember.userId !== user?.id && m.isShared !== false;
-      return isOwnMedication || isSharedToMe;
+      return m.familyMember.linkedUserId === user?.id || 
+             (m.familyMember.userId === user?.id && m.familyMember.relationship === "Bản thân");
     }
+
     const tabMember = members.find(mbr => mbr.id === activeTab);
-    if (tabMember?.isLinked) return m.familyMember.userId === tabMember.userId;
+    if (!tabMember) return false;
+
+    // If it's a member with a linked account
+    if (tabMember.linkedUserId) {
+      // Filter by the person's account ID (all records targeting them across the family)
+      return m.familyMember.linkedUserId === tabMember.linkedUserId;
+    }
+
+    // Otherwise it's a virtual member created by someone, filter by its unique ID
     return m.familyMember.id === activeTab;
   });
 

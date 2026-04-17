@@ -426,27 +426,39 @@ app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
 app.get('/api/cabinet', authenticateToken, async (req, res) => {
   // Pass 3 Fix #2: added try/catch — previously would hang on DB error
   try {
+    // 1. Identify all "Heads" (users who have linked the current user)
     const memberLinks = await prisma.familyMember.findMany({
       where: { linkedUserId: req.user.userId },
       select: { userId: true }
     });
-    const ownerIds = memberLinks.map(link => link.userId);
+    const headIds = memberLinks.map(link => link.userId);
 
+    // 2. Identify all people linked to those Heads (Siblings)
+    const siblingLinks = await prisma.familyMember.findMany({
+      where: { userId: { in: headIds }, linkedUserId: { not: null } },
+      select: { linkedUserId: true }
+    });
+    const siblingUserIds = siblingLinks.map(link => link.linkedUserId);
+
+    // 3. Identify all people the current user has linked (Children/Members)
     const myLinkedMembers = await prisma.familyMember.findMany({
       where: { userId: req.user.userId, linkedUserId: { not: null } },
       select: { linkedUserId: true }
     });
-    const linkedUserIds = myLinkedMembers.map(link => link.linkedUserId);
+    const myLinkedUserIds = myLinkedMembers.map(link => link.linkedUserId);
+
+    // 4. Consolidated Family Cluster
+    const familyClusterUserIds = [...new Set([
+      req.user.userId,
+      ...headIds,
+      ...siblingUserIds,
+      ...myLinkedUserIds
+    ])];
 
     const medications = await prisma.medication.findMany({
       where: {
         familyMember: {
-          OR: [
-            { userId: req.user.userId },
-            { linkedUserId: req.user.userId },
-            { userId: { in: ownerIds } },
-            { userId: { in: linkedUserIds } }
-          ]
+          userId: { in: familyClusterUserIds }
         }
       },
       include: {
@@ -745,7 +757,8 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     If the image is entirely blurry, unreadable, or clearly NOT a prescription, medicine label, or medical document (e.g., random objects, selfies, landscapes), return ONLY this JSON: { "error": "Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại." }.
     Otherwise, extract diagnosis, prescription details and medications. 
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
-    Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }] }. All text in natural Vietnamese.`;
+    IMPORTANT: If your confidence_score is below 80, you MUST provide 'suggested_alternatives' (a list of 1-3 similarly named real-world medications that fit the diagnosis/pathology context). If confidence >= 80, 'suggested_alternatives' can be empty.
+    Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }] }. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
 
@@ -786,7 +799,8 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
                         "dosage": "Liều lượng và cách dùng",
                         "instructions": "Hướng dẫn sử dụng",
                         "suggested_symptoms": ["Triệu chứng thuốc này điều trị"],
-                        "confidence_score": 90
+                        "confidence_score": 90,
+                        "suggested_alternatives": ["Thuốc A", "Thuốc B"]
                       }
                     ]
                   }

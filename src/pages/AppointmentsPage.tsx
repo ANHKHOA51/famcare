@@ -3,42 +3,46 @@ import { Clock, CalendarDays, MapPin, Video, Stethoscope, ChevronRight, Activity
 import { toast } from "sonner";
 
 const DOCTORS = [
-  { name: "Ngô Trung Nam", title: "CK II", department: "Sản", location: "Online", schedule: "Thứ 2.4.5", time: "09:30", price: "200.000đ" },
-  { name: "Trương Duy Thái", title: "BS", department: "Tai-Mũi-Họng", location: "Bệnh viện Đa khoa quốc tế Hoàn Mỹ", schedule: "Thứ 5.6.7", time: "7:00 - 11:00", price: "450.000đ" },
-  { name: "Trịnh Xuân Quân", title: "Ths.Bs", department: "Tai-Mũi-Họng", location: "Online", schedule: "Cả tuần", time: "18:00 - 20:00", price: "150.000đ" },
-  { name: "Nguyễn Thị Lam", title: "CK II", department: "Khoa y học cổ truyền - phục hồi chức năng", location: "Bệnh Viện Đa Khoa Hồng Đức II", schedule: "Thứ 2.3.4.5.6.7", time: "7:00 - 11:00", price: "300.000đ" },
-  { name: "Lê Khánh Điền", title: "Trưởng Khoa", department: "Phục Hồi Chức Năng", location: "Bệnh viện An Bình", schedule: "2026-05-03", time: "13:00-17:00", price: "300.000đ" },
-  { name: "Vũ Thị Hà", title: "CK I", department: "Mắt", location: "Online", schedule: "Cả tuần", time: "Cả ngày", price: "150.000đ" },
-  { name: "Nguyễn Lê Nguyên", title: "Ths.Bs", department: "Da liễu", location: "Bệnh viện Da liễu TP.HCM", schedule: "Thứ 3.5.7", time: "17:00 - 20:00", price: "250.000đ" },
-  { name: "Phạm Thành Trung", title: "BS", department: "Răng-Hàm-Mặt", location: "Nha khoa Kim", schedule: "Cả tuần", time: "08:00 - 20:00", price: "100.000đ" },
-  { name: "Đặng Huy Quốc Thịnh", title: "CK II", department: "Ung bướu", location: "Bệnh viện Ung bướu TP.HCM", schedule: "Thứ 2.4.6", time: "07:30 - 11:30", price: "500.000đ" },
-  { name: "Nguyễn Hữu Tùng", title: "BS", department: "Nội tổng quát", location: "Bệnh viện Đa khoa Tâm Anh", schedule: "Thứ 2.3.4.5.6", time: "07:00 - 16:00", price: "400.000đ" },
-  { name: "Trần Thị Minh Hạnh", title: "Ths.Bs", department: "Dinh dưỡng", location: "Online", schedule: "Thứ 7, Chủ nhật", time: "08:00 - 11:00", price: "300.000đ" },
-  { name: "Huỳnh Thanh Hiển", title: "BS", department: "Tâm thần", location: "Bệnh viện Tâm thần TP.HCM", schedule: "Thứ 2.4.6", time: "16:00 - 19:00", price: "350.000đ" },
-  { name: "Nguyễn Anh Tuấn", title: "PGS.TS.BS", department: "Tiêu hóa", location: "Bệnh viện Đại học Y Dược", schedule: "Thứ 3.5", time: "07:00 - 11:00", price: "600.000đ" },
-  { name: "Lê Thị Tuyết Phượng", title: "CK II", department: "Nội tiêu hóa", location: "Bệnh viện Nhân dân 115", schedule: "Thứ 2.4.6", time: "07:00 - 11:30", price: "450.000đ" },
-  { name: "Đỗ Quang Huân", title: "PGS.TS.BS", department: "Tim mạch", location: "Viện Tim TP.HCM", schedule: "Thứ 2.4", time: "07:30 - 11:30", price: "700.000đ" },
-  { name: "Nguyễn Thị Thanh Hà", title: "PGS.TS.BS", department: "Sản phụ khoa", location: "Bệnh viện Từ Dũ", schedule: "Thứ 3.5.7", time: "16:30 - 19:30", price: "550.000đ" },
-  { name: "Trương Hữu Khanh", title: "BS", department: "Nội nhi", location: "Bệnh viện Nhi đồng 1", schedule: "Thứ 2.4.6", time: "16:00 - 18:00", price: "400.000đ" },
-  { name: "Nguyễn Trọng Hào", title: "TS.BS", department: "Da liễu", location: "Bệnh viện Da liễu TP.HCM", schedule: "Thứ 2.4.6", time: "07:00 - 11:00", price: "500.000đ" },
-  { name: "Võ Văn Thành", title: "PGS.TS.BS", department: "Chấn thương chỉnh hình", location: "Bệnh viện Chấn thương chỉnh hình", schedule: "Thứ 3.5", time: "08:00 - 11:00", price: "800.000đ" },
-  { name: "Nguyễn Ty Phương", title: "Ths.Bs", department: "Nội tiết", location: "Online", schedule: "Thứ 2.4.6", time: "19:00 - 21:00", price: "250.000đ" },
-  { name: "Phan Thanh Hải", title: "BS", department: "Chẩn đoán hình ảnh", location: "Trung tâm Y khoa Medic", schedule: "Cả tuần", time: "07:00 - 19:00", price: "300.000đ" },
-  { name: "Nguyễn Hoài Nam", title: "PGS.TS.BS", department: "Lồng ngực - Mạch máu", location: "Bệnh viện Đại học Y Dược", schedule: "Thứ 2.4.6", time: "07:00 - 11:00", price: "600.000đ" },
-  { name: "Trần Ngọc Ánh", title: "PGS.TS.BS", department: "Da liễu", location: "Phòng khám Da liễu Trần Ngọc Ánh", schedule: "Cả tuần", time: "16:00 - 20:00", price: "400.000đ" },
-  { name: "Cao Hữu Thịnh", title: "BS", department: "Sản phụ khoa - Hiếm muộn", location: "Bệnh viện An Sinh", schedule: "Thứ 2.3.4.5.6", time: "08:00 - 17:00", price: "500.000đ" },
-  { name: "Lương Lễ Hoàng", title: "BS", department: "Nội khoa - Y học dân tộc", location: "Trung tâm Oxy cao áp", schedule: "Thứ 3.5", time: "08:00 - 11:00", price: "450.000đ" },
-  { name: "Nguyễn Thị Ngọc Phượng", title: "GS.TS.BS", department: "Sản phụ khoa", location: "Bệnh viện Mỹ Đức", schedule: "Thứ 2.4.6", time: "08:00 - 11:00", price: "1.000.000đ" },
-  { name: "Trần Đông A", title: "GS.TS.BS", department: "Ngoại nhi", location: "Bệnh viện Nhi đồng 2", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "800.000đ" },
-  { name: "Nguyễn Chấn Hùng", title: "GS.TS.BS", department: "Ung bướu", location: "Bệnh viện Ung bướu TP.HCM", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "1.000.000đ" },
-  { name: "Đỗ Hồng Ngọc", title: "BS", department: "Nhi khoa", location: "Online/Tư vấn", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "500.000đ" },
-  { name: "Nguyễn Lân Hiếu", title: "PGS.TS.BS", department: "Tim mạch", location: "Bệnh viện Đại học Y Hà Nội", schedule: "Thứ 2.4", time: "07:30 - 11:30", price: "700.000đ" }
+  { name: "Ngô Trung Nam", title: "CK II", academicTitle: "CK II", department: "Sản", location: "Online", hospital: "Phòng khám tư", district: "Quận 1", gender: "Nam", schedule: "Thứ 2.4.5", time: "09:30", price: "200.000đ" },
+  { name: "Trương Duy Thái", title: "BS", academicTitle: "BS", department: "Tai-Mũi-Họng", location: "Bệnh viện Đa khoa quốc tế Hoàn Mỹ", hospital: "Bệnh viện Đa khoa quốc tế Hoàn Mỹ", district: "Phú Nhuận", gender: "Nam", schedule: "Thứ 5.6.7", time: "7:00 - 11:00", price: "450.000đ" },
+  { name: "Trịnh Xuân Quân", title: "Ths.Bs", academicTitle: "ThS", department: "Tai-Mũi-Họng", location: "Online", hospital: "Phòng khám tư", district: "Quận 3", gender: "Nam", schedule: "Cả tuần", time: "18:00 - 20:00", price: "150.000đ" },
+  { name: "Nguyễn Thị Lam", title: "CK II", academicTitle: "CK II", department: "Khoa y học cổ truyền - phục hồi chức năng", location: "Bệnh Viện Đa Khoa Hồng Đức II", hospital: "Bệnh Viện Đa Khoa Hồng Đức II", district: "Gò Vấp", gender: "Nữ", schedule: "Thứ 2.3.4.5.6.7", time: "7:00 - 11:00", price: "300.000đ" },
+  { name: "Lê Khánh Điền", title: "Trưởng Khoa", academicTitle: "CK II", department: "Phục Hồi Chức Năng", location: "Bệnh viện An Bình", hospital: "Bệnh viện An Bình", district: "Quận 5", gender: "Nam", schedule: "2026-05-03", time: "13:00-17:00", price: "300.000đ" },
+  { name: "Vũ Thị Hà", title: "CK I", academicTitle: "CK I", department: "Mắt", location: "Online", hospital: "Phòng khám tư", district: "Quận 10", gender: "Nữ", schedule: "Cả tuần", time: "Cả ngày", price: "150.000đ" },
+  { name: "Nguyễn Lê Nguyên", title: "Ths.Bs", academicTitle: "ThS", department: "Da liễu", location: "Bệnh viện Da liễu TP.HCM", hospital: "Bệnh viện Da liễu TP.HCM", district: "Quận 3", gender: "Nam", schedule: "Thứ 3.5.7", time: "17:00 - 20:00", price: "250.000đ" },
+  { name: "Phạm Thành Trung", title: "BS", academicTitle: "BS", department: "Răng-Hàm-Mặt", location: "Nha khoa Kim", hospital: "Nha khoa Kim", district: "Quận 1", gender: "Nam", schedule: "Cả tuần", time: "08:00 - 20:00", price: "100.000đ" },
+  { name: "Đặng Huy Quốc Thịnh", title: "CK II", academicTitle: "CK II", department: "Ung bướu", location: "Bệnh viện Ung bướu TP.HCM", hospital: "Bệnh viện Ung bướu TP.HCM", district: "Bình Thạnh", gender: "Nam", schedule: "Thứ 2.4.6", time: "07:30 - 11:30", price: "500.000đ" },
+  { name: "Nguyễn Hữu Tùng", title: "BS", academicTitle: "BS", department: "Nội tổng quát", location: "Bệnh viện Đa khoa Tâm Anh", hospital: "Bệnh viện Đa khoa Tâm Anh", district: "Tân Bình", gender: "Nam", schedule: "Thứ 2.3.4.5.6", time: "07:00 - 16:00", price: "400.000đ" },
+  { name: "Trần Thị Minh Hạnh", title: "Ths.Bs", academicTitle: "ThS", department: "Dinh dưỡng", location: "Online", hospital: "Phòng khám tư", district: "Quận 5", gender: "Nữ", schedule: "Thứ 7, Chủ nhật", time: "08:00 - 11:00", price: "300.000đ" },
+  { name: "Huỳnh Thanh Hiển", title: "BS", academicTitle: "BS", department: "Tâm thần", location: "Bệnh viện Tâm thần TP.HCM", hospital: "Bệnh viện Tâm thần TP.HCM", district: "Quận 5", gender: "Nam", schedule: "Thứ 2.4.6", time: "16:00 - 19:00", price: "350.000đ" },
+  { name: "Nguyễn Anh Tuấn", title: "PGS.TS.BS", academicTitle: "PGS", department: "Tiêu hóa", location: "Bệnh viện Đại học Y Dược", hospital: "Bệnh viện Đại học Y Dược", district: "Quận 5", gender: "Nam", schedule: "Thứ 3.5", time: "07:00 - 11:00", price: "600.000đ" },
+  { name: "Lê Thị Tuyết Phượng", title: "CK II", academicTitle: "CK II", department: "Nội tiêu hóa", location: "Bệnh viện Nhân dân 115", hospital: "Bệnh viện Nhân dân 115", district: "Quận 10", gender: "Nữ", schedule: "Thứ 2.4.6", time: "07:00 - 11:30", price: "450.000đ" },
+  { name: "Đỗ Quang Huân", title: "PGS.TS.BS", academicTitle: "PGS", department: "Tim mạch", location: "Viện Tim TP.HCM", hospital: "Viện Tim TP.HCM", district: "Quận 10", gender: "Nam", schedule: "Thứ 2.4", time: "07:30 - 11:30", price: "700.000đ" },
+  { name: "Nguyễn Thị Thanh Hà", title: "PGS.TS.BS", academicTitle: "PGS", department: "Sản phụ khoa", location: "Bệnh viện Từ Dũ", hospital: "Bệnh viện Từ Dũ", district: "Quận 1", gender: "Nữ", schedule: "Thứ 3.5.7", time: "16:30 - 19:30", price: "550.000đ" },
+  { name: "Trương Hữu Khanh", title: "BS", academicTitle: "BS", department: "Nội nhi", location: "Bệnh viện Nhi đồng 1", hospital: "Bệnh viện Nhi đồng 1", district: "Quận 10", gender: "Nam", schedule: "Thứ 2.4.6", time: "16:00 - 18:00", price: "400.000đ" },
+  { name: "Nguyễn Trọng Hào", title: "TS.BS", academicTitle: "TS", department: "Da liễu", location: "Bệnh viện Da liễu TP.HCM", hospital: "Bệnh viện Da liễu TP.HCM", district: "Quận 3", gender: "Nam", schedule: "Thứ 2.4.6", time: "07:00 - 11:00", price: "500.000đ" },
+  { name: "Võ Văn Thành", title: "PGS.TS.BS", academicTitle: "PGS", department: "Chấn thương chỉnh hình", location: "Bệnh viện Chấn thương chỉnh hình", hospital: "Bệnh viện Chấn thương chỉnh hình", district: "Quận 5", gender: "Nam", schedule: "Thứ 3.5", time: "08:00 - 11:00", price: "800.000đ" },
+  { name: "Nguyễn Ty Phương", title: "Ths.Bs", academicTitle: "ThS", department: "Nội tiết", location: "Online", hospital: "Phòng khám tư", district: "Tân Bình", gender: "Nữ", schedule: "Thứ 2.4.6", time: "19:00 - 21:00", price: "250.000đ" },
+  { name: "Phan Thanh Hải", title: "BS", academicTitle: "BS", department: "Chẩn đoán hình ảnh", location: "Trung tâm Y khoa Medic", hospital: "Trung tâm Y khoa Medic", district: "Quận 10", gender: "Nam", schedule: "Cả tuần", time: "07:00 - 19:00", price: "300.000đ" },
+  { name: "Nguyễn Hoài Nam", title: "PGS.TS.BS", academicTitle: "PGS", department: "Lồng ngực - Mạch máu", location: "Bệnh viện Đại học Y Dược", hospital: "Bệnh viện Đại học Y Dược", district: "Quận 5", gender: "Nam", schedule: "Thứ 2.4.6", time: "07:00 - 11:00", price: "600.000đ" },
+  { name: "Trần Ngọc Ánh", title: "PGS.TS.BS", academicTitle: "PGS", department: "Da liễu", location: "Phòng khám Da liễu Trần Ngọc Ánh", hospital: "Phòng khám Da liễu", district: "Tiếp Tân", gender: "Nữ", schedule: "Cả tuần", time: "16:00 - 20:00", price: "400.000đ" },
+  { name: "Cao Hữu Thịnh", title: "BS", academicTitle: "BS", department: "Sản phụ khoa - Hiếm muộn", location: "Bệnh viện An Sinh", hospital: "Bệnh viện An Sinh", district: "Phú Nhuận", gender: "Nam", schedule: "Thứ 2.3.4.5.6", time: "08:00 - 17:00", price: "500.000đ" },
+  { name: "Lương Lễ Hoàng", title: "BS", academicTitle: "BS", department: "Nội khoa - Y học dân tộc", location: "Trung tâm Oxy cao áp", hospital: "Trung tâm Oxy cao áp", district: "Quận 10", gender: "Nam", schedule: "Thứ 3.5", time: "08:00 - 11:00", price: "450.000đ" },
+  { name: "Nguyễn Thị Ngọc Phượng", title: "GS.TS.BS", academicTitle: "GS", department: "Sản phụ khoa", location: "Bệnh viện Mỹ Đức", hospital: "Bệnh viện Mỹ Đức", district: "Tân Bình", gender: "Nữ", schedule: "Thứ 2.4.6", time: "08:00 - 11:00", price: "1.000.000đ" },
+  { name: "Trần Đông A", title: "GS.TS.BS", academicTitle: "GS", department: "Ngoại nhi", location: "Bệnh viện Nhi đồng 2", hospital: "Bệnh viện Nhi đồng 2", district: "Quận 1", gender: "Nam", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "800.000đ" },
+  { name: "Nguyễn Chấn Hùng", title: "GS.TS.BS", academicTitle: "GS", department: "Ung bướu", location: "Bệnh viện Ung bướu TP.HCM", hospital: "Bệnh viện Ung bướu TP.HCM", district: "Bình Thạnh", gender: "Nam", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "1.000.000đ" },
+  { name: "Đỗ Hồng Ngọc", title: "BS", academicTitle: "BS", department: "Nhi khoa", location: "Online/Tư vấn", hospital: "Phòng khám tư", district: "Quận 3", gender: "Nam", schedule: "Theo lịch hẹn", time: "Theo lịch hẹn", price: "500.000đ" },
+  { name: "Nguyễn Lân Hiếu", title: "PGS.TS.BS", academicTitle: "PGS", department: "Tim mạch", location: "Bệnh viện Đại học Y Hà Nội", hospital: "Bệnh viện Đại học Y Hà Nội", district: "Hà Nội", gender: "Nam", schedule: "Thứ 2.4", time: "07:30 - 11:30", price: "700.000đ" }
 ];
 
 export default function AppointmentsPage() {
   const [view, setView] = useState("my"); // "my" or "search"
   const [searchTerm, setSearchTerm] = useState("");
   const [deptFilter, setDeptFilter] = useState("Tất cả");
+  const [titleFilter, setTitleFilter] = useState("Tất cả");
+  const [hospitalFilter, setHospitalFilter] = useState("Tất cả");
+  const [districtFilter, setDistrictFilter] = useState("Tất cả");
+  const [genderFilter, setGenderFilter] = useState("Tất cả");
 
   const appointments = [
     {
@@ -65,10 +69,19 @@ export default function AppointmentsPage() {
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           doc.department.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDept = deptFilter === "Tất cả" || doc.department.includes(deptFilter);
-    return matchesSearch && matchesDept;
+    const matchesTitle = titleFilter === "Tất cả" || doc.academicTitle === titleFilter;
+    const matchesHospital = hospitalFilter === "Tất cả" || doc.hospital.includes(hospitalFilter);
+    const matchesDistrict = districtFilter === "Tất cả" || doc.district === districtFilter;
+    const matchesGender = genderFilter === "Tất cả" || doc.gender === genderFilter;
+    
+    return matchesSearch && matchesDept && matchesTitle && matchesHospital && matchesDistrict && matchesGender;
   });
 
   const departments = ["Tất cả", ...Array.from(new Set(DOCTORS.map(d => d.department.split(" - ")[0])))];
+  const academicTitles = ["Tất cả", ...Array.from(new Set(DOCTORS.map(d => d.academicTitle)))];
+  const hospitals = ["Tất cả", ...Array.from(new Set(DOCTORS.map(d => d.hospital)))];
+  const districts = ["Tất cả", ...Array.from(new Set(DOCTORS.map(d => d.district)))];
+  const genders = ["Tất cả", "Nam", "Nữ"];
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto animate-fade-in relative container-fluid bg-[#f8fafc] min-h-screen">
@@ -107,11 +120,47 @@ export default function AppointmentsPage() {
                 />
              </div>
              <select 
-               className="bg-white border border-slate-200 rounded-2xl px-6 py-3.5 font-bold text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none"
+               className="bg-white border border-slate-200 rounded-2xl px-6 py-3.5 font-bold text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none w-full md:w-auto"
                value={deptFilter}
                onChange={(e) => setDeptFilter(e.target.value)}
              >
-               {departments.map(d => <option key={d} value={d}>{d}</option>)}
+               <option value="Tất cả">Chuyên khoa</option>
+               {departments.filter(d => d !== "Tất cả").map(d => <option key={d} value={d}>{d}</option>)}
+             </select>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-white/60 border border-slate-200/60 rounded-2xl">
+            <select 
+               className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none"
+               value={titleFilter}
+               onChange={(e) => setTitleFilter(e.target.value)}
+             >
+               <option value="Tất cả">Học vị / Học hàm</option>
+               {academicTitles.filter(d => d !== "Tất cả").map(d => <option key={d} value={d}>{d}</option>)}
+             </select>
+             <select 
+               className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none truncate"
+               value={hospitalFilter}
+               onChange={(e) => setHospitalFilter(e.target.value)}
+             >
+               <option value="Tất cả">Bệnh viện / Cơ sở</option>
+               {hospitals.filter(d => d !== "Tất cả").map(d => <option key={d} value={d} className="truncate">{d}</option>)}
+             </select>
+             <select 
+               className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none"
+               value={districtFilter}
+               onChange={(e) => setDistrictFilter(e.target.value)}
+             >
+               <option value="Tất cả">Khu vực / Quận</option>
+               {districts.filter(d => d !== "Tất cả").map(d => <option key={d} value={d}>{d}</option>)}
+             </select>
+             <select 
+               className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-teal-500/20 outline-none"
+               value={genderFilter}
+               onChange={(e) => setGenderFilter(e.target.value)}
+             >
+               <option value="Tất cả">Giới tính</option>
+               {genders.filter(d => d !== "Tất cả").map(d => <option key={d} value={d}>{d}</option>)}
              </select>
           </div>
         </div>

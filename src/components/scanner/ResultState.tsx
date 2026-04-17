@@ -218,19 +218,15 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
               </button>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="space-y-1.5">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-1">
                     <label className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider">Tên thuốc</label>
-                    {med.confidence_score && med.confidence_score < 80 && (
-                       <TooltipProvider>
-                        <Tooltip delayDuration={300}>
-                          <TooltipTrigger asChild>
-                            <span className="text-xs font-bold text-red-500 bg-red-100 rounded-full px-2 py-0.5 cursor-help">⚠️ AI không chắc chắn</span>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            <p>Độ tin cậy: {med.confidence_score}%. Vui lòng kiểm tra lại!</p>
-                          </TooltipContent>
-                        </Tooltip>
-                       </TooltipProvider>
+                    {typeof med.confidence_score === 'number' && med.confidence_score < 80 && (
+                       <div className="bg-red-50 border border-red-200 text-red-600 text-xs font-semibold px-3 py-1.5 rounded-lg flex items-start gap-2 mb-1 animate-in fade-in duration-300">
+                         <span className="text-red-500 mt-0.5">⚠️</span>
+                         <span>
+                           AI phát hiện chữ mờ hoặc không rõ (Tin cậy: {med.confidence_score}%). Vui lòng kiểm tra lại.
+                         </span>
+                       </div>
                     )}
                   </div>
                   {/* Autocomplete medicine name input */}
@@ -238,8 +234,23 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
                     value={med.name}
                     onChange={(val) => handleUpdateMed(index, 'name', val)}
                     placeholder="Nhập tên thuốc"
-                    className={`w-full bg-white border ${med.confidence_score && med.confidence_score < 80 ? 'border-red-300 ring-1 ring-red-100' : 'border-slate-200/50'} rounded-full px-4 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50`}
+                    className={`w-full bg-white border ${typeof med.confidence_score === 'number' && med.confidence_score < 80 ? 'border-red-300 ring-1 ring-red-100' : 'border-slate-200/50'} rounded-2xl px-4 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400/50`}
                   />
+                  {/* Suggested Alternatives */}
+                  {typeof med.confidence_score === 'number' && med.confidence_score < 80 && med.suggested_alternatives && med.suggested_alternatives.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="text-[0.65rem] text-slate-500 font-medium pt-1">Gợi ý từ AI:</span>
+                      {med.suggested_alternatives.map((alt, i) => (
+                        <button 
+                          key={i}
+                          onClick={() => handleUpdateMed(index, 'name', alt)}
+                          className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-medium px-2 py-1 rounded-lg transition-colors"
+                        >
+                          {alt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[0.6875rem] font-bold text-slate-600 uppercase tracking-wider">Liều lượng</label>
