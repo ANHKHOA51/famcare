@@ -87,15 +87,15 @@ export default function MealPlanPage() {
       setAiTitle(`Gợi ý thực đơn cho hồ sơ bệnh lý: ${diagnosis}`);
       
       // Bug #3: use optional chaining — AI might return unexpected structure
-      const todayMeals = data.meal_plan?.[0]?.meals ?? [];
-      if (todayMeals.length > 0) {
-        const mappedMeals: Meal[] = todayMeals.map((m: any, idx: number) => ({
+      const allDaysMeals = (data.meal_plan ?? []).flatMap((day: any) => day.meals ?? []);
+      if (allDaysMeals.length > 0) {
+        const mappedMeals: Meal[] = allDaysMeals.map((m: any, idx: number) => ({
           id: `meal-${idx}`,
           name: m.name || m.type || 'Món ăn',
           time: "20 phút",
           calories: m.macros?.calories ? `${m.macros.calories} kcal` : "N/A",
           difficulty: "Vừa",
-          tags: [m.type, "Khuyên dùng"].filter(Boolean),
+          tags: Array.isArray(m.tags) && m.tags.length > 0 ? [...m.tags, "Khuyên dùng"] : [m.type, "Khuyên dùng"].filter(Boolean),
           description: m.reason || m.benefits || "",
           ingredients: Array.isArray(m.ingredients) 
             ? m.ingredients.map((ing: string) => ({ name: ing, amount: "Vừa đủ" }))
@@ -287,7 +287,7 @@ export default function MealPlanPage() {
 
           <div>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-              <h2 className="text-xl font-display font-bold text-slate-800">Thực đơn trưa hôm nay</h2>
+              <h2 className="text-xl font-display font-bold text-slate-800">Danh sách món ăn gợi ý</h2>
               <div className="flex gap-2 text-sm overflow-x-auto hide-scroll pb-2 md:pb-0">
                 {/* Bug #9: tab filter now functional with activeTab state */}
                 {["Tất cả", "Món mặn", "Món canh", "Tráng miệng"].map((tab, i) => (

@@ -723,15 +723,15 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
       if (memberProfile.age) contextStr += `- Tuổi: ${memberProfile.age}\n`;
     }
 
-    const prompt = `Bạn là chuyên gia dinh dưỡng. Hãy xây dựng thực đơn 3 ngày cho người bệnh: "${diagnosis}". ${contextStr}
-    Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và Thông tin Hồ sơ Sức khỏe phía trên (nếu có). 
-    - Nếu có dị ứng: TUYỆT ĐỐI không dùng/đề xuất các nguyên liệu gây dị ứng đó.
-    - Nếu BMI phản ánh thừa cân/béo phì: Gợi ý thực đơn thâm hụt calo, giảm tinh bột xấu.
-    - Đưa ra các cảnh báo/hạn chế ăn uống cụ thể liên quan (ví dụ: hạn chế muối nếu có huyết áp).
+    const prompt = `Bạn là chuyên gia dinh dưỡng xuất sắc. Hãy xây dựng thực đơn CHUYÊN BIỆT VÀ ĐẶC THÙ MỚI LẠ dành riêng cho người có tình trạng/bệnh lý: "${diagnosis}". ${contextStr}
+    Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và Thông tin Hồ sơ Sức khỏe (nếu có). 
+    - Nếu có dị ứng: TUYỆT ĐỐI không dùng/đề xuất nguyên liệu gây dị ứng.
+    - Nếu BMI phản ánh thừa cân/béo phì: Gợi ý thực đơn giảm calo, giảm tinh bột.
+    - TUYỆT ĐỐI TÙY BIẾN CHO TỪNG BỆNH: Ví dụ đau dạ dày thì thức ăn phải mềm, không cay nóng; gout thì không thịt đỏ, hải sản... Hãy chứng minh năng lực y khoa của bạn qua cách chọn món. Đảm bảo bệnh khác nhau thì thực đơn CẦN KHÁC BIỆT HOÀN TOÀN.
 
-    Mỗi ngày tạo ra 2 món (Sáng và Trưa/Tối) phù hợp nhất.
+    Tạo ra thực đơn 2 ngày. Mỗi ngày tạo ra từ 3 đến 4 món (gồm Bữa Sáng, Bữa Trưa có Mặn + Canh, Bữa Tối, Tráng miệng).
     Yêu cầu:
-    1. Trả về đúng định dạng JSON kèm số liệu macros (calories, protein, carbs, fat, sugar bằng số/grams), mảng \`alternatives\` và \`general_dietary_advice\` (mảng các lời khuyên/cảnh báo kiêng cữ dinh dưỡng chung): 
+    1. Trả về ĐÚNG CẤU TRÚC JSON kèm số liệu macros, mảng alternative và general_dietary_advice: 
     { 
       "general_dietary_advice": ["Lời khuyên 1", "Lời khuyên 2"], 
       "meal_plan": [ 
@@ -740,8 +740,9 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
           "meals": [ 
             { 
               "type": "Sáng", 
+              "tags": ["món canh"], // CHỈ ĐƯỢC CHỨA 1 trong các loại này: "món mặn", "món canh", "tráng miệng", hoặc "ăn vặt" (để ứng dụng lọc được mặn, canh, tráng miệng)
               "name": "Tên món ăn cụ thể", 
-              "reason": "Tại sao món này tốt cho bệnh lý này?", 
+              "reason": "Giải thích chi tiết tại sao món này tốt cho bệnh lý này?", 
               "macros": {"calories": 300, "protein": 15, "carbs": 40, "fat": 10, "sugar": 5}, 
               "ingredients": ["100g ức gà", "50g nấm", "1 muỗng dầu oliu"],
               "instructions": ["Bước 1: Rửa sạch nấm", "Bước 2: Áp chảo gà"],
@@ -751,9 +752,9 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
         } 
       ] 
     }.
-    2. Các món ăn do bạn tự sáng tạo ra từ kiến thức dinh dưỡng thực tế, ghi rõ nguyên liệu và các bước làm cơ bản.
-    3. Trình bày bằng tiếng Việt tự nhiên và ngon miệng.
-    4. KHÔNG TRẢ VỀ BẤT KỲ VĂN BẢN NÀO NGOÀI JSON.`;
+    2. Các món ăn tạo ra phải phong phú, đúng chuẩn dinh dưỡng, ghi rõ nguyên liệu và các bước làm.
+    3. Trình bày bằng tiếng Việt tự nhiên.
+    4. CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON, KHÔNG MARKDOWN, KHÔNG TEXT DƯ THỪA.`;
 
     const result = await generateWithFallbackModels(prompt, { task: 'meal-plan', strictJson: true });
     const rawText = result.response.text();
