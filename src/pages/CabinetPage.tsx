@@ -233,7 +233,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
           >
             Bạn
           </button>
-          {members.map(m => (
+          {members.filter(m => m.relationship !== "Bản thân").map(m => (
             <button 
               key={m.id}
               onClick={() => setActiveTab(m.id)} 
@@ -280,16 +280,19 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                  <div key={med.id} className="bg-white border border-slate-300 rounded-[1.25rem] p-5 flex flex-col hover:shadow-lg transition-all h-full">
                     {/* Header */}
                     <div className="flex justify-between items-start mb-3">
-                      <div className="flex-1 pr-3">
+                      <div className="flex-1 pr-3 min-w-0">
                         <h3 className="font-bold text-slate-800 text-lg leading-tight mb-2 break-words uppercase">
                           {med.name}
                         </h3>
                         <div className="flex flex-wrap gap-2 mb-2">
-                           <span className="bg-slate-100/80 text-slate-600 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                           <span 
+                             className="bg-slate-100/80 text-slate-600 text-xs font-semibold px-3 py-1 rounded-full truncate max-w-full"
+                             title={med.diagnosis || "Chưa phân loại"}
+                           >
                              {med.diagnosis || "Chưa phân loại"}
                            </span>
                            {isNearExpiry(med.id) && (
-                             <span className="bg-orange-50 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                             <span className="bg-orange-50 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                Sắp hết
                              </span>
                            )}
