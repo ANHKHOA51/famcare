@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
-  const { logout } = useAuth();
+  const { logout, token } = useAuth();
   const [theme, setTheme] = useState(() => localStorage.getItem("famcare-theme") || "system");
   const [notifications, setNotifications] = useState(() => localStorage.getItem("famcare-notifications") !== "false");
 
@@ -54,7 +54,6 @@ export default function SettingsPage() {
     
     setIsLoading(true);
     try {
-      const token = localStorage.getItem("aura_token"); // Fix #1: correct key
       const res = await fetch("/api/auth/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },

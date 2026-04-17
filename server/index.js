@@ -708,12 +708,28 @@ const FOOD_DATABASE = [
 
 app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
   try {
-    const { diagnosis } = req.body;
+    const { diagnosis, memberProfile } = req.body;
+    
+    let contextStr = '';
+    if (memberProfile) {
+      contextStr = `\n[Context - Hồ sơ sức khoẻ của người dùng (${memberProfile.name || 'Bản thân'})]\n`;
+      if (memberProfile.allergies) contextStr += `- Dị ứng thực phẩm: ${memberProfile.allergies}\n`;
+      if (memberProfile.chronicIllness) contextStr += `- Bệnh nền chuyên sâu: ${memberProfile.chronicIllness}\n`;
+      if (memberProfile.height && memberProfile.weight) {
+        const heightM = memberProfile.height > 3 ? memberProfile.height / 100 : memberProfile.height;
+        const bmi = (memberProfile.weight / (heightM * heightM)).toFixed(1);
+        contextStr += `- Chỉ số BMI: ${bmi} (Cân nặng: ${memberProfile.weight}kg, Chiều cao: ${memberProfile.height})\n`;
+      }
+      if (memberProfile.age) contextStr += `- Tuổi: ${memberProfile.age}\n`;
+    }
 
-    const prompt = `Bạn là chuyên gia dinh dưỡng. Hãy xây dựng thực đơn 3 ngày cho người bệnh: "${diagnosis}". 
-    Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và đưa ra các cảnh báo/hạn chế ăn uống cụ thể (ví dụ: nếu huyết áp cao, yêu cầu "Hạn chế muối/natri"; nếu tiểu đường, yêu cầu "Kiểm soát lượng đường nghiêm ngặt"). TUYỆT ĐỐI tuân thủ các hạn chế này khi lên thực đơn.
+    const prompt = `Bạn là chuyên gia dinh dưỡng. Hãy xây dựng thực đơn 3 ngày cho người bệnh: "${diagnosis}". ${contextStr}
+    Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và Thông tin Hồ sơ Sức khỏe phía trên (nếu có). 
+    - Nếu có dị ứng: TUYỆT ĐỐI không dùng/đề xuất các nguyên liệu gây dị ứng đó.
+    - Nếu BMI phản ánh thừa cân/béo phì: Gợi ý thực đơn thâm hụt calo, giảm tinh bột xấu.
+    - Đưa ra các cảnh báo/hạn chế ăn uống cụ thể liên quan (ví dụ: hạn chế muối nếu có huyết áp).
 
-    Mỗi ngày tạo ra 2 món (Sáng và Trưa/Tối) phù hợp nhất với bệnh lý.
+    Mỗi ngày tạo ra 2 món (Sáng và Trưa/Tối) phù hợp nhất.
     Yêu cầu:
     1. Trả về đúng định dạng JSON kèm số liệu macros (calories, protein, carbs, fat, sugar bằng số/grams), mảng \`alternatives\` và \`general_dietary_advice\` (mảng các lời khuyên/cảnh báo kiêng cữ dinh dưỡng chung): 
     { 

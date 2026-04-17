@@ -1,13 +1,51 @@
+import { useState, useEffect } from "react";
 import { Search, AlertTriangle, CheckCircle2, Clock, Info, User, ChevronRight, Activity, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardPage() {
+  const { token } = useAuth();
+  const [profileName, setProfileName] = useState("Lan Anh");
+  const [members, setMembers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/auth/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        if (res.ok) {
+          const names = data.name ? data.name.split(" ") : [];
+          setProfileName(names.length > 0 ? names[names.length - 1] : "bạn");
+          const owned = data.ownedMembers || [];
+          const linked = (data.linkedMembers || []).map((m: any) => ({
+            ...m,
+            name: m.user?.name || m.user?.email || 'Người dùng',
+            relationship: 'Liên kết',
+            isLinked: true
+          }));
+          setMembers([...owned, ...linked]);
+        }
+      } catch (e) {}
+    };
+    if (token) fetchProfile();
+  }, [token]);
+
+  const getBmiData = (w?: number, h?: number) => {
+    if (!w || !h) return { value: 0, label: "Chưa có", cls: "bg-slate-500", text: "text-slate-600", percent: 0 };
+    const heightM = h > 3 ? h / 100 : h;
+    const bmi = +(w / (heightM * heightM)).toFixed(1);
+    if (bmi < 18.5) return { value: bmi, label: "Thiếu cân", cls: "bg-blue-500", text: "text-blue-600", percent: 30 };
+    if (bmi < 25) return { value: bmi, label: "Bình thường", cls: "bg-green-500", text: "text-green-600", percent: 50 };
+    if (bmi < 30) return { value: bmi, label: "Thừa cân", cls: "bg-amber-500", text: "text-amber-600", percent: 75 };
+    return { value: bmi, label: "Béo phì", cls: "bg-red-500", text: "text-red-600", percent: 90 };
+  };
+
   return (
     <div className="p-8 lg:p-10 max-w-7xl mx-auto space-y-10 bg-[#f8fafc]">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h1 className="text-2xl font-display font-bold text-slate-800">
-          Chào Lan Anh, hôm nay gia đình thế nào?
+          Chào {profileName}, hôm nay gia đình thế nào?
         </h1>
         <div className="relative w-full md:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -27,50 +65,29 @@ export default function DashboardPage() {
         </div>
         
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
-              <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100" alt="Ba" className="w-full h-full object-cover" />
+          {members.slice(0, 3).map((m: any, idx: number) => {
+            const hasIssue = m.chronicIllness || m.allergies;
+            return (
+              <div key={m.id || idx} className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                    <User size={24} />
+                  </div>
+                  <span className={`text-[0.625rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${hasIssue ? 'text-amber-600 bg-amber-50' : 'text-blue-600 bg-blue-50'}`}>
+                    {hasIssue ? "Cần lưu ý" : "Bình thường"}
+                  </span>
+                </div>
+                <h3 className="font-bold text-slate-800">{m.relationship} ({m.name})</h3>
+                <p className="text-sm text-slate-500 mb-6 flex-1">{m.chronicIllness || m.allergies ? `Lưu ý: ${m.chronicIllness || ''} ${m.allergies || ''}` : "Sức khỏe ổn định"}</p>
+                <div className={`flex items-center gap-2 text-xs font-medium w-fit px-3 py-1.5 rounded-lg ${hasIssue ? 'text-amber-600 bg-amber-50' : 'text-blue-600 bg-blue-50'}`}>
+                  {hasIssue ? <AlertTriangle size={14} /> : <CheckCircle2 size={14} />} {hasIssue ? "Cần theo dõi" : "Phát triển tốt"}
+                </div>
               </div>
-              <span className="text-[0.625rem] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wider">Mức ổn định</span>
-            </div>
-            <h3 className="font-bold text-slate-800">Ba (Hoàng Nam)</h3>
-            <p className="text-sm text-slate-500 mb-6 flex-1">Cao Huyết Áp</p>
-            <div className="flex items-center gap-2 text-xs font-medium text-teal-600 bg-teal-50 w-fit px-3 py-1.5 rounded-lg">
-              <Clock size={14} /> Kiểm tra 2 ngày trước
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
-              <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100" alt="Mẹ" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-[0.625rem] font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full uppercase tracking-wider">Cần lưu ý</span>
-            </div>
-            <h3 className="font-bold text-slate-800">Mẹ (Thanh Vân)</h3>
-            <p className="text-sm text-slate-500 mb-6 flex-1">Tiền Tiểu đường</p>
-            <div className="flex items-center gap-2 text-xs font-bold text-red-500">
-              <AlertTriangle size={14} /> Theo dõi chế độ ăn
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100/50 flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
-              <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1595454223600-91fb0ba16c14?auto=format&fit=crop&q=80&w=100" alt="Con" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-[0.625rem] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Khỏe mạnh</span>
-            </div>
-            <h3 className="font-bold text-slate-800">Con (Minh Khôi)</h3>
-            <p className="text-sm text-slate-500 mb-6 flex-1">Cân nặng: 32kg (+1kg)</p>
-            <div className="flex items-center gap-2 text-xs font-medium text-blue-600 bg-blue-50 w-fit px-3 py-1.5 rounded-lg">
-              <CheckCircle2 size={14} /> Phát triển tốt
-            </div>
-          </div>
+            );
+          })}
+          {members.length === 0 && (
+            <p className="text-sm text-slate-500 italic col-span-3">Đang tải dữ liệu gia đình...</p>
+          )}
         </div>
       </section>
 
@@ -80,33 +97,22 @@ export default function DashboardPage() {
           <h2 className="text-xl font-display font-bold text-slate-800">Chỉ số BMI & Theo dõi</h2>
           <div className="bg-white rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100/50">
             <div className="grid sm:grid-cols-3 gap-6 mb-8">
-              {/* BMI 1 */}
-              <div>
-                <p className="text-sm text-slate-500 mb-1">Ba</p>
-                <p className="text-3xl font-display font-bold text-slate-800 mb-3">23.5</p>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
-                  <div className="h-full bg-blue-500 w-[60%] rounded-full"></div>
-                </div>
-                <p className="text-[0.625rem] text-slate-400 font-medium">Bình thường</p>
-              </div>
-              {/* BMI 2 */}
-              <div className="sm:border-l sm:border-slate-100 sm:pl-6">
-                <p className="text-sm text-slate-500 mb-1">Mẹ</p>
-                <p className="text-3xl font-display font-bold max-text text-amber-600 mb-3">26.1</p>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
-                  <div className="h-full bg-amber-500 w-[75%] rounded-full"></div>
-                </div>
-                <p className="text-[0.625rem] text-slate-400 font-medium">Tiền béo phì</p>
-              </div>
-              {/* BMI 3 */}
-              <div className="sm:border-l sm:border-slate-100 sm:pl-6">
-                <p className="text-sm text-slate-500 mb-1">Con</p>
-                <p className="text-3xl font-display font-bold text-slate-800 mb-3">18.4</p>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
-                  <div className="h-full bg-blue-500 w-[40%] rounded-full"></div>
-                </div>
-                <p className="text-[0.625rem] text-slate-400 font-medium">Bình thường</p>
-              </div>
+              {members.slice(0, 3).map((m: any, idx: number) => {
+                const bmiData = getBmiData(m.weight, m.height);
+                return (
+                  <div key={m.id || idx} className={idx > 0 ? "sm:border-l sm:border-slate-100 sm:pl-6" : ""}>
+                    <p className="text-sm text-slate-500 mb-1">{m.relationship} ({m.name})</p>
+                    <p className={`text-3xl font-display font-bold mb-3 ${bmiData.text}`}>
+                      {bmiData.value > 0 ? bmiData.value : "--"}
+                    </p>
+                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+                      <div className={`h-full ${bmiData.cls} rounded-full transition-all`} style={{ width: `${bmiData.percent}%` }}></div>
+                    </div>
+                    <p className="text-[0.625rem] text-slate-400 font-medium">{bmiData.label}</p>
+                  </div>
+                );
+              })}
+              {members.length === 0 && <p className="text-sm text-slate-400">Vui lòng cập nhật thông tin BMI trong Hồ sơ.</p>}
             </div>
             
             <button className="w-full bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-semibold flex items-center justify-center gap-2 py-3.5 rounded-xl transition-colors text-sm">

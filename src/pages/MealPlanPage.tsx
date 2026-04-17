@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils } from "lucide-react";
+import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -28,6 +28,31 @@ export default function MealPlanPage() {
   const [generalAdvice, setGeneralAdvice] = useState<string[]>([]);
   const [aiTitle, setAiTitle] = useState("Gợi ý thực đơn hôm nay");
   const { token } = useAuth();
+  
+  const [familyMembers, setFamilyMembers] = useState<any[]>([]);
+  const [selectedMemberId, setSelectedMemberId] = useState<string>("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/auth/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        if (res.ok) {
+          const owned = data.ownedMembers || [];
+          const linked = (data.linkedMembers || []).map((m: any) => ({
+            ...m,
+            name: m.user?.name || m.user?.email || 'Người dùng',
+            relationship: 'Liên kết',
+            isLinked: true
+          }));
+          const allMembers = [...owned, ...linked];
+          setFamilyMembers(allMembers);
+          if (allMembers.length > 0) setSelectedMemberId(allMembers[0].id);
+        }
+      } catch (e) {}
+    };
+    if (token) fetchProfile();
+  }, [token]);
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -41,6 +66,7 @@ export default function MealPlanPage() {
     setGeneralAdvice([]);
     
     try {
+      const selectedMember = familyMembers.find(m => m.id === selectedMemberId);
       const resp = await fetch("/api/generate-meal-plan", {
         method: "POST",
         headers: {
@@ -48,7 +74,7 @@ export default function MealPlanPage() {
           // Bug #2: send auth token so server can authenticate
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
-        body: JSON.stringify({ diagnosis })
+        body: JSON.stringify({ diagnosis, memberProfile: selectedMember })
       });
       
       const data = await resp.json();
@@ -207,18 +233,35 @@ export default function MealPlanPage() {
 
   return selectedMeal ? renderDetail(selectedMeal) : (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8 animate-fade-in relative container-fluid bg-[#f8fafc]">
-      <form onSubmit={handleGenerate} className="relative w-full">
-        <button type="submit" className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-700 disabled:opacity-50" disabled={isGenerating}>
-          {isGenerating ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
-        </button>
-        <input 
-          type="text" 
-          value={diagnosis}
-          onChange={e => setDiagnosis(e.target.value)}
-          placeholder="Nhập bệnh lý để AI tạo Menu (VD: Tiểu đường, Gout, Viêm dạ dày...)" 
-          className="w-full bg-white border border-blue-100 shadow-sm rounded-full py-4 pl-12 pr-4 lg:text-base text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-slate-700"
-          disabled={isGenerating}
-        />
+      <form onSubmit={handleGenerate} className="relative w-full space-y-4">
+        {familyMembers.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {familyMembers.map((m: any) => (
+              <button
+                type="button"
+                key={m.id}
+                onClick={() => setSelectedMemberId(m.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors border ${selectedMemberId === m.id ? 'bg-blue-500 text-white border-blue-500 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+              >
+                <User size={14} />
+                {m.name} ({m.relationship})
+              </button>
+            ))}
+          </div>
+        )}
+        <div className="relative">
+          <button type="submit" className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-700 disabled:opacity-50" disabled={isGenerating}>
+            {isGenerating ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
+          </button>
+          <input 
+            type="text" 
+            value={diagnosis}
+            onChange={e => setDiagnosis(e.target.value)}
+            placeholder="Nhập bệnh lý để AI tạo Menu (VD: Tiểu đường, Gout, Viêm dạ dày...)" 
+            className="w-full bg-white border border-blue-100 shadow-sm rounded-full py-4 pl-12 pr-4 lg:text-base text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-slate-700"
+            disabled={isGenerating}
+          />
+        </div>
       </form>
 
       <div className="grid lg:grid-cols-12 gap-10 items-start">
