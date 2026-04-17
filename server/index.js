@@ -651,7 +651,7 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     const base64Image = req.file.buffer.toString('base64');
 
     const prompt = `Analyze prescription image. 
-    If the image is entirely blurry, unreadable, or clearly not a medical document, return ONLY this JSON: { "error": "BLURRY" }.
+    If the image is entirely blurry, unreadable, or clearly NOT a prescription, medicine label, or medical document (e.g., random objects, selfies, landscapes), return ONLY this JSON: { "error": "Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại." }.
     Otherwise, extract diagnosis, prescription details and medications. 
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
     Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }] }. All text in natural Vietnamese.`;
@@ -660,6 +660,9 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     const response = await result.response;
     // Bug fix: parseJsonStrict is inside try — SyntaxError from bad Gemini JSON also hits catch and triggers OCR
     const jsonResponse = parseJsonStrict(response.text());
+    if (jsonResponse.error) {
+      return res.status(400).json({ error: jsonResponse.error === 'BLURRY' ? 'Ảnh quá mờ hoặc không phải là đơn thuốc y tế. Vui lòng thử lại.' : jsonResponse.error });
+    }
     res.json(jsonResponse);
   } catch (error) {
     console.error('SCAN ERROR:', error);
@@ -723,7 +726,10 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
       if (memberProfile.age) contextStr += `- Tuổi: ${memberProfile.age}\n`;
     }
 
-    const prompt = `Bạn là chuyên gia dinh dưỡng xuất sắc. Hãy xây dựng thực đơn CHUYÊN BIỆT VÀ ĐẶC THÙ MỚI LẠ dành riêng cho người có tình trạng/bệnh lý: "${diagnosis}". ${contextStr}
+    const prompt = `Bạn là chuyên gia dinh dưỡng xuất sắc. 
+    LƯU Ý QUAN TRỌNG: Hãy kiểm tra xem "${diagnosis}" có thực sự là một tình trạng sức khỏe, tên bệnh lý, hoặc nhu cầu dinh dưỡng hợp lý đối với con người hay không. Nếu người dùng nhập những từ khóa vô nghĩa, tên vật dụng, trò đùa, chửi bới, hoặc không liên quan đến sức khỏe (VD: xe máy, điện thoại, abcxyz, tôi buồn...), hãy LẬP TỨC TRẢ VỀ JSON NÀY VÀ DỪNG LẠI: { "error": "Vui lòng nhập một tình trạng sức khỏe hoặc bệnh lý hợp lệ để AI có thể tư vấn." }
+    
+    Nếu hợp lệ, hãy xây dựng thực đơn CHUYÊN BIỆT VÀ ĐẶC THÙ MỚI LẠ dành riêng cho người có tình trạng/bệnh lý: "${diagnosis}". ${contextStr}
     Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và Thông tin Hồ sơ Sức khỏe (nếu có). 
     - Nếu có dị ứng: TUYỆT ĐỐI không dùng/đề xuất nguyên liệu gây dị ứng.
     - Nếu BMI phản ánh thừa cân/béo phì: Gợi ý thực đơn giảm calo, giảm tinh bột.
@@ -760,6 +766,10 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
     const rawText = result.response.text();
     const cleanJson = parseJsonStrict(rawText);
     
+    if (cleanJson.error) {
+      return res.status(400).json({ error: cleanJson.error });
+    }
+
     // Pass raw AI data directly without hydrating from FOOD_DATABASE
     res.json({ 
       general_dietary_advice: cleanJson.general_dietary_advice || [],
