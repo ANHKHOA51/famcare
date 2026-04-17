@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 import { Loader2, User, Activity, Users, UserPlus, Search, Mail, Link2, Calendar, Phone, MapPin, Edit3, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function ProfilePage() {
   const { toast } = useToast();
+  const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
@@ -38,7 +40,6 @@ export default function ProfilePage() {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('aura_token');
       const res = await fetch('/api/auth/profile', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -88,7 +89,6 @@ export default function ProfilePage() {
     if (q.length < 2) { setUserResults([]); return; }
     setSearching2(true);
     try {
-      const token = localStorage.getItem('aura_token');
       const resp = await fetch(`/api/family/search?q=${encodeURIComponent(q)}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -110,7 +110,6 @@ export default function ProfilePage() {
     }
     setAdding(true);
     try {
-      const token = localStorage.getItem('aura_token');
       const resp = await fetch("/api/family/add", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -134,7 +133,6 @@ export default function ProfilePage() {
   const handleRemoveMember = async (id: string, name: string) => {
     if (!window.confirm(`Bạn có chắc muốn xóa "${name}" khỏi gia đình?`)) return;
     try {
-      const token = localStorage.getItem('aura_token');
       const resp = await fetch(`/api/family/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
@@ -154,7 +152,6 @@ export default function ProfilePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = localStorage.getItem('aura_token');
       const res = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: { 

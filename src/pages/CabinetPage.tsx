@@ -309,7 +309,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                         <div className="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1">
                           Chữa triệu chứng
                         </div>
-                        <div className="text-slate-800 text-[0.9rem] font-medium leading-snug">
+                        <div className="text-slate-800 text-[0.9rem] font-medium leading-snug overflow-hidden break-words line-clamp-3">
                           {med.symptoms_treated || "Chưa có thông tin"}
                         </div>
                       </div>
@@ -330,7 +330,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                              </TooltipProvider>
                           )}
                         </div>
-                        <div className="text-slate-800 text-[0.9rem] italic leading-snug">
+                        <div className="text-slate-800 text-[0.9rem] italic leading-snug overflow-hidden break-words line-clamp-3">
                           {med.instructions || med.dosage || "Theo chỉ dẫn bác sĩ"}
                         </div>
                       </div>

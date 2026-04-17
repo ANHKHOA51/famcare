@@ -658,20 +658,27 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
     const response = await result.response;
+    // Bug fix: parseJsonStrict is inside try — SyntaxError from bad Gemini JSON also hits catch and triggers OCR
     const jsonResponse = parseJsonStrict(response.text());
     res.json(jsonResponse);
   } catch (error) {
     console.error('SCAN ERROR:', error);
 
-    if (isProviderTemporaryFailure(error) && OCR_SPACE_API_KEY && req.file) {
+    // Bug fix 1: Try OCR on ANY type of Gemini failure, not just 429/503.
+    // This covers: 500 internal error, 404 model not found, network timeout, SyntaxError from bad JSON, etc.
+    if (OCR_SPACE_API_KEY && req.file) {
       try {
         const ocrText = await ocrSpaceExtractText(req.file);
         if (ocrText) {
           console.info('[AI][OCR][scan] success provider=ocr.space');
           return res.json(buildFallbackScanJsonFromOcr(ocrText));
         }
+        // Bug fix 2: OCR ran but returned empty (unreadable image) — return explicit error instead of silently falling through
+        console.warn('[AI][OCR][scan] returned empty text — image likely unreadable');
+        return res.status(422).json({ error: 'Không thể đọc nội dung ảnh. Vui lòng chụp lại rõ hơn hoặc thử ảnh khác.' });
       } catch (ocrError) {
         console.warn('[AI][OCR][scan] failed provider=ocr.space:', ocrError?.message || ocrError);
+        // OCR also failed — fall through to rate-limit check then generic error
       }
     }
 
@@ -681,6 +688,7 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'Đã có lỗi xảy ra khi quét đơn thuốc' });
   }
 });
+
 
 const FOOD_DATABASE = [
   { id: 'pho-ga', name: 'Phở Gà', image: 'https://images.unsplash.com/photo-1503767835115-9ea6b58859ff', benefits: 'Giàu đạm, dễ tiêu hóa, phù hợp khi cơ thể mệt mỏi.' },
@@ -698,7 +706,7 @@ const FOOD_DATABASE = [
   { id: 'trung-hap', name: 'Trứng Hấp Kiểu Nhật', image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99', benefits: 'Mềm mịn, dễ nuốt, phù hợp cho người đau họng hoặc mệt.' }
 ];
 
-app.post('/api/generate-meal-plan', async (req, res) => {
+app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
   try {
     const { diagnosis } = req.body;
 
