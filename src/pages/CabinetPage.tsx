@@ -287,7 +287,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                         </h3>
                         <div className="flex flex-wrap gap-2 mb-2">
                            <span 
-                             className="bg-slate-100/80 text-slate-600 text-xs font-semibold px-3 py-1 rounded-full truncate max-w-full"
+                             className="bg-slate-100/80 text-slate-600 text-xs font-semibold px-3 py-1.5 rounded-xl whitespace-normal break-words max-w-full"
                              title={med.diagnosis || "Chưa phân loại"}
                            >
                              {med.diagnosis || "Chưa phân loại"}
@@ -313,7 +313,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                         <div className="text-[0.65rem] font-bold text-slate-600 uppercase tracking-widest mb-1">
                           Chữa triệu chứng
                         </div>
-                        <div className="text-slate-800 text-[0.9rem] font-medium leading-snug overflow-hidden break-words line-clamp-3">
+                        <div className="text-slate-800 text-[0.9rem] font-medium leading-snug break-words">
                           {med.symptoms_treated || "Chưa có thông tin"}
                         </div>
                       </div>
@@ -334,7 +334,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
                              </TooltipProvider>
                           )}
                         </div>
-                        <div className="text-slate-800 text-[0.9rem] italic leading-snug overflow-hidden break-words line-clamp-3">
+                        <div className="text-slate-800 text-[0.9rem] italic leading-snug break-words">
                           {med.instructions || med.dosage || "Theo chỉ dẫn bác sĩ"}
                         </div>
                       </div>
