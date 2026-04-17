@@ -120,7 +120,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // --- Auth Routes ---
-  app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
@@ -130,18 +130,18 @@ const authenticateToken = (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const user = await prisma.user.create({
-      data: { 
-        email, 
-        password: hashedPassword, 
+      data: {
+        email,
+        password: hashedPassword,
         name,
         ownedMembers: {
           create: { name: name || 'Bản thân', relationship: 'Bản thân' }
         }
       },
     });
-    
+
     res.json({ message: 'User registered successfully', userId: user.id });
   } catch (error) {
     console.error('REGISTRATION ERROR:', error);
@@ -153,11 +153,11 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
-    
+
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    
+
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
   } catch (error) {
@@ -170,19 +170,19 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      include: { 
+      include: {
         ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } },
         linkedMembers: { include: { user: { select: { id: true, name: true, email: true } } } }
       }
     });
-    
+
     if (!user) return res.status(404).json({ error: 'User not found' });
-    
+
     delete user.password;
     if (user.height && user.weight) {
       user.bmi = parseFloat((user.weight / ((user.height / 100) * (user.height / 100))).toFixed(1));
     }
-    
+
     res.json(user);
   } catch (error) {
     console.error('GET PROFILE ERROR:', error);
@@ -193,7 +193,7 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
 app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    
+
     // Find user to verify old password
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
@@ -216,17 +216,17 @@ app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
 
 app.put('/api/auth/profile', authenticateToken, async (req, res) => {
   try {
-    const { 
+    const {
       name, phone, address, dob, gender,
       bloodType, allergies, chronicIllness, height, weight
     } = req.body;
-    
+
     // Parse dob if provided
     let parsedDob = undefined;
     if (dob) {
       parsedDob = new Date(dob);
     }
-    
+
     // Bug #5: Sanitize numeric fields — reject NaN to prevent Prisma crash
     const parsedHeight = height ? parseFloat(height) : null;
     const parsedWeight = weight ? parseFloat(weight) : null;
@@ -246,7 +246,7 @@ app.put('/api/auth/profile', authenticateToken, async (req, res) => {
         weight: parsedWeight
       }
     });
-    
+
     delete updatedUser.password;
     if (updatedUser.height && updatedUser.weight) {
       updatedUser.bmi = parseFloat((updatedUser.weight / ((updatedUser.height / 100) * (updatedUser.height / 100))).toFixed(1));
@@ -265,7 +265,7 @@ app.get('/api/family/search', authenticateToken, async (req, res) => {
   try {
     const { q } = req.query;
     if (!q || q.length < 2) return res.json([]);
-    
+
     const users = await prisma.user.findMany({
       where: {
         AND: [
@@ -301,7 +301,7 @@ app.get('/api/family', authenticateToken, async (req, res) => {
     });
 
     const formattedLinked = linkedMembers.map(m => ({
-      id: m.id, 
+      id: m.id,
       name: m.user.name || m.user.email,
       relationship: 'Chủ hộ',
       userId: m.userId,
@@ -320,7 +320,7 @@ app.get('/api/family', authenticateToken, async (req, res) => {
 app.post('/api/family/add', authenticateToken, async (req, res) => {
   try {
     const { linkedUserId, relationship } = req.body;
-    
+
     if (!linkedUserId) return res.status(400).json({ error: 'linkedUserId required' });
 
     // Check the target user exists
@@ -352,7 +352,7 @@ app.post('/api/family/add', authenticateToken, async (req, res) => {
 app.delete('/api/family/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const member = await prisma.familyMember.findUnique({
       where: { id }
     });
@@ -406,8 +406,8 @@ app.post('/api/cabinet/save', authenticateToken, async (req, res) => {
     const medication = await prisma.medication.create({
       data: {
         name: encrypt(name),
-        dosage, 
-        instructions, 
+        dosage,
+        instructions,
         diagnosis: encrypt(diagnosis),
         symptoms_treated: Array.isArray(symptoms_treated) ? symptoms_treated.join(', ') : symptoms_treated,
         prescriptionCode,
@@ -481,7 +481,7 @@ app.get('/api/cabinet', authenticateToken, async (req, res) => {
 app.delete('/api/cabinet/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Check if medication exists and check permission
     const medication = await prisma.medication.findUnique({
       where: { id },
@@ -518,7 +518,6 @@ const GEMINI_MODEL_CANDIDATES = [
 ].filter(Boolean);
 
 const GROQ_MODEL_CANDIDATES = [
-  'llama-3.2-11b-vision-preview', // Good for scanning
   'llama-3.3-70b-versatile',      // Good for reasoning
   'llama-3.1-8b-instant'          // High limits
 ];
@@ -641,7 +640,7 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       const model = genAI.getGenerativeModel({ model: modelName });
       const result = await model.generateContent(contents);
       console.info(`[AI][Gemini][${task}] success model=${modelName}`);
-      return { 
+      return {
         text: () => result.response.text(),
         provider: 'gemini',
         model: modelName
@@ -650,10 +649,10 @@ const generateWithFallbackModels = async (contents, options = {}) => {
       lastError = error;
       const errorMsg = error?.message || '';
       console.warn(`[AI][Gemini][${task}] failed model=${modelName}:`, error?.status || errorMsg);
-      
+
       // If intentional error (safety, etc), don't retry same provider but maybe move to fallback
       if (errorMsg.includes('safety') || errorMsg.includes('blocked')) {
-         break; 
+        break;
       }
       continue;
     }
@@ -662,7 +661,7 @@ const generateWithFallbackModels = async (contents, options = {}) => {
   // Step 2: Try Groq as fallback
   if (process.env.GROQ_API_KEY) {
     console.info(`[AI][Fallback][${task}] Trying Groq...`);
-    
+
     // Prepare prompt and data for OpenAI format
     let messages = [];
     let textPrompt = '';
@@ -742,7 +741,7 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95 }] }. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
-    
+
     // Bug fix: parseJsonStrict is inside try — SyntaxError from bad AI JSON also hits catch and triggers OCR
     const jsonResponse = parseJsonStrict(result.text());
     if (jsonResponse.error) {
@@ -759,16 +758,16 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
         const ocrText = await ocrSpaceExtractText(req.file);
         if (ocrText) {
           console.info('[AI][OCR][scan] success provider=ocr.space');
-          
-          if (process.env.GROQ_API_KEY) {
-             console.info('[AI][Fallback][scan] Parsing OCR text with Groq...');
-             
-             // Optimization for Vercel speed: Skip 70b and use Instant model directly for OCR cleanup
-             const groqOcrModels = ['llama-3.1-8b-instant'];
 
-             for (const gModel of groqOcrModels) {
-                try {
-                  const groqPrompt = `Đây là văn bản được quét (OCR) từ một đơn thuốc hoặc nhãn thuốc y tế bằng tiếng Việt. Có thể có lỗi nhận diện chính tả. Bạn là một dược sĩ thông minh, hãy đọc hiểu và sửa lỗi từ ngữ.
+          if (process.env.GROQ_API_KEY) {
+            console.info('[AI][Fallback][scan] Parsing OCR text with Groq...');
+
+            // Optimization for Vercel speed: Skip 70b and use Instant model directly for OCR cleanup
+            const groqOcrModels = ['llama-3.1-8b-instant'];
+
+            for (const gModel of groqOcrModels) {
+              try {
+                const groqPrompt = `Đây là văn bản được quét (OCR) từ một đơn thuốc hoặc nhãn thuốc y tế bằng tiếng Việt. Có thể có lỗi nhận diện chính tả. Bạn là một dược sĩ thông minh, hãy đọc hiểu và sửa lỗi từ ngữ.
                   Trích xuất các thông tin sau và trả về DUY NHẤT một JSON hợp lệ:
                   {
                     "diagnosis": "Chẩn đoán bệnh (nếu có, không thì để 'Không rõ')",
@@ -787,20 +786,20 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
                   
                   Văn bản OCR:\n"""\n${ocrText}\n"""`;
 
-                  const completion = await groq.chat.completions.create({
-                    model: gModel,
-                    messages: [{ role: 'user', content: groqPrompt }],
-                    response_format: { type: 'json_object' }
-                  });
-                  
-                  console.info(`[AI][Fallback][scan] Groq parsing success model=${gModel}`);
-                  return res.json(parseJsonStrict(completion.choices[0].message.content));
-                } catch (groqOcrErr) {
-                  console.warn(`[AI][Fallback][scan] Groq parsing failed model=${gModel}:`, groqOcrErr?.message);
-                }
-             }
-             
-             console.warn('[AI][Fallback][scan] All Groq models failed, falling back to dumb mapping');
+                const completion = await groq.chat.completions.create({
+                  model: gModel,
+                  messages: [{ role: 'user', content: groqPrompt }],
+                  response_format: { type: 'json_object' }
+                });
+
+                console.info(`[AI][Fallback][scan] Groq parsing success model=${gModel}`);
+                return res.json(parseJsonStrict(completion.choices[0].message.content));
+              } catch (groqOcrErr) {
+                console.warn(`[AI][Fallback][scan] Groq parsing failed model=${gModel}:`, groqOcrErr?.message);
+              }
+            }
+
+            console.warn('[AI][Fallback][scan] All Groq models failed, falling back to dumb mapping');
           }
 
           return res.json(buildFallbackScanJsonFromOcr(ocrText));
@@ -841,7 +840,7 @@ const FOOD_DATABASE = [
 app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
   try {
     const { diagnosis, memberProfile } = req.body;
-    
+
     let contextStr = '';
     if (memberProfile) {
       contextStr = `\n[Context - Hồ sơ sức khoẻ của người dùng (${memberProfile.name || 'Bản thân'})]\n`;
@@ -894,15 +893,15 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
     const result = await generateWithFallbackModels(prompt, { task: 'meal-plan', strictJson: true });
     const rawText = result.text();
     const cleanJson = parseJsonStrict(rawText);
-    
+
     if (cleanJson.error) {
       return res.status(400).json({ error: cleanJson.error });
     }
 
     // Pass raw AI data directly without hydrating from FOOD_DATABASE
-    res.json({ 
+    res.json({
       general_dietary_advice: cleanJson.general_dietary_advice || [],
-      meal_plan: cleanJson.meal_plan || [] 
+      meal_plan: cleanJson.meal_plan || []
     });
   } catch (error) {
     console.error('MEAL PLAN ERROR:', error);
@@ -916,7 +915,7 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
 app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
   try {
     const { symptom } = req.body;
-    
+
     // Get owner IDs to access full family cabinet
     const memberLinks = await prisma.familyMember.findMany({
       where: { linkedUserId: req.user.userId },
@@ -946,7 +945,7 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     const validCabinet = cabinet.reduce((acc, m) => {
       const isOwned = m.familyMember.userId === req.user.userId || m.familyMember.linkedUserId === req.user.userId;
       if (!isOwned && m.isShared === false) return acc;
-      
+
       acc.push({
         ...m,
         name: decrypt(m.name),
@@ -964,7 +963,7 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
       }
       return `- ${m.name}: Dùng cho ${m.symptoms_treated || m.diagnosis}. Liều lượng: ${m.dosage}. Người dùng: ${ownerName}`;
     }).join('\n');
-    
+
     const prompt = `Based on this family medicine cabinet:\n${cabinetList}\n\nPatient symptom: "${symptom}". 
     Find the best medicine(s) to treat this symptom. Return ONLY JSON: { "top_match": { "name": "string", "reason": "string", "instructions": "string", "owner": "string" }, "alternatives": [{ "name": "string", "reason": "string" }], "warning": "string" }. If no match found, explain why. All text in natural Vietnamese.`;
 
