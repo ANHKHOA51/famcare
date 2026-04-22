@@ -19,12 +19,11 @@ const TopNav = ({ activePage = "scanner" }: TopNavProps) => {
       {/* ── Academic Warning Marquee Banner ── */}
       <div className="bg-red-600 text-white py-1.5 overflow-hidden relative z-50 select-none">
         <div className="animate-marquee whitespace-nowrap font-bold text-sm tracking-wide">
-          ⚠️&nbsp;&nbsp;ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
           ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;⚠️
-          &nbsp;&nbsp;⚠️&nbsp;&nbsp;ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
           ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;⚠️
+          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
+          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
+          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
         </div>
       </div>
 
@@ -51,10 +50,10 @@ const TopNav = ({ activePage = "scanner" }: TopNavProps) => {
 
         {/* Desktop Links */}
         <nav className="hidden md:flex items-center gap-8">
-          <Link to="/"           className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Trang chủ</Link>
-          <Link to="/about"      className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Về chúng tôi</Link>
-          <Link to="/resources"  className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Tài liệu & Hỗ trợ</Link>
-          <Link to="/contact"    className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Liên hệ</Link>
+          <Link to="/" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Trang chủ</Link>
+          <Link to="/about" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Về chúng tôi</Link>
+          <Link to="/resources" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Tài liệu & Hỗ trợ</Link>
+          <Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Liên hệ</Link>
         </nav>
 
         {/* Right Icons */}

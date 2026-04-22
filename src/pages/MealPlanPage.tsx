@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User } from "lucide-react";
+import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User, RefreshCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -69,6 +69,13 @@ export default function MealPlanPage() {
     name: string;
     relationship: string;
     isLinked?: boolean;
+    age?: number;
+    dob?: string;
+    allergies?: string;
+    chronicIllness?: string;
+    // For linked users
+    linkedUser?: { dob?: string; allergies?: string; chronicIllness?: string };
+    user?: { dob?: string; allergies?: string; chronicIllness?: string };
   }
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
@@ -78,6 +85,14 @@ export default function MealPlanPage() {
   const [budget, setBudget] = useState<Budget>("trung-binh");
   const [isElderly, setIsElderly] = useState(false);
   const [isVegetarian, setIsVegetarian] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Mark as dirty when filters change so we can show the "Update" button
+  useEffect(() => {
+    if (generatedMeals.length > 0) {
+      setIsDirty(true);
+    }
+  }, [budget, isElderly, isVegetarian]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -94,7 +109,11 @@ export default function MealPlanPage() {
           }));
           const allMembers = [...owned, ...linked];
           setFamilyMembers(allMembers);
-          if (allMembers.length > 0) setSelectedMemberId(allMembers[0].id);
+          
+          // Selection logic: prefer member from URL or first available
+          if (allMembers.length > 0) {
+            setSelectedMemberId(allMembers[0].id);
+          }
         }
       } catch (e) {
         console.error("Failed to fetch profile", e);
@@ -102,6 +121,37 @@ export default function MealPlanPage() {
     };
     if (token) fetchProfile();
   }, [token]);
+
+  // SMART LOGIC: Auto-set filters based on selected member's profile
+  useEffect(() => {
+    const member = familyMembers.find(m => m.id === selectedMemberId);
+    if (!member) return;
+
+    // 1. Check for Elderly status
+    let finalAge = member.age || 0;
+    const dobStr = member.dob || member.linkedUser?.dob || member.user?.dob;
+    if (dobStr) {
+      const birthYear = new Date(dobStr).getFullYear();
+      const currentYear = new Date().getFullYear();
+      finalAge = currentYear - birthYear;
+    }
+    if (finalAge >= 60) setIsElderly(true);
+    else setIsElderly(false);
+
+    // 2. Check for Vegetarian status (heuristics)
+    const healthNotes = `
+      ${member.allergies || ""} 
+      ${member.chronicIllness || ""}
+      ${member.linkedUser?.allergies || ""}
+      ${member.linkedUser?.chronicIllness || ""}
+    `.toLowerCase();
+
+    if (healthNotes.includes("ăn chay") || healthNotes.includes("chay") || healthNotes.includes("vegetarian")) {
+      setIsVegetarian(true);
+    } else {
+      setIsVegetarian(false);
+    }
+  }, [selectedMemberId, familyMembers]);
 
   // Read ?disease= query param from URL (e.g. navigated from Scanner CTA)
   useEffect(() => {
@@ -114,12 +164,16 @@ export default function MealPlanPage() {
 
   // Two-effect pattern: avoids stale closure on handleGenerate
   useEffect(() => {
-    if (autoTrigger && diagnosis) {
+    // Only fire when: 
+    // 1. autoTrigger is true
+    // 2. diagnosis is ready
+    // 3. familyMembers are loaded (to ensure smart filters are applied first)
+    if (autoTrigger && diagnosis && familyMembers.length > 0) {
       handleGenerate();
       setAutoTrigger(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoTrigger, diagnosis]);
+  }, [autoTrigger, diagnosis, familyMembers]);
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -156,13 +210,14 @@ export default function MealPlanPage() {
         return;
       }
 
+      setIsDirty(false); // Reset dirty flag after successful update
       setGeneralAdvice(data.general_dietary_advice || []);
       setAiTitle(`Gợi ý thực đơn cho hồ sơ bệnh lý: ${diagnosis}`);
       
       // Bug #3: use optional chaining — AI might return unexpected structure
-      const allDaysMeals = (data.meal_plan ?? []).flatMap((day: { meals?: Record<string, unknown>[] }) => day.meals ?? []);
+      const allDaysMeals = (data.meal_plan ?? []).flatMap((day: any) => day.meals ?? []);
       if (allDaysMeals.length > 0) {
-        const mappedMeals: Meal[] = allDaysMeals.map((m: Record<string, unknown>, idx: number) => ({
+        const mappedMeals: Meal[] = allDaysMeals.map((m: any, idx: number) => ({
           id: `meal-${idx}`,
           name: m.name || m.type || 'Món ăn',
           time: "20 phút",
@@ -171,7 +226,7 @@ export default function MealPlanPage() {
           tags: Array.isArray(m.tags) && m.tags.length > 0 ? [...m.tags, "Khuyên dùng"] : [m.type, "Khuyên dùng"].filter(Boolean),
           description: m.reason || m.benefits || "",
           ingredients: Array.isArray(m.ingredients) 
-            ? m.ingredients.map((ing: string) => ({ name: ing, amount: "Vừa đủ" }))
+            ? m.ingredients.map((ing: any) => ({ name: typeof ing === 'string' ? ing : ing?.name || "Nguyên liệu", amount: "Vừa đủ" }))
             : [],
           steps: Array.isArray(m.instructions)
             ? m.instructions.map((ins: string, i: number) => ({ title: `Bước ${i + 1}`, desc: ins }))
@@ -301,7 +356,7 @@ export default function MealPlanPage() {
           <div className="bg-amber-50 border border-amber-200 rounded-[2rem] p-6 space-y-3">
             <p className="text-sm font-bold text-amber-900">💊 Nhắc nhở uống thuốc</p>
             <p className="text-xs text-amber-800 leading-relaxed">
-              Kiểm tra lại lịch uống thuốc hôm nay của bạn để đảm bảo hiệu quả điều trị nhé!
+              Món ăn này rất tốt cho người đang điều trị {diagnosis || "bệnh lý của bạn"}. Kiểm tra lại lịch uống thuốc hôm nay của bạn để đảm bảo hiệu quả nhé!
             </p>
             <button
               onClick={() => navigate("/app/cabinet")}
@@ -401,6 +456,19 @@ export default function MealPlanPage() {
         >
           🥗 Món chay
         </button>
+
+        {/* ── Dirty State Update Button ── */}
+        {isDirty && (
+          <button
+            type="button"
+            onClick={() => handleGenerate()}
+            disabled={isGenerating}
+            className="ml-auto flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all animate-in fade-in slide-in-from-right-4"
+          >
+            {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+            Cập nhật thực đơn mới
+          </button>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-12 gap-10 items-start">

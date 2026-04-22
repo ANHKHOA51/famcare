@@ -34,6 +34,18 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
+        <div className="bg-amber-400 text-slate-900 font-bold py-1.5 text-xs tracking-widest uppercase relative z-[9999] flex overflow-hidden">
+          <div className="animate-marquee whitespace-nowrap">
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </div>
         <Toaster />
         <Sonner />
         <BrowserRouter>

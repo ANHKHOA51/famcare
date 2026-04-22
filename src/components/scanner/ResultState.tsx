@@ -347,7 +347,7 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
             <div className="flex-1">
               <p className="text-sm font-bold text-emerald-900 mb-1">💡 Gợi ý tiếp theo</p>
               <p className="text-xs text-emerald-800 leading-relaxed mb-3">
-                Chế độ ăn uống ảnh hưởng <strong>40%</strong> đến tốc độ hồi phục. Bạn có muốn xem thực đơn phù hợp không?
+                Chế độ ăn uống ảnh hưởng <strong>40%</strong> đến tốc độ hồi phục. Bạn có muốn xem thực đơn phù hợp với đơn thuốc này không?
               </p>
               <button
                 onClick={() => navigate(`/app/meal-plan?disease=${encodeURIComponent(result.diagnosis)}`)}
@@ -366,7 +366,7 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
             <div className="flex-1">
               <p className="text-sm font-bold text-violet-900 mb-1">🩺 Hỗ trợ chuyên môn</p>
               <p className="text-xs text-violet-800 leading-relaxed mb-3">
-                Bạn gặp tác dụng phụ hoặc muốn tìm hiểu kỹ hơn về lộ trình điều trị?
+                Bạn gặp tác dụng phụ hoặc muốn tìm hiểu kỹ hơn về lộ trình điều trị này?
               </p>
               <button
                 onClick={() => navigate(`/app/appointment?filter=${encodeURIComponent(result.diagnosis)}`)}
