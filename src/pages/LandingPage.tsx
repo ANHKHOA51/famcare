@@ -15,21 +15,21 @@ const LandingPage = () => {
       <PublicNavbar />
 
       {/* ── High-End Editorial Hero ── */}
-      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-[#FAFAFA] border-b border-slate-100">
+      <section className="relative pt-0 pb-20 lg:pt-0 lg:pb-32 overflow-hidden bg-[#FAFAFA] border-b border-slate-100">
         {/* Refined subtle grid */}
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-12 items-center relative z-10">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-10 grid lg:grid-cols-12 gap-12 items-center relative z-10">
           
           {/* Left Column - Typography & CTAs */}
           <div className="lg:col-span-6 flex flex-col items-start pr-4">
             {/* Micro-badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs font-bold tracking-widest uppercase mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs font-bold tracking-widest uppercase mb-4">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
               Nền tảng Y tế Thông minh
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-display font-extrabold leading-[1.05] tracking-tight mb-8 text-slate-900">
+            <h1 className="text-5xl md:text-6xl lg:text-[4.5rem] font-display font-extrabold leading-[1.05] tracking-tight mb-6 text-slate-900">
               Chăm sóc <br />
               gia đình <br />
               <span className="relative inline-block mt-2">
@@ -40,7 +40,7 @@ const LandingPage = () => {
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
+            <p className="text-base md:text-lg text-slate-600 mb-6 max-w-lg leading-relaxed">
               Giải pháp toàn diện kết hợp <strong className="font-bold text-slate-900">AI phân tích đơn thuốc</strong>, <strong className="font-bold text-slate-900">gợi ý thực đơn</strong> và <strong className="font-bold text-slate-900">quản lý y tế</strong> chuẩn xác, không cần thao tác phức tạp.
             </p>
 
@@ -64,7 +64,7 @@ const LandingPage = () => {
             </div>
             
             {/* Trust Indicators */}
-            <div className="mt-12 flex items-center gap-4">
+            <div className="mt-6 flex items-center gap-4">
                 <div className="flex -space-x-3">
                 {[
                   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64",
@@ -92,7 +92,7 @@ const LandingPage = () => {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] aspect-square border border-slate-200/80 rounded-full -z-10" />
 
             {/* Main Image */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/50 aspect-[4/5] sm:aspect-square lg:aspect-[3/4] z-10 w-[85%] ml-auto">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/50 aspect-square lg:aspect-square z-10 w-[75%] ml-auto">
               <img
                 src={heroCare}
                 alt="Chăm sóc gia đình"
