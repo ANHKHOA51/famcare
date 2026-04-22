@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
@@ -18,17 +19,20 @@ interface Meal {
 
 // (Removed mockMeals array as requested)
 export default function MealPlanPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [activeTab, setActiveTab] = useState("all");
-  
+
   // Real Data States
   const [diagnosis, setDiagnosis] = useState("");
+  const [autoTrigger, setAutoTrigger] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedMeals, setGeneratedMeals] = useState<Meal[]>([]);
   const [generalAdvice, setGeneralAdvice] = useState<string[]>([]);
   const [aiTitle, setAiTitle] = useState("Gợi ý thực đơn hôm nay");
   const { token } = useAuth();
-  
+
   const [familyMembers, setFamilyMembers] = useState<any[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
 
@@ -53,6 +57,24 @@ export default function MealPlanPage() {
     };
     if (token) fetchProfile();
   }, [token]);
+
+  // Read ?disease= query param from URL (e.g. navigated from Scanner CTA)
+  useEffect(() => {
+    const disease = searchParams.get("disease");
+    if (disease) {
+      setDiagnosis(disease);
+      setAutoTrigger(true); // will fire generation once diagnosis state settles
+    }
+  }, [searchParams]);
+
+  // Two-effect pattern: avoids stale closure on handleGenerate
+  useEffect(() => {
+    if (autoTrigger && diagnosis) {
+      handleGenerate();
+      setAutoTrigger(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoTrigger, diagnosis]);
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -223,6 +245,26 @@ export default function MealPlanPage() {
           <button className="w-full bg-[#0f172a] hover:bg-slate-800 text-white font-semibold py-4 rounded-2xl transition-colors shadow-lg flex items-center justify-center gap-2 text-sm">
              <Bookmark size={18} /> Lưu công thức vào hồ sơ
           </button>
+
+          {/* ── Cross-feature CTAs ── */}
+          <div className="bg-amber-50 border border-amber-200 rounded-[2rem] p-6 space-y-3">
+            <p className="text-sm font-bold text-amber-900">💊 Nhắc nhở uống thuốc</p>
+            <p className="text-xs text-amber-800 leading-relaxed">
+              Kiểm tra lại lịch uống thuốc hôm nay của bạn để đảm bảo hiệu quả điều trị nhé!
+            </p>
+            <button
+              onClick={() => navigate("/app/cabinet")}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors"
+            >
+              Xem lịch uống thuốc →
+            </button>
+            <button
+              onClick={() => navigate("/app/appointment")}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold py-2.5 rounded-xl transition-colors"
+            >
+              Hỏi ý kiến bác sĩ về món ăn này →
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -305,36 +347,47 @@ export default function MealPlanPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {isGenerating ? (
-                <div className="xl:col-span-4 lg:col-span-3 md:col-span-2 flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-blue-100 rounded-3xl bg-blue-50/50">
-                   <Loader2 className="animate-spin text-blue-400 mb-4" size={32} />
-                   <p className="text-blue-600 font-medium animate-pulse">AI đang phân tích và lên thực đơn an toàn...</p>
-                </div>
-              ) : (
-                displayMeals.map((meal) => (
-                  <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md transition-shadow flex flex-col">
-                    <div className="h-28 bg-gradient-to-br from-indigo-100 to-blue-50 relative overflow-hidden flex items-center justify-center text-blue-200">
-                      <Utensils size={24} className="group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                      <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-                         {meal.tags.slice(0, 1).map((t, i) => (
-                            <span key={i} className="bg-blue-500/80 text-white backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
-                         ))}
-                      </div>
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col">
-                      <h3 className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{meal.name}</h3>
-                      <p className="text-[0.7rem] text-slate-500 line-clamp-2 mb-3 leading-relaxed flex-grow">{meal.description}</p>
-                      <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
-                        <div className="flex items-center gap-2 text-[0.6rem] font-bold text-slate-500">
-                          <span className="flex items-center gap-1"><Clock size={10} className="text-slate-400"/> {meal.time}</span>
-                          <span className="flex items-center gap-1"><Flame size={10} className="text-orange-400"/> {meal.calories}</span>
-                        </div>
-                        <button onClick={() => setSelectedMeal(meal)} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
-                          Chi tiết <ChevronRight size={12} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                /* CLS Fix: skeleton cards instead of centered spinner */
+                Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="skeleton h-52 rounded-[1.5rem]" />
                 ))
+              ) : (
+                displayMeals.map((meal) => {
+                  // Distinct food emoji + color per card — not confused with skeleton
+                  const CARD_COLORS = [
+                    "from-rose-100 to-pink-50 text-rose-400",
+                    "from-amber-100 to-yellow-50 text-amber-400",
+                    "from-emerald-100 to-teal-50 text-emerald-400",
+                    "from-violet-100 to-purple-50 text-violet-400",
+                  ];
+                  const EMOJIS = ["🍲", "🥗", "🍜", "🫕"];
+                  const idx = meal.id.charCodeAt(meal.id.length - 1) % 4;
+                  return (
+                    <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md transition-shadow flex flex-col">
+                      <div className={`h-28 bg-gradient-to-br ${CARD_COLORS[idx]} relative overflow-hidden flex items-center justify-center text-5xl select-none`}>
+                        {EMOJIS[idx]}
+                        <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                           {meal.tags.slice(0, 1).map((t, i) => (
+                              <span key={i} className="bg-white/70 text-slate-700 backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
+                           ))}
+                        </div>
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col">
+                        <h3 className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{meal.name}</h3>
+                        <p className="text-[0.7rem] text-slate-500 line-clamp-2 mb-3 leading-relaxed flex-grow">{meal.description}</p>
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
+                          <div className="flex items-center gap-2 text-[0.6rem] font-bold text-slate-500">
+                            <span className="flex items-center gap-1"><Clock size={10} className="text-slate-400"/> {meal.time}</span>
+                            <span className="flex items-center gap-1"><Flame size={10} className="text-orange-400"/> {meal.calories}</span>
+                          </div>
+                          <button onClick={() => setSelectedMeal(meal)} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
+                            Chi tiết <ChevronRight size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
             

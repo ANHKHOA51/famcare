@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Clock, CalendarDays, MapPin, Video, Stethoscope, ChevronRight, Activity, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,6 +37,7 @@ const DOCTORS = [
 ];
 
 export default function AppointmentsPage() {
+  const [searchParams] = useSearchParams();
   const [view, setView] = useState("my"); // "my" or "search"
   const [searchTerm, setSearchTerm] = useState("");
   const [deptFilter, setDeptFilter] = useState("Tất cả");
@@ -43,6 +45,15 @@ export default function AppointmentsPage() {
   const [hospitalFilter, setHospitalFilter] = useState("Tất cả");
   const [districtFilter, setDistrictFilter] = useState("Tất cả");
   const [genderFilter, setGenderFilter] = useState("Tất cả");
+
+  // Read ?filter= query param from URL (e.g. navigated from Scanner or MealPlan CTA)
+  useEffect(() => {
+    const filter = searchParams.get("filter");
+    if (filter) {
+      setView("search");
+      setSearchTerm(filter);
+    }
+  }, [searchParams]);
 
   const appointments = [
     {

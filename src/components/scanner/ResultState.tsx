@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Plus, X, Loader2, Pill, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Plus, X, Loader2, Pill, ShieldCheck, AlertTriangle, Utensils, Stethoscope } from "lucide-react";
 import { ScanResult } from "@/pages/ScannerPage";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
@@ -18,18 +19,38 @@ interface FamilyMember {
   relationship: string;
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// ── Drug Interaction Checker ──────────────────────────────────────────────────
+const INTERACTION_PAIRS: [string, string, string][] = [
+  ["warfarin", "aspirin", "Tăng nguy cơ chảy máu nghiêm trọng"],
+  ["metformin", "alcohol", "Nguy cơ hạ đường huyết nếu dùng cùng"],
+  ["ibuprofen", "aspirin", "Tăng nguy cơ xuất huyết tiêu hóa"],
+  ["ibuprofen", "paracetamol", "Cần thận về liều lượng khi dùng cùng"],
+  ["codeine", "benzodiazepine", "Nguy hiểm: [ức chế hô hấp nếu dùng cùng"],
+  ["simvastatin", "clarithromycin", "Tăng nguy cơ tổn thương cơ"],
+];
+
+const checkInteractions = (meds: { name: string }[]) => {
+  const names = meds.map(m => m.name.toLowerCase());
+  return INTERACTION_PAIRS.filter(([a, b]) =>
+    names.some(n => n.includes(a)) && names.some(n => n.includes(b))
+  );
+};
+
+// ── Main Component ──────────────────────────────────────────────────────────────────
 const ResultState = ({ result, onReset }: ResultStateProps) => {
+  const navigate = useNavigate();
   const { token, user } = useAuth();
   const [members, setMembers] = useState<FamilyMember[]>([]);
-  // Bug #3 fix: selectedMember now holds a real familyMemberId (string), defaulting to ""
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
   const [isShared, setIsShared] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [medications, setMedications] = useState(result.medications);
+  const [confirmed, setConfirmed] = useState(false); // human-in-the-loop gate
   
   const [prescriptionCode, setPrescriptionCode] = useState(result.prescription_code || "");
   const [hospitalName, setHospitalName] = useState(result.hospital_name || "");
+
+  const interactions = checkInteractions(medications);
 
   const isMounted = useRef(true);
 
@@ -141,6 +162,28 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
   return (
     <>
       <div className="bg-[#e2e8f0]/40 rounded-[2.5rem] p-6 lg:p-8 h-full flex flex-col relative overflow-hidden">
+        
+        {/* ── Mandatory Human-in-the-Loop Warning ── */}
+        <div className="bg-amber-50 border border-amber-300 rounded-2xl px-5 py-3 flex items-start gap-3 mb-4">
+          <ShieldCheck className="text-amber-500 shrink-0 mt-0.5" size={18} />
+          <p className="text-xs text-amber-800 leading-relaxed">
+            <strong className="text-amber-900">Bước xác thực bắt buộc:</strong> Vui lòng kiểm tra và chỉnh sửa tên thuốc trước khi lưu để đảm bảo an toàn y tế.
+          </p>
+        </div>
+
+        {/* ── Drug Interaction Warnings ── */}
+        {interactions.length > 0 && (
+          <div className="bg-red-50 border-2 border-red-400 rounded-2xl p-4 mb-4">
+            <p className="font-bold text-red-700 flex items-center gap-2 mb-2 text-sm">
+              <AlertTriangle size={16} /> ⚠️ Cảnh báo tương tác thuốc
+            </p>
+            {interactions.map(([a, b, warn], i) => (
+              <p key={i} className="text-xs text-red-700 leading-relaxed">
+                • <strong>{a}</strong> + <strong>{b}</strong>: {warn}
+              </p>
+            ))}
+          </div>
+        )}
         
         {/* Header */}
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
@@ -282,6 +325,44 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
           >
             <Plus size={18} /> Thêm thuốc mới
           </button>
+
+          {/* ── Nutrition CTA ── */}
+          <div className="mt-4 bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-5 flex items-start gap-4">
+            <div className="w-9 h-9 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
+              <Utensils size={16} />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-emerald-900 mb-1">💡 Gợi ý tiếp theo</p>
+              <p className="text-xs text-emerald-800 leading-relaxed mb-3">
+                Chế độ ăn uống ảnh hưởng <strong>40%</strong> đến tốc độ hồi phục. Bạn có muốn xem thực đơn phù hợp không?
+              </p>
+              <button
+                onClick={() => navigate(`/app/meal-plan?disease=${encodeURIComponent(result.diagnosis)}`)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors"
+              >
+                Xem thực đơn AI gợi ý →
+              </button>
+            </div>
+          </div>
+
+          {/* ── Appointments CTA ── */}
+          <div className="mt-3 bg-gradient-to-br from-violet-50 to-indigo-50 border border-violet-200 rounded-3xl p-5 flex items-start gap-4">
+            <div className="w-9 h-9 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center shrink-0">
+              <Stethoscope size={16} />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-violet-900 mb-1">🩺 Hỗ trợ chuyên môn</p>
+              <p className="text-xs text-violet-800 leading-relaxed mb-3">
+                Bạn gặp tác dụng phụ hoặc muốn tìm hiểu kỹ hơn về lộ trình điều trị?
+              </p>
+              <button
+                onClick={() => navigate(`/app/appointment?filter=${encodeURIComponent(result.diagnosis)}`)}
+                className="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors"
+              >
+                Tư vấn cùng Bác sĩ chuyên khoa →
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Panel */}
@@ -291,20 +372,33 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
             AI Verification Required
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button 
-              onClick={onReset}
-              className="flex-1 sm:flex-none bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-3.5 rounded-2xl transition-colors shadow-sm text-sm"
-            >
-              Hủy bỏ
-            </button>
-            <button 
-              onClick={handleSaveAll}
-              disabled={isSaving || !selectedMemberId}
-              className="flex-1 sm:flex-none bg-gradient-to-r from-[#60a5fa] to-[#3b82f6] hover:opacity-90 disabled:opacity-50 text-white font-semibold px-8 py-3.5 rounded-2xl transition-opacity shadow-lg shadow-blue-500/20 text-sm flex items-center justify-center min-w-[140px]"
-            >
-              {isSaving ? <Loader2 size={18} className="animate-spin" /> : "Lưu đơn thuốc"}
-            </button>
+          <div className="flex items-center gap-5 w-full sm:w-auto flex-wrap">
+            {/* Human-in-the-loop confirmation gate */}
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-700 select-none">
+              <input
+                type="checkbox"
+                checked={confirmed}
+                onChange={e => setConfirmed(e.target.checked)}
+                className="w-4 h-4 accent-blue-600 rounded"
+              />
+              Tôi đã kiểm tra và xác nhận thông tin
+            </label>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button
+                onClick={onReset}
+                className="flex-1 sm:flex-none bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-3.5 rounded-2xl transition-colors shadow-sm text-sm"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                onClick={handleSaveAll}
+                disabled={isSaving || !selectedMemberId || !confirmed}
+                className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 disabled:opacity-50 text-white font-semibold px-8 py-3.5 rounded-2xl transition-opacity shadow-lg shadow-orange-500/20 text-sm flex items-center justify-center min-w-[140px]"
+              >
+                {isSaving ? <Loader2 size={18} className="animate-spin" /> : "Lưu đơn thuốc"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

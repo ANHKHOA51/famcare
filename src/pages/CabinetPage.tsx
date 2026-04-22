@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Search, Loader2, Link2, Mail, Trash2, Camera, UploadCloud, Users, Sparkles, Filter, Info, Pill, X, HelpCircle } from "lucide-react";
+import { Search, Trash2, Sparkles, Filter, Info, Pill, X, HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import MedicineAutocomplete from "@/components/MedicineAutocomplete";
 
@@ -40,9 +41,6 @@ interface SearchResult {
   message?: string;
 }
 
-interface CabinetPageProps {
-  onNavigate?: (page: string) => void;
-}
 
 const getMockColor = (name: string) => {
   if (name.toLowerCase().includes("panadol")) return "from-rose-100 to-rose-200 text-rose-500";
@@ -75,7 +73,8 @@ const getExplainableDosage = (name: string) => {
   return null;
 };
 
-const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
+const CabinetPage = () => {
+  const navigate = useNavigate();
   const { token, user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [members, setMembers] = useState<FamilyMember[]>([]);
@@ -278,7 +277,12 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
           )}
 
           {loading ? (
-             <div className="flex py-20 justify-center"><Loader2 className="animate-spin text-teal-200" size={40} /></div>
+            /* CLS Fix: fixed-height skeleton grid instead of a spinner */
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="skeleton h-64 rounded-[1.25rem]" />
+              ))}
+            </div>
           ) : filteredMedications.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50">
                <p className="text-slate-500 font-medium">Chưa có loại thuốc nào trong tủ.</p>
@@ -384,7 +388,7 @@ const CabinetPage = ({ onNavigate }: CabinetPageProps) => {
            </p>
 
            <button 
-             onClick={() => onNavigate?.("scanner")}
+             onClick={() => navigate("/app/scanner")}
              className="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-white font-semibold flex items-center justify-center gap-2 py-4 rounded-2xl transition-colors shadow-lg shadow-cyan-500/20 mb-4"
            >
              <Sparkles size={18} /> Quét bằng Camera AI
