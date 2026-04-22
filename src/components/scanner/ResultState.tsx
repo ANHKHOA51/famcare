@@ -50,7 +50,8 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
   const [prescriptionCode, setPrescriptionCode] = useState(result.prescription_code || "");
   const [hospitalName, setHospitalName] = useState(result.hospital_name || "");
 
-  const interactions = checkInteractions(medications);
+  const ruleInteractions = checkInteractions(medications);
+  const aiInteractions = result.ai_interactions || [];
 
   const isMounted = useRef(true);
 
@@ -171,15 +172,27 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
           </p>
         </div>
 
-        {/* ── Drug Interaction Warnings ── */}
-        {interactions.length > 0 && (
+        {/* ── Drug Interaction Warnings (Consolidated) ── */}
+        {(ruleInteractions.length > 0 || aiInteractions.length > 0) && (
           <div className="bg-red-50 border-2 border-red-400 rounded-2xl p-4 mb-4">
             <p className="font-bold text-red-700 flex items-center gap-2 mb-2 text-sm">
               <AlertTriangle size={16} /> ⚠️ Cảnh báo tương tác thuốc
             </p>
-            {interactions.map(([a, b, warn], i) => (
-              <p key={i} className="text-xs text-red-700 leading-relaxed">
+            
+            {/* Rule-based interactions (Reliable) */}
+            {ruleInteractions.map(([a, b, warn], i) => (
+              <p key={`rule-${i}`} className="text-xs text-red-700 leading-relaxed mb-1 last:mb-0">
                 • <strong>{a}</strong> + <strong>{b}</strong>: {warn}
+              </p>
+            ))}
+
+            {/* AI-detected interactions (Suggested) */}
+            {aiInteractions.map((inter, i) => (
+              <p key={`ai-${i}`} className="text-xs text-red-700 leading-relaxed mb-1 last:mb-0">
+                • <strong>{inter.meds.join(" + ")}</strong>: {inter.reason} 
+                <span className="ml-1 text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-bold uppercase">
+                  AI Alert ({inter.severity})
+                </span>
               </p>
             ))}
           </div>

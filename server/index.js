@@ -756,9 +756,16 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     const prompt = `Analyze prescription image. 
     If the image is entirely blurry, unreadable, or clearly NOT a prescription, medicine label, or medical document (e.g., random objects, selfies, landscapes), return ONLY this JSON: { "error": "Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại." }.
     Otherwise, extract diagnosis, prescription details and medications. 
+    Also, identify any potentially dangerous drug interactions between the medications in this prescription.
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
     IMPORTANT: If your confidence_score is below 80, you MUST provide 'suggested_alternatives' (a list of 1-3 similarly named real-world medications that fit the diagnosis/pathology context). If confidence >= 80, 'suggested_alternatives' can be empty.
-    Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }] }. All text in natural Vietnamese.`;
+    Return ONLY JSON: { 
+      "diagnosis": "string", 
+      "prescription_code": "string or null", 
+      "hospital_name": "string or null", 
+      "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }],
+      "ai_interactions": [{ "meds": ["string", "string"], "severity": "string", "reason": "string" }] 
+    }. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
 
@@ -801,6 +808,13 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
                         "suggested_symptoms": ["Triệu chứng thuốc này điều trị"],
                         "confidence_score": 90,
                         "suggested_alternatives": ["Thuốc A", "Thuốc B"]
+                      }
+                    ],
+                    "ai_interactions": [
+                      {
+                        "meds": ["Tên thuốc 1", "Tên thuốc 2"],
+                        "severity": "Cao/Trung bình/Thấp",
+                        "reason": "Lý do kỵ nhau"
                       }
                     ]
                   }
