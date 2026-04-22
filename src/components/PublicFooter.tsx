@@ -62,7 +62,7 @@ export default function PublicFooter() {
                 <MapPin className="w-4 h-4 mt-0.5 text-[#0ea5e9] shrink-0" />
                 <div>
                   <p className="text-slate-400 text-xs mb-0.5">Địa chỉ</p>
-                  <span className="text-slate-200">227 Nguyễn Văn Cừ, Q.5, TP.HCM</span>
+                  <span className="text-slate-200">TP.HCM</span>
                 </div>
               </li>
             </ul>
@@ -75,7 +75,7 @@ export default function PublicFooter() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[0.75rem] text-slate-500">© 2026 FamCare. All rights reserved.</p>
           <p className="text-[0.75rem] text-slate-500">
-            Được phát triển bởi nhóm sinh viên <span className="text-slate-400 font-medium">UIT·2026</span>
+            Được phát triển bởi nhóm sinh viên <span className="text-slate-400 font-medium">UEH·2026</span>
           </p>
         </div>
       </div>

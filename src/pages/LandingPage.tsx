@@ -27,7 +27,7 @@ const LandingPage = () => {
             {/* Eyebrow badge */}
             <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-4 py-1.5 rounded-full mb-6 tracking-wide uppercase">
               <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-              Dự án học thuật — UEH 2024
+              Dự án học thuật — UEH 2026
             </div>
 
             <h1 className="text-5xl lg:text-[4rem] font-display font-extrabold text-[#1a202c] leading-[1.1] mb-6 tracking-tight">
@@ -143,9 +143,9 @@ const LandingPage = () => {
       <section className="px-8 lg:px-16 py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-6">
           <div className="relative rounded-2xl overflow-hidden min-h-[400px]">
-            <img 
-              src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=800" 
-              alt="Smartwatch" 
+            <img
+              src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=800"
+              alt="Smartwatch"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
@@ -160,7 +160,7 @@ const LandingPage = () => {
               <h3 className="text-2xl font-display font-bold mb-2">Bảo mật tuyệt đối</h3>
               <p className="text-slate-300 text-sm">Dữ liệu y tế của gia đình bạn được mã hóa theo tiêu chuẩn quốc tế.</p>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-6 flex-1">
               <div className="bg-[#0ea5e9] rounded-2xl p-8 flex flex-col items-center justify-center text-center text-white">
                 <Users size={28} className="mb-3 opacity-90" />

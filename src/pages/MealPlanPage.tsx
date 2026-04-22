@@ -64,7 +64,13 @@ export default function MealPlanPage() {
   const [aiTitle, setAiTitle] = useState("Gợi ý thực đơn hôm nay");
   const { token } = useAuth();
 
-  const [familyMembers, setFamilyMembers] = useState<any[]>([]);
+  interface FamilyMember {
+    id: string;
+    name: string;
+    relationship: string;
+    isLinked?: boolean;
+  }
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
 
   // ── Nutrition Personalization Context ────────────────────────────────────
@@ -80,7 +86,7 @@ export default function MealPlanPage() {
         const data = await res.json();
         if (res.ok) {
           const owned = data.ownedMembers || [];
-          const linked = (data.linkedMembers || []).map((m: any) => ({
+          const linked = (data.linkedMembers || []).map((m: { id: string; user?: { name?: string; email?: string } }) => ({
             ...m,
             name: m.user?.name || m.user?.email || 'Người dùng',
             relationship: 'Liên kết',
@@ -90,7 +96,9 @@ export default function MealPlanPage() {
           setFamilyMembers(allMembers);
           if (allMembers.length > 0) setSelectedMemberId(allMembers[0].id);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Failed to fetch profile", e);
+      }
     };
     if (token) fetchProfile();
   }, [token]);
@@ -152,9 +160,9 @@ export default function MealPlanPage() {
       setAiTitle(`Gợi ý thực đơn cho hồ sơ bệnh lý: ${diagnosis}`);
       
       // Bug #3: use optional chaining — AI might return unexpected structure
-      const allDaysMeals = (data.meal_plan ?? []).flatMap((day: any) => day.meals ?? []);
+      const allDaysMeals = (data.meal_plan ?? []).flatMap((day: { meals?: Record<string, unknown>[] }) => day.meals ?? []);
       if (allDaysMeals.length > 0) {
-        const mappedMeals: Meal[] = allDaysMeals.map((m: any, idx: number) => ({
+        const mappedMeals: Meal[] = allDaysMeals.map((m: Record<string, unknown>, idx: number) => ({
           id: `meal-${idx}`,
           name: m.name || m.type || 'Món ăn',
           time: "20 phút",
@@ -302,7 +310,7 @@ export default function MealPlanPage() {
               Xem lịch uống thuốc →
             </button>
             <button
-              onClick={() => navigate("/app/appointment")}
+              onClick={() => navigate("/app/appointment?filter=Dinh dưỡng")}
               className="w-full bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold py-2.5 rounded-xl transition-colors"
             >
               Hỏi ý kiến bác sĩ về món ăn này →
@@ -318,7 +326,7 @@ export default function MealPlanPage() {
       <form onSubmit={handleGenerate} className="relative w-full space-y-4">
         {familyMembers.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-2">
-            {familyMembers.map((m: any) => (
+            {familyMembers.map((m: FamilyMember) => (
               <button
                 type="button"
                 key={m.id}
