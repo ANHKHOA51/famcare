@@ -11,40 +11,77 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const handleCtaClick = () => {
-    if (isAuthenticated) {
-      navigate("/app");
-    } else {
-      navigate("/login");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white">
       <PublicNavbar />
 
-      {/* Hero */}
-      <section className="px-8 lg:px-16 py-20 lg:py-28 relative overflow-hidden bg-gradient-to-r from-slate-50 to-cyan-50/30">
+      {/* ── Hero ── */}
+      <section className="px-8 lg:px-16 py-20 lg:py-28 relative overflow-hidden bg-gradient-to-br from-slate-50 via-cyan-50/20 to-sky-50/40">
+        {/* Soft background glow */}
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-orange-200/20 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-[400px] h-[400px] rounded-full bg-cyan-200/20 blur-3xl pointer-events-none" />
+
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+          {/* Left — copy + CTAs */}
           <div>
+            {/* Eyebrow badge */}
+            <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-4 py-1.5 rounded-full mb-6 tracking-wide uppercase">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+              Dự án học thuật — UEH 2024
+            </div>
+
             <h1 className="text-5xl lg:text-[4rem] font-display font-extrabold text-[#1a202c] leading-[1.1] mb-6 tracking-tight">
               Chăm sóc cha mẹ <br />
-              từ <span className="text-[#0ea5e9]">bất cứ đâu</span>
+              từ <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-400">bất cứ đâu</span>
             </h1>
+
             <p className="text-slate-500 text-[1.125rem] mb-10 max-w-md leading-relaxed">
-              Giải pháp y tế thông minh cho gia đình và bản thân từ bất cứ đâu! Khám phá ngay bây giờ cùng FamCare!
+              Giải pháp y tế thông minh cho gia đình và bản thân. Quét đơn thuốc, lên thực đơn dinh dưỡng và đặt lịch khám — tất cả trong một nơi.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Button onClick={handleCtaClick} size="lg" className="rounded-xl px-8 h-12 bg-[#0ea5e9] hover:bg-[#0284c7] text-white shadow-lg shadow-cyan-500/25">
-                Truy cập vào ứng dụng
+
+            {/* ── Dual CTA ── */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Primary — Scan */}
+              <Button
+                size="lg"
+                onClick={() => navigate(isAuthenticated ? "/app/scanner" : "/login")}
+                className="rounded-2xl px-8 h-14 bg-gradient-to-r from-orange-500 to-amber-400
+                           hover:from-orange-600 hover:to-amber-500 text-white font-bold text-base
+                           shadow-xl shadow-orange-500/30 transition-all hover:-translate-y-0.5
+                           border-0 focus-visible:ring-orange-400"
+              >
+                📷 Quét đơn thuốc ngay
               </Button>
-              <Button variant="secondary" size="lg" className="rounded-xl px-8 h-12 bg-slate-100 hover:bg-slate-200 text-slate-700" onClick={() => navigate("/app")}>
-                Xem cách hoạt động
+
+              {/* Secondary — Appointments */}
+              <Button
+                size="lg"
+                onClick={() => navigate(isAuthenticated ? "/app/appointment" : "/login")}
+                className="rounded-2xl px-8 h-14 bg-slate-900 hover:bg-slate-800 text-white
+                           font-bold text-base shadow-lg transition-all hover:-translate-y-0.5
+                           border-0 focus-visible:ring-slate-500"
+              >
+                📅 Đặt lịch khám
               </Button>
+            </div>
+
+            {/* ── Trust Badges ── */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6">
+              {[
+                { icon: "🏥", text: "Bác sĩ chuyên khoa được xác minh" },
+                { icon: "🔒", text: "Dữ liệu mã hóa AES-256" },
+                { icon: "🎓", text: "Dự án học thuật UEH" },
+              ].map((badge) => (
+                <span key={badge.text} className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
+                  <span>{badge.icon}</span>
+                  {badge.text}
+                </span>
+              ))}
             </div>
           </div>
 
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+          {/* Right — hero image */}
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-200/50">
             <img
               src={heroCare}
               alt="Chăm sóc người cao tuổi"
@@ -52,9 +89,18 @@ const LandingPage = () => {
               width={800}
               height={640}
             />
+            {/* Overlay stat chip */}
+            <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg flex items-center gap-3">
+              <span className="text-2xl">💊</span>
+              <div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tủ thuốc AI</p>
+                <p className="text-sm font-extrabold text-slate-900">Nhắc nhở tự động</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* Services - 4 Squares (Figma) */}
       <section className="px-8 lg:px-16 py-20 bg-slate-50">
