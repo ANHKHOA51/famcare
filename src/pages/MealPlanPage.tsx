@@ -17,6 +17,37 @@ interface Meal {
   nutritionNotes: { title: string; desc: string; }[];
 }
 
+// ── Smart Emoji + Color Mapping ──────────────────────────────────────────────────────────────────
+const getMealAppearance = (mealName: string): { emoji: string; color: string } => {
+  const n = mealName.toLowerCase();
+
+  if (["phở", "bún", "mì", "hủ tiếu", "miến"].some(k => n.includes(k)))
+    return { emoji: "🍜", color: "from-amber-100 to-yellow-50" };
+
+  if (["canh", "súp", "cháo", "lẩu"].some(k => n.includes(k)))
+    return { emoji: "🍲", color: "from-emerald-100 to-teal-50" };
+
+  if (["salad", "rau", "trái cây", "gỏi", "nấm"].some(k => n.includes(k)))
+    return { emoji: "🥗", color: "from-green-100 to-emerald-50" };
+
+  if (["thịt", "cá", "gà", "tôm", "hải sản", "bò"].some(k => n.includes(k)))
+    return { emoji: "🥩", color: "from-rose-100 to-pink-50" };
+
+  if (["cơm", "xôi", "chả"].some(k => n.includes(k)))
+    return { emoji: "🍚", color: "from-orange-100 to-amber-50" };
+
+  if (["nước", "sữa", "trà", "sinh tố", "nước ép"].some(k => n.includes(k)))
+    return { emoji: "🍹", color: "from-blue-100 to-cyan-50" };
+
+  // Fallback: deterministic variety by name length
+  const fallbacks = [
+    { emoji: "🍱", color: "from-violet-100 to-purple-50" },
+    { emoji: "🍛", color: "from-indigo-100 to-blue-50" },
+    { emoji: "🫕", color: "from-orange-100 to-rose-50" },
+  ];
+  return fallbacks[mealName.length % 3];
+};
+
 // (Removed mockMeals array as requested)
 export default function MealPlanPage() {
   const navigate = useNavigate();
@@ -414,19 +445,12 @@ export default function MealPlanPage() {
                 ))
               ) : (
                 displayMeals.map((meal) => {
-                  // Distinct food emoji + color per card — not confused with skeleton
-                  const CARD_COLORS = [
-                    "from-rose-100 to-pink-50 text-rose-400",
-                    "from-amber-100 to-yellow-50 text-amber-400",
-                    "from-emerald-100 to-teal-50 text-emerald-400",
-                    "from-violet-100 to-purple-50 text-violet-400",
-                  ];
-                  const EMOJIS = ["🍲", "🥗", "🍜", "🫕"];
-                  const idx = meal.id.charCodeAt(meal.id.length - 1) % 4;
+                  const { emoji, color } = getMealAppearance(meal.name);
                   return (
-                    <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md transition-shadow flex flex-col">
-                      <div className={`h-28 bg-gradient-to-br ${CARD_COLORS[idx]} relative overflow-hidden flex items-center justify-center text-5xl select-none`}>
-                        {EMOJIS[idx]}
+                    <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col cursor-pointer" onClick={() => setSelectedMeal(meal)}>
+                      {/* Smart emoji thumbnail */}
+                      <div className={`h-32 bg-gradient-to-br ${color} flex items-center justify-center text-6xl select-none shadow-inner relative`}>
+                        {emoji}
                         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
                            {meal.tags.slice(0, 1).map((t, i) => (
                               <span key={i} className="bg-white/70 text-slate-700 backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
@@ -441,7 +465,7 @@ export default function MealPlanPage() {
                             <span className="flex items-center gap-1"><Clock size={10} className="text-slate-400"/> {meal.time}</span>
                             <span className="flex items-center gap-1"><Flame size={10} className="text-orange-400"/> {meal.calories}</span>
                           </div>
-                          <button onClick={() => setSelectedMeal(meal)} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedMeal(meal); }} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
                             Chi tiết <ChevronRight size={12} />
                           </button>
                         </div>
