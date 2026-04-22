@@ -36,6 +36,12 @@ export default function MealPlanPage() {
   const [familyMembers, setFamilyMembers] = useState<any[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
 
+  // ── Nutrition Personalization Context ────────────────────────────────────
+  type Budget = "tiet-kiem" | "trung-binh" | "cao-cap";
+  const [budget, setBudget] = useState<Budget>("trung-binh");
+  const [isElderly, setIsElderly] = useState(false);
+  const [isVegetarian, setIsVegetarian] = useState(false);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -96,7 +102,13 @@ export default function MealPlanPage() {
           // Bug #2: send auth token so server can authenticate
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
-        body: JSON.stringify({ diagnosis, memberProfile: selectedMember })
+        body: JSON.stringify({
+          diagnosis,
+          memberProfile: selectedMember,
+          budget,
+          isElderly,
+          isVegetarian,
+        })
       });
       
       const data = await resp.json();
@@ -302,6 +314,55 @@ export default function MealPlanPage() {
           />
         </div>
       </form>
+
+      {/* ── Personalization Pill Toggles ── */}
+      <div className="flex flex-wrap gap-2 -mt-4 mb-2">
+        {/* Budget Group */}
+        {([
+          { val: "tiet-kiem",  label: "💰 Tiết kiệm" },
+          { val: "trung-binh", label: "⚖️ Trung bình" },
+          { val: "cao-cap",    label: "✨ Cao cấp" },
+        ] as { val: Budget; label: string }[]).map(({ val, label }) => (
+          <button
+            key={val}
+            type="button"
+            onClick={() => setBudget(val)}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 ${
+              budget === val
+                ? "bg-blue-500 text-white border-blue-500 shadow-sm"
+                : "bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+
+        {/* Elderly Toggle */}
+        <button
+          type="button"
+          onClick={() => setIsElderly(v => !v)}
+          className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 ${
+            isElderly
+              ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+              : "bg-white text-slate-600 border-slate-200 hover:border-orange-300 hover:text-orange-500"
+          }`}
+        >
+          👴 Người cao tuổi
+        </button>
+
+        {/* Vegetarian Toggle */}
+        <button
+          type="button"
+          onClick={() => setIsVegetarian(v => !v)}
+          className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 ${
+            isVegetarian
+              ? "bg-green-500 text-white border-green-500 shadow-sm"
+              : "bg-white text-slate-600 border-slate-200 hover:border-green-300 hover:text-green-600"
+          }`}
+        >
+          🥗 Món chay
+        </button>
+      </div>
 
       <div className="grid lg:grid-cols-12 gap-10 items-start">
         {/* Main Col */}
