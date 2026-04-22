@@ -16,16 +16,7 @@ const TopNav = ({ activePage = "scanner" }: TopNavProps) => {
 
   return (
     <>
-      {/* ── Academic Warning Marquee Banner ── */}
-      <div className="bg-red-600 text-white py-1.5 overflow-hidden relative z-50 select-none">
-        <div className="animate-marquee whitespace-nowrap font-bold text-sm tracking-wide">
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-          ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH&nbsp;&nbsp;•&nbsp;&nbsp;
-        </div>
-      </div>
+
 
       {/* ── Main Header ── */}
       <header className="h-16 bg-gradient-to-r from-[#dbeafe] to-[#e0f2fe]/50 flex items-center justify-between px-6 lg:px-10 border-b border-white/50 sticky top-0 z-40">
