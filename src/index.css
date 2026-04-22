@@ -100,6 +100,7 @@
     background-color: hsl(var(--surface));
     color: hsl(var(--on-surface));
     font-family: var(--font-body);
+    font-size: 17px; /* +1px over browser default — improves readability for elderly users */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

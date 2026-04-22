@@ -261,7 +261,7 @@ export default function AppointmentsPage() {
 
                     <button 
                       onClick={() => toast.success(`Đã đăng ký tư vấn với ${doc.title}. ${doc.name}!`)}
-                      className="w-full bg-slate-900 group-hover:bg-teal-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2"
+                      className="w-full bg-gradient-to-r from-orange-500 to-amber-400 hover:from-orange-600 hover:to-amber-500 text-white font-bold py-3.5 rounded-2xl transition-all hover:-translate-y-0.5 shadow-md shadow-orange-500/20 flex items-center justify-center gap-2"
                     >
                       Đặt lịch ngay <ChevronRight size={18} />
                     </button>
