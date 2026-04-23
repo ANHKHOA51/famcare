@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Clock, CalendarDays, MapPin, Video, Stethoscope, ChevronRight, Activity, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,6 +37,7 @@ const DOCTORS = [
 ];
 
 export default function AppointmentsPage() {
+  const [searchParams] = useSearchParams();
   const [view, setView] = useState("my"); // "my" or "search"
   const [searchTerm, setSearchTerm] = useState("");
   const [deptFilter, setDeptFilter] = useState("Tất cả");
@@ -43,6 +45,15 @@ export default function AppointmentsPage() {
   const [hospitalFilter, setHospitalFilter] = useState("Tất cả");
   const [districtFilter, setDistrictFilter] = useState("Tất cả");
   const [genderFilter, setGenderFilter] = useState("Tất cả");
+
+  // Read ?filter= query param from URL (e.g. navigated from Scanner or MealPlan CTA)
+  useEffect(() => {
+    const filter = searchParams.get("filter");
+    if (filter) {
+      setView("search");
+      setSearchTerm(filter);
+    }
+  }, [searchParams]);
 
   const appointments = [
     {
@@ -250,7 +261,7 @@ export default function AppointmentsPage() {
 
                     <button 
                       onClick={() => toast.success(`Đã đăng ký tư vấn với ${doc.title}. ${doc.name}!`)}
-                      className="w-full bg-slate-900 group-hover:bg-teal-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2"
+                      className="w-full bg-gradient-to-r from-orange-500 to-amber-400 hover:from-orange-600 hover:to-amber-500 text-white font-bold py-3.5 rounded-2xl transition-all hover:-translate-y-0.5 shadow-md shadow-orange-500/20 flex items-center justify-center gap-2"
                     >
                       Đặt lịch ngay <ChevronRight size={18} />
                     </button>

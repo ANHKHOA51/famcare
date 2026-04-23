@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User, RefreshCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -16,21 +17,82 @@ interface Meal {
   nutritionNotes: { title: string; desc: string; }[];
 }
 
+// ── Smart Emoji + Color Mapping ──────────────────────────────────────────────────────────────────
+const getMealAppearance = (mealName: string): { emoji: string; color: string } => {
+  const n = mealName.toLowerCase();
+
+  if (["phở", "bún", "mì", "hủ tiếu", "miến"].some(k => n.includes(k)))
+    return { emoji: "🍜", color: "from-amber-100 to-yellow-50" };
+
+  if (["canh", "súp", "cháo", "lẩu"].some(k => n.includes(k)))
+    return { emoji: "🍲", color: "from-emerald-100 to-teal-50" };
+
+  if (["salad", "rau", "trái cây", "gỏi", "nấm"].some(k => n.includes(k)))
+    return { emoji: "🥗", color: "from-green-100 to-emerald-50" };
+
+  if (["thịt", "cá", "gà", "tôm", "hải sản", "bò"].some(k => n.includes(k)))
+    return { emoji: "🥩", color: "from-rose-100 to-pink-50" };
+
+  if (["cơm", "xôi", "chả"].some(k => n.includes(k)))
+    return { emoji: "🍚", color: "from-orange-100 to-amber-50" };
+
+  if (["nước", "sữa", "trà", "sinh tố", "nước ép"].some(k => n.includes(k)))
+    return { emoji: "🍹", color: "from-blue-100 to-cyan-50" };
+
+  // Fallback: deterministic variety by name length
+  const fallbacks = [
+    { emoji: "🍱", color: "from-violet-100 to-purple-50" },
+    { emoji: "🍛", color: "from-indigo-100 to-blue-50" },
+    { emoji: "🫕", color: "from-orange-100 to-rose-50" },
+  ];
+  return fallbacks[mealName.length % 3];
+};
+
 // (Removed mockMeals array as requested)
 export default function MealPlanPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [activeTab, setActiveTab] = useState("all");
-  
+
   // Real Data States
   const [diagnosis, setDiagnosis] = useState("");
+  const [autoTrigger, setAutoTrigger] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedMeals, setGeneratedMeals] = useState<Meal[]>([]);
   const [generalAdvice, setGeneralAdvice] = useState<string[]>([]);
   const [aiTitle, setAiTitle] = useState("Gợi ý thực đơn hôm nay");
   const { token } = useAuth();
-  
-  const [familyMembers, setFamilyMembers] = useState<any[]>([]);
+
+  interface FamilyMember {
+    id: string;
+    name: string;
+    relationship: string;
+    isLinked?: boolean;
+    age?: number;
+    dob?: string;
+    allergies?: string;
+    chronicIllness?: string;
+    // For linked users
+    linkedUser?: { dob?: string; allergies?: string; chronicIllness?: string };
+    user?: { dob?: string; allergies?: string; chronicIllness?: string };
+  }
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
+
+  // ── Nutrition Personalization Context ────────────────────────────────────
+  type Budget = "tiet-kiem" | "trung-binh" | "cao-cap";
+  const [budget, setBudget] = useState<Budget>("trung-binh");
+  const [isElderly, setIsElderly] = useState(false);
+  const [isVegetarian, setIsVegetarian] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Mark as dirty when filters change so we can show the "Update" button
+  useEffect(() => {
+    if (generatedMeals.length > 0) {
+      setIsDirty(true);
+    }
+  }, [budget, isElderly, isVegetarian]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -39,7 +101,7 @@ export default function MealPlanPage() {
         const data = await res.json();
         if (res.ok) {
           const owned = data.ownedMembers || [];
-          const linked = (data.linkedMembers || []).map((m: any) => ({
+          const linked = (data.linkedMembers || []).map((m: { id: string; user?: { name?: string; email?: string } }) => ({
             ...m,
             name: m.user?.name || m.user?.email || 'Người dùng',
             relationship: 'Liên kết',
@@ -47,12 +109,71 @@ export default function MealPlanPage() {
           }));
           const allMembers = [...owned, ...linked];
           setFamilyMembers(allMembers);
-          if (allMembers.length > 0) setSelectedMemberId(allMembers[0].id);
+          
+          // Selection logic: prefer member from URL or first available
+          if (allMembers.length > 0) {
+            setSelectedMemberId(allMembers[0].id);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Failed to fetch profile", e);
+      }
     };
     if (token) fetchProfile();
   }, [token]);
+
+  // SMART LOGIC: Auto-set filters based on selected member's profile
+  useEffect(() => {
+    const member = familyMembers.find(m => m.id === selectedMemberId);
+    if (!member) return;
+
+    // 1. Check for Elderly status
+    let finalAge = member.age || 0;
+    const dobStr = member.dob || member.linkedUser?.dob || member.user?.dob;
+    if (dobStr) {
+      const birthYear = new Date(dobStr).getFullYear();
+      const currentYear = new Date().getFullYear();
+      finalAge = currentYear - birthYear;
+    }
+    if (finalAge >= 60) setIsElderly(true);
+    else setIsElderly(false);
+
+    // 2. Check for Vegetarian status (heuristics)
+    const healthNotes = `
+      ${member.allergies || ""} 
+      ${member.chronicIllness || ""}
+      ${member.linkedUser?.allergies || ""}
+      ${member.linkedUser?.chronicIllness || ""}
+    `.toLowerCase();
+
+    if (healthNotes.includes("ăn chay") || healthNotes.includes("chay") || healthNotes.includes("vegetarian")) {
+      setIsVegetarian(true);
+    } else {
+      setIsVegetarian(false);
+    }
+  }, [selectedMemberId, familyMembers]);
+
+  // Read ?disease= query param from URL (e.g. navigated from Scanner CTA)
+  useEffect(() => {
+    const disease = searchParams.get("disease");
+    if (disease) {
+      setDiagnosis(disease);
+      setAutoTrigger(true); // will fire generation once diagnosis state settles
+    }
+  }, [searchParams]);
+
+  // Two-effect pattern: avoids stale closure on handleGenerate
+  useEffect(() => {
+    // Only fire when: 
+    // 1. autoTrigger is true
+    // 2. diagnosis is ready
+    // 3. familyMembers are loaded (to ensure smart filters are applied first)
+    if (autoTrigger && diagnosis && familyMembers.length > 0) {
+      handleGenerate();
+      setAutoTrigger(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoTrigger, diagnosis, familyMembers]);
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -74,7 +195,13 @@ export default function MealPlanPage() {
           // Bug #2: send auth token so server can authenticate
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
-        body: JSON.stringify({ diagnosis, memberProfile: selectedMember })
+        body: JSON.stringify({
+          diagnosis,
+          memberProfile: selectedMember,
+          budget,
+          isElderly,
+          isVegetarian,
+        })
       });
       
       const data = await resp.json();
@@ -83,6 +210,7 @@ export default function MealPlanPage() {
         return;
       }
 
+      setIsDirty(false); // Reset dirty flag after successful update
       setGeneralAdvice(data.general_dietary_advice || []);
       setAiTitle(`Gợi ý thực đơn cho hồ sơ bệnh lý: ${diagnosis}`);
       
@@ -98,7 +226,7 @@ export default function MealPlanPage() {
           tags: Array.isArray(m.tags) && m.tags.length > 0 ? [...m.tags, "Khuyên dùng"] : [m.type, "Khuyên dùng"].filter(Boolean),
           description: m.reason || m.benefits || "",
           ingredients: Array.isArray(m.ingredients) 
-            ? m.ingredients.map((ing: string) => ({ name: ing, amount: "Vừa đủ" }))
+            ? m.ingredients.map((ing: any) => ({ name: typeof ing === 'string' ? ing : ing?.name || "Nguyên liệu", amount: "Vừa đủ" }))
             : [],
           steps: Array.isArray(m.instructions)
             ? m.instructions.map((ins: string, i: number) => ({ title: `Bước ${i + 1}`, desc: ins }))
@@ -223,6 +351,26 @@ export default function MealPlanPage() {
           <button className="w-full bg-[#0f172a] hover:bg-slate-800 text-white font-semibold py-4 rounded-2xl transition-colors shadow-lg flex items-center justify-center gap-2 text-sm">
              <Bookmark size={18} /> Lưu công thức vào hồ sơ
           </button>
+
+          {/* ── Cross-feature CTAs ── */}
+          <div className="bg-amber-50 border border-amber-200 rounded-[2rem] p-6 space-y-3">
+            <p className="text-sm font-bold text-amber-900">💊 Nhắc nhở uống thuốc</p>
+            <p className="text-xs text-amber-800 leading-relaxed">
+              Món ăn này rất tốt cho người đang điều trị {diagnosis || "bệnh lý của bạn"}. Kiểm tra lại lịch uống thuốc hôm nay của bạn để đảm bảo hiệu quả nhé!
+            </p>
+            <button
+              onClick={() => navigate("/app/cabinet")}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors"
+            >
+              Xem lịch uống thuốc →
+            </button>
+            <button
+              onClick={() => navigate("/app/appointment?filter=Dinh dưỡng")}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold py-2.5 rounded-xl transition-colors"
+            >
+              Hỏi ý kiến bác sĩ về món ăn này →
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -233,7 +381,7 @@ export default function MealPlanPage() {
       <form onSubmit={handleGenerate} className="relative w-full space-y-4">
         {familyMembers.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-2">
-            {familyMembers.map((m: any) => (
+            {familyMembers.map((m: FamilyMember) => (
               <button
                 type="button"
                 key={m.id}
@@ -260,6 +408,68 @@ export default function MealPlanPage() {
           />
         </div>
       </form>
+
+      {/* ── Personalization Pill Toggles ── */}
+      <div className="flex flex-wrap gap-2 -mt-4 mb-2">
+        {/* Budget Group */}
+        {([
+          { val: "tiet-kiem",  label: "💰 Tiết kiệm" },
+          { val: "trung-binh", label: "⚖️ Trung bình" },
+          { val: "cao-cap",    label: "✨ Cao cấp" },
+        ] as { val: Budget; label: string }[]).map(({ val, label }) => (
+          <button
+            key={val}
+            type="button"
+            onClick={() => setBudget(val)}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 ${
+              budget === val
+                ? "bg-blue-500 text-white border-blue-500 shadow-sm"
+                : "bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+
+        {/* Elderly Toggle */}
+        <button
+          type="button"
+          onClick={() => setIsElderly(v => !v)}
+          className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 ${
+            isElderly
+              ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+              : "bg-white text-slate-600 border-slate-200 hover:border-orange-300 hover:text-orange-500"
+          }`}
+        >
+          👴 Người cao tuổi
+        </button>
+
+        {/* Vegetarian Toggle */}
+        <button
+          type="button"
+          onClick={() => setIsVegetarian(v => !v)}
+          className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-150 ${
+            isVegetarian
+              ? "bg-green-500 text-white border-green-500 shadow-sm"
+              : "bg-white text-slate-600 border-slate-200 hover:border-green-300 hover:text-green-600"
+          }`}
+        >
+          🥗 Món chay
+        </button>
+
+        {/* ── Dirty State Update Button ── */}
+        {isDirty && (
+          <button
+            type="button"
+            onClick={() => handleGenerate()}
+            disabled={isGenerating}
+            className="ml-auto flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all animate-in fade-in slide-in-from-right-4"
+          >
+            {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+            Cập nhật thực đơn mới
+          </button>
+        )}
+      </div>
 
       <div className="grid lg:grid-cols-12 gap-10 items-start">
         {/* Main Col */}
@@ -305,36 +515,40 @@ export default function MealPlanPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {isGenerating ? (
-                <div className="xl:col-span-4 lg:col-span-3 md:col-span-2 flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-blue-100 rounded-3xl bg-blue-50/50">
-                   <Loader2 className="animate-spin text-blue-400 mb-4" size={32} />
-                   <p className="text-blue-600 font-medium animate-pulse">AI đang phân tích và lên thực đơn an toàn...</p>
-                </div>
-              ) : (
-                displayMeals.map((meal) => (
-                  <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md transition-shadow flex flex-col">
-                    <div className="h-28 bg-gradient-to-br from-indigo-100 to-blue-50 relative overflow-hidden flex items-center justify-center text-blue-200">
-                      <Utensils size={24} className="group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" />
-                      <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-                         {meal.tags.slice(0, 1).map((t, i) => (
-                            <span key={i} className="bg-blue-500/80 text-white backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
-                         ))}
-                      </div>
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col">
-                      <h3 className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{meal.name}</h3>
-                      <p className="text-[0.7rem] text-slate-500 line-clamp-2 mb-3 leading-relaxed flex-grow">{meal.description}</p>
-                      <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
-                        <div className="flex items-center gap-2 text-[0.6rem] font-bold text-slate-500">
-                          <span className="flex items-center gap-1"><Clock size={10} className="text-slate-400"/> {meal.time}</span>
-                          <span className="flex items-center gap-1"><Flame size={10} className="text-orange-400"/> {meal.calories}</span>
-                        </div>
-                        <button onClick={() => setSelectedMeal(meal)} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
-                          Chi tiết <ChevronRight size={12} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                /* CLS Fix: skeleton cards instead of centered spinner */
+                Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="skeleton h-52 rounded-[1.5rem]" />
                 ))
+              ) : (
+                displayMeals.map((meal) => {
+                  const { emoji, color } = getMealAppearance(meal.name);
+                  return (
+                    <div key={meal.id} className="bg-white border border-slate-100 rounded-[1.5rem] overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col cursor-pointer" onClick={() => setSelectedMeal(meal)}>
+                      {/* Smart emoji thumbnail */}
+                      <div className={`h-32 bg-gradient-to-br ${color} flex items-center justify-center text-6xl select-none shadow-inner relative`}>
+                        {emoji}
+                        <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                           {meal.tags.slice(0, 1).map((t, i) => (
+                              <span key={i} className="bg-white/70 text-slate-700 backdrop-blur-sm px-2 py-0.5 rounded text-[0.55rem] font-bold uppercase tracking-wider">{t}</span>
+                           ))}
+                        </div>
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col">
+                        <h3 className="font-bold text-sm text-slate-800 mb-1 line-clamp-1">{meal.name}</h3>
+                        <p className="text-[0.7rem] text-slate-500 line-clamp-2 mb-3 leading-relaxed flex-grow">{meal.description}</p>
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
+                          <div className="flex items-center gap-2 text-[0.6rem] font-bold text-slate-500">
+                            <span className="flex items-center gap-1"><Clock size={10} className="text-slate-400"/> {meal.time}</span>
+                            <span className="flex items-center gap-1"><Flame size={10} className="text-orange-400"/> {meal.calories}</span>
+                          </div>
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedMeal(meal); }} className="text-[#0ea5e9] font-bold text-[0.65rem] hover:text-blue-700 transition-colors flex items-center gap-0.5">
+                            Chi tiết <ChevronRight size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
             

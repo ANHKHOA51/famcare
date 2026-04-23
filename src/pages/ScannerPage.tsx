@@ -21,6 +21,11 @@ export interface ScanResult {
     confidence_score?: number;
     suggested_alternatives?: string[];
   }[];
+  ai_interactions?: {
+    meds: string[];
+    severity: string;
+    reason: string;
+  }[];
   nutrition: {
     recommended_foods: string[];
     foods_to_avoid: string[];

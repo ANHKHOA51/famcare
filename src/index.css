@@ -100,6 +100,7 @@
     background-color: hsl(var(--surface));
     color: hsl(var(--on-surface));
     font-family: var(--font-body);
+    font-size: 17px; /* +1px over browser default — improves readability for elderly users */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -211,4 +212,30 @@ html.dark img, html.dark video, html.dark svg:not(.lucide), html.dark .no-invert
 
 .animate-fade-up {
   animation: fade-up 0.6s ease-out forwards;
+}
+
+/* === MARQUEE BANNER === */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 22s linear infinite;
+}
+
+/* === SKELETON LOADING (CLS Fix) === */
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f4f8 25%,
+    #e2e8f0 50%,
+    #f0f4f8 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
 }

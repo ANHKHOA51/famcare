@@ -171,8 +171,20 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
       include: {
-        ownedMembers: { include: { linkedUser: { select: { id: true, name: true, email: true } } } },
-        linkedMembers: { include: { user: { select: { id: true, name: true, email: true } } } }
+        ownedMembers: { 
+          include: { 
+            linkedUser: { 
+              select: { id: true, name: true, email: true, dob: true, allergies: true, chronicIllness: true } 
+            } 
+          } 
+        },
+        linkedMembers: { 
+          include: { 
+            user: { 
+              select: { id: true, name: true, email: true, dob: true, allergies: true, chronicIllness: true } 
+            } 
+          } 
+        }
       }
     });
 
@@ -756,9 +768,16 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     const prompt = `Analyze prescription image. 
     If the image is entirely blurry, unreadable, or clearly NOT a prescription, medicine label, or medical document (e.g., random objects, selfies, landscapes), return ONLY this JSON: { "error": "Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại." }.
     Otherwise, extract diagnosis, prescription details and medications. 
+    Also, identify any potentially dangerous drug interactions between the medications in this prescription.
     Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
     IMPORTANT: If your confidence_score is below 80, you MUST provide 'suggested_alternatives' (a list of 1-3 similarly named real-world medications that fit the diagnosis/pathology context). If confidence >= 80, 'suggested_alternatives' can be empty.
-    Return ONLY JSON: { "diagnosis": "string", "prescription_code": "string or null", "hospital_name": "string or null", "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }] }. All text in natural Vietnamese.`;
+    Return ONLY JSON: { 
+      "diagnosis": "string", 
+      "prescription_code": "string or null", 
+      "hospital_name": "string or null", 
+      "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }],
+      "ai_interactions": [{ "meds": ["string", "string"], "severity": "string", "reason": "string" }] 
+    }. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
 
@@ -801,6 +820,13 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
                         "suggested_symptoms": ["Triệu chứng thuốc này điều trị"],
                         "confidence_score": 90,
                         "suggested_alternatives": ["Thuốc A", "Thuốc B"]
+                      }
+                    ],
+                    "ai_interactions": [
+                      {
+                        "meds": ["Tên thuốc 1", "Tên thuốc 2"],
+                        "severity": "Cao/Trung bình/Thấp",
+                        "reason": "Lý do kỵ nhau"
                       }
                     ]
                   }
@@ -860,7 +886,7 @@ const FOOD_DATABASE = [
 
 app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
   try {
-    const { diagnosis, memberProfile } = req.body;
+    const { diagnosis, memberProfile, budget, isElderly, isVegetarian } = req.body;
 
     let contextStr = '';
     if (memberProfile) {
@@ -875,10 +901,19 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
       if (memberProfile.age) contextStr += `- Tuổi: ${memberProfile.age}\n`;
     }
 
+    // Additional personalization constraints
+    let personalConstraints = "";
+    if (isElderly) personalConstraints += "- Đối tượng: NGƯỜI CAO TUỔI (Ưu tiên món mềm, dễ nhai, ít gia vị, dễ tiêu hóa).\n";
+    if (isVegetarian) personalConstraints += "- Chế độ ăn: ĂN CHAY (Tuyệt đối không dùng thịt, cá, hải sản, chỉ dùng đạm thực vật/trứng/sữa).\n";
+    if (budget === 'tiet-kiem') personalConstraints += "- Ngân sách: TIẾT KIỆM (Sử dụng nguyên liệu bình dân, dễ tìm như trứng, đậu phụ, rau địa phương).\n";
+    if (budget === 'cao-cap') personalConstraints += "- Ngân sách: CAO CẤP (Sử dụng nguyên liệu bổ dưỡng cao cấp như cá hồi, yến sào, hạt nhập khẩu).\n";
+
     const prompt = `Bạn là chuyên gia dinh dưỡng xuất sắc. 
     LƯU Ý QUAN TRỌNG: Hãy kiểm tra xem "${diagnosis}" có thực sự là một tình trạng sức khỏe, tên bệnh lý, hoặc nhu cầu dinh dưỡng hợp lý đối với con người hay không. Nếu người dùng nhập những từ khóa vô nghĩa, tên vật dụng, trò đùa, chửi bới, hoặc không liên quan đến sức khỏe (VD: xe máy, điện thoại, abcxyz, tôi buồn...), hãy LẬP TỨC TRẢ VỀ JSON NÀY VÀ DỪNG LẠI: { "error": "Vui lòng nhập một tình trạng sức khỏe hoặc bệnh lý hợp lệ để AI có thể tư vấn." }
     
     Nếu hợp lệ, hãy xây dựng thực đơn CHUYÊN BIỆT VÀ ĐẶC THÙ MỚI LẠ dành riêng cho người có tình trạng/bệnh lý: "${diagnosis}". ${contextStr}
+    ${personalConstraints}
+
     Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và Thông tin Hồ sơ Sức khỏe (nếu có). 
     - Nếu có dị ứng: TUYỆT ĐỐI không dùng/đề xuất nguyên liệu gây dị ứng.
     - Nếu BMI phản ánh thừa cân/béo phì: Gợi ý thực đơn giảm calo, giảm tinh bột.
