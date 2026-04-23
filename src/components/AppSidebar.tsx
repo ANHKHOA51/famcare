@@ -23,8 +23,16 @@ const AppSidebar = ({ activePage }: AppSidebarProps) => {
   return (
     <aside className="w-[260px] h-full bg-[#f8fafc] flex flex-col pt-6 pb-8 border-r border-slate-200/50">
 
+      {/* Logo Area */}
+      <div className="px-6 mb-8 flex items-center gap-3">
+        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-2 shadow-sm">
+          <img src="/logo.png" alt="FamCare Logo" className="w-full h-full object-contain" />
+        </div>
+        <span className="text-xl font-bold font-display text-slate-800 tracking-tight">FamCare</span>
+      </div>
+
       {/* User Area */}
-      <div className="px-6 mb-8">
+      <div className="px-6 mb-8 pt-4 border-t border-slate-200/50">
         <h2 className="text-xl font-bold font-display text-slate-800 tracking-tight">
           {user?.name || "Thành An"}
         </h2>
