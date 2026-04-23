@@ -296,6 +296,9 @@ const UploadState = ({ onFileSelected, imageUrl }: UploadStateProps) => {
               }
             }}
           >
+            {/* Render input outside of conditional so it always exists */}
+            <input id="file-input" type="file" accept="image/*,.pdf" className="hidden" onChange={handleFileInput} />
+
             {imageUrl ? (
               <div className="w-full h-full rounded-2xl overflow-hidden relative group">
                 <img src={imageUrl} alt="Document Preview" className="w-full h-full object-cover" />
@@ -329,7 +332,6 @@ const UploadState = ({ onFileSelected, imageUrl }: UploadStateProps) => {
                 >
                   Chọn tệp tin
                 </button>
-                <input id="file-input" type="file" accept="image/*,.pdf" className="hidden" onChange={handleFileInput} />
 
                 <div className="mt-6 flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center justify-center gap-2">

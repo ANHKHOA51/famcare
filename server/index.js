@@ -587,10 +587,11 @@ const ocrSpaceExtractText = async (file) => {
   const formData = new FormData();
   formData.append('apikey', OCR_SPACE_API_KEY);
   formData.append('language', 'vie'); // Đổi sang tiếng Việt để đọc đơn thuốc chuẩn xác
-  formData.append('OCREngine', '2');
+  formData.append('OCREngine', '1'); // Engine 1 is required for Asian languages
 
-  const blob = new Blob([file.buffer], { type: file.mimetype || 'image/jpeg' });
-  formData.append('file', blob, file.originalname || 'prescription.jpg');
+  // Use base64Image directly to avoid Node.js Blob/File FormData serialization issues
+  const base64Data = `data:${file.mimetype || 'image/jpeg'};base64,${file.buffer.toString('base64')}`;
+  formData.append('base64Image', base64Data);
 
   const response = await fetch('https://api.ocr.space/parse/image', {
     method: 'POST',
@@ -602,6 +603,12 @@ const ocrSpaceExtractText = async (file) => {
   }
 
   const data = await response.json();
+  
+  if (data.IsErroredOnProcessing) {
+    console.error('OCR.space API Processing Error:', data.ErrorMessage);
+    throw new Error(`OCR.space API Error: ${data.ErrorMessage}`);
+  }
+
   const rawText = Array.isArray(data?.ParsedResults)
     ? data.ParsedResults.map(item => item?.ParsedText || '').join('\n')
     : '';
