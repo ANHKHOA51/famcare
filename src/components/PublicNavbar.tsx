@@ -24,9 +24,11 @@ export default function PublicNavbar() {
 
   return (
     <header className="surface-glass sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 bg-background/80 backdrop-blur-md border-b">
-      <Link to="/" className="text-xl flex items-center gap-2 font-bold font-display text-primary tracking-tight">
-        <Stethoscope className="w-5 h-5 text-primary" />
-        FamCare
+      <Link to="/" className="flex items-center gap-2.5">
+        <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center p-1.5 transition-transform hover:scale-105">
+          <img src="/logo.png" alt="FamCare Logo" className="w-full h-full object-contain" />
+        </div>
+        <span className="text-xl font-bold font-display text-primary tracking-tight">FamCare</span>
       </Link>
     
       <nav className="hidden md:flex items-center gap-8">

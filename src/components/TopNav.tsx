@@ -34,8 +34,13 @@ const TopNav = ({ activePage = "scanner" }: TopNavProps) => {
             </SheetContent>
           </Sheet>
 
-          <Link to="/" className="text-xl font-bold font-display text-[#0f172a] tracking-tight">
-            FamCare
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-8 h-8 bg-white/80 rounded-lg flex items-center justify-center p-1 shadow-sm transition-transform group-hover:scale-105">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+            </div>
+            <span className="text-xl font-bold font-display text-[#0f172a] tracking-tight">
+              FamCare
+            </span>
           </Link>
         </div>
 

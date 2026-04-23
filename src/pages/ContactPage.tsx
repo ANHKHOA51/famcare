@@ -15,9 +15,14 @@ export default function ContactPage() {
             <div className="inline-block text-[#0891b2] text-[0.625rem] font-bold tracking-widest uppercase mb-4">
               Hỗ trợ 24/7
             </div>
-            <h1 className="text-4xl lg:text-5xl font-display font-bold text-[#0f172a] leading-[1.1] mb-6 tracking-tight">
-              Liên hệ với FamCare
-            </h1>
+            <div className="flex items-center gap-5 mb-6">
+              <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center p-2">
+                <img src="/logo.png" alt="FamCare Logo" className="w-full h-full object-contain" />
+              </div>
+              <h1 className="text-4xl lg:text-5xl font-display font-bold text-[#0f172a] leading-[1.1] tracking-tight">
+                Liên hệ với FamCare
+              </h1>
+            </div>
             <p className="text-slate-500 text-[1rem] leading-relaxed max-w-md">
               Đội ngũ chuyên gia y tế và chăm sóc khách hàng của chúng tôi luôn sẵn sàng lắng nghe và đồng hành cùng sức khỏe gia đình bạn.
             </p>
@@ -145,6 +150,47 @@ export default function ContactPage() {
               <MapPin className="text-[#0f172a]" size={20} />
               <span className="font-bold text-sm text-[#0f172a]">FamCare Ho Chi Minh Headquarters</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Board of Directors Section */}
+      <section className="px-8 lg:px-16 py-20 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-slate-800 mb-4">Ban Giám Đốc</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-base">
+              Đội ngũ sáng lập và điều hành dự án, những người luôn tâm huyết mang đến giải pháp y tế thông minh và tiện lợi nhất cho gia đình bạn.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-8 lg:gap-x-12">
+            {[1, 2, 3, 4, 5, 6].map((num) => (
+              <div key={num} className="flex flex-col items-center group">
+                <div className="w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden bg-slate-50 mb-6 border-4 border-white shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative flex items-center justify-center">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-300 gap-2">
+                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-[0.625rem] font-medium uppercase tracking-widest">Thêm ảnh</span>
+                  </div>
+                  {/* Thay src bằng đường dẫn ảnh thật của từng người */}
+                  <img src={`/team-${num}.jpg`} alt={`Thành viên ${num}`} className="w-full h-full object-cover relative z-10 opacity-0 hover:opacity-100 transition-opacity" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 mb-1">Thành viên {num}</h3>
+                <p className="text-sm font-semibold text-[#0891b2] mb-4 uppercase tracking-wider">Co-founder / Giám đốc</p>
+                
+                {/* Social Links Placeholder */}
+                <div className="flex items-center gap-4 text-slate-300">
+                  <a href="#" className="hover:text-[#0891b2] transition-colors">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  </a>
+                  <a href="#" className="hover:text-[#0891b2] transition-colors">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                  </a>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

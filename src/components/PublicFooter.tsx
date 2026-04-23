@@ -9,8 +9,10 @@ export default function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <HeartPulse className="w-6 h-6 text-[#0ea5e9]" />
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center p-1.5">
+                <img src="/logo.png" alt="FamCare Logo" className="w-full h-full object-contain" />
+              </div>
               <h3 className="font-display font-bold text-white text-xl">FamCare</h3>
             </div>
             <p className="text-[0.8125rem] text-slate-400 leading-relaxed">
