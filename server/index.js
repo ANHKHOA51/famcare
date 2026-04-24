@@ -553,6 +553,35 @@ const GROQ_MODEL_CANDIDATES = [
   'llama-3.1-8b-instant'          // High limits
 ];
 
+// ── PERF: In-memory TTL cache for AI responses ──────────────────────────────
+// Avoid re-calling AI for identical (diagnosis + filters) within 10 minutes.
+// Bounded to 100 entries to prevent memory growth on serverless instances.
+const aiCache = new Map();
+const AI_CACHE_TTL_MS = 10 * 60 * 1000;
+const AI_CACHE_MAX = 100;
+
+const getCached = (key) => {
+  const entry = aiCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.t > AI_CACHE_TTL_MS) {
+    aiCache.delete(key);
+    return null;
+  }
+  // LRU touch
+  aiCache.delete(key);
+  aiCache.set(key, entry);
+  return entry.v;
+};
+
+const setCached = (key, value) => {
+  if (aiCache.size >= AI_CACHE_MAX) {
+    // Evict oldest
+    const firstKey = aiCache.keys().next().value;
+    if (firstKey) aiCache.delete(firstKey);
+  }
+  aiCache.set(key, { v: value, t: Date.now() });
+};
+
 const isRetryableGeminiError = (error) => {
   const status = error?.status ?? error?.response?.status;
   const message = `${error?.message || ''} ${error?.statusText || ''}`.toLowerCase();
