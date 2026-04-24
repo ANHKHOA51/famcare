@@ -50,21 +50,21 @@ export default function PublicFooter() {
                 <Phone className="w-4 h-4 mt-0.5 text-[#0ea5e9] shrink-0" />
                 <div>
                   <p className="text-slate-400 text-xs mb-0.5">Hotline hỗ trợ (24/7)</p>
-                  <a href="tel:19001234" className="text-slate-200 font-semibold hover:text-white transition-colors">1900 1234</a>
+                  <a href="tel:19001234" className="text-slate-200 font-semibold hover:text-white transition-colors text-base">1900 1234</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 mt-0.5 text-[#0ea5e9] shrink-0" />
                 <div>
                   <p className="text-slate-400 text-xs mb-0.5">Email</p>
-                  <a href="mailto:support@famcare.vn" className="text-slate-200 hover:text-white transition-colors">support@famcare.vn</a>
+                  <a href="mailto:famcare.support@gmail.com" className="text-slate-200 hover:text-white transition-colors break-all">famcare.support@gmail.com</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 text-[#0ea5e9] shrink-0" />
                 <div>
-                  <p className="text-slate-400 text-xs mb-0.5">Địa chỉ</p>
-                  <span className="text-slate-200">TP.HCM</span>
+                  <p className="text-slate-400 text-xs mb-0.5">Văn phòng chính</p>
+                  <span className="text-slate-200">Thành phố Hồ Chí Minh</span>
                 </div>
               </li>
             </ul>
