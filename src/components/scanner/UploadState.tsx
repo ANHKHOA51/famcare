@@ -317,7 +317,7 @@ const UploadState = ({ onFileSelected, imageUrl }: UploadStateProps) => {
                   <FileUp size={40} />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-2">Tải lên hoặc kéo thả đơn thuốc</h3>
-                <p className="text-sm text-slate-500 max-w-sm mx-auto mb-8 leading-relaxed">
+                <p className="text-base text-slate-500 max-w-sm mx-auto mb-8 leading-relaxed">
                   Hỗ trợ các định dạng JPG, PNG hoặc PDF. AI sẽ tự động nhận diện thông tin y tế.
                 </p>
                 <button
@@ -385,7 +385,7 @@ const UploadState = ({ onFileSelected, imageUrl }: UploadStateProps) => {
 
       {/* Error Message */}
       {error && (
-        <div className="text-red-500 text-sm text-center font-medium bg-red-50 py-2 rounded-xl">
+        <div className="text-red-600 text-base text-center font-semibold bg-red-50 py-3 rounded-xl">
           {error}
         </div>
       )}
@@ -394,9 +394,9 @@ const UploadState = ({ onFileSelected, imageUrl }: UploadStateProps) => {
       {!cameraActive && (
         <div className="bg-[#ccfbf1] rounded-2xl p-5 flex items-start gap-4">
           <div className="mt-0.5 text-teal-600 flex-shrink-0">
-            <Info size={20} />
+            <Info size={22} />
           </div>
-          <p className="text-sm text-teal-800 font-medium">
+          <p className="text-base text-teal-800 font-medium leading-relaxed">
             Mẹo: Đảm bảo ảnh chụp đủ sáng và không bị nhòe để đạt kết quả tốt nhất.
           </p>
         </div>

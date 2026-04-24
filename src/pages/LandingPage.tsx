@@ -131,6 +131,8 @@ const LandingPage = () => {
         </div>
       </section>
 
+      <PricingSection />
+
       {/* ── Bento Box Features ── */}
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -153,11 +155,11 @@ const LandingPage = () => {
                 <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
                   <ScanLine size={28} />
                 </div>
-                <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wider">Lõi AI</span>
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider">Công nghệ AI</span>
               </div>
               <div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-900">Quét & Phân tích đơn thuốc</h3>
-                <p className="text-slate-600">
+                <p className="text-slate-600 text-base">
                   Trích xuất thông tin, cảnh báo <strong className="font-bold text-red-600">tác dụng phụ</strong> và kiểm tra tương tác thuốc ngay lập tức chỉ với một bức ảnh.
                 </p>
               </div>
@@ -175,12 +177,12 @@ const LandingPage = () => {
                 </div>
                 <div className="relative z-10 mt-8">
                   <h3 className="text-2xl font-bold mb-4">Thực đơn AI</h3>
-                  <p className="text-slate-400 mb-8">
+                  <p className="text-slate-300 mb-8 text-base">
                     Xây dựng thực đơn dinh dưỡng cá nhân hóa dựa trên <strong className="font-bold text-white">bệnh lý nền</strong> và chỉ số cơ thể.
                   </p>
                   <ul className="space-y-3">
                     {["Bữa sáng 400kcal", "Bữa trưa chay", "Bữa tối ít muối"].map((item, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-slate-300 bg-white/5 p-3 rounded-xl border border-white/10">
+                      <li key={i} className="flex items-center gap-2 text-base text-slate-200 bg-white/5 p-3 rounded-xl border border-white/10">
                         <CheckCircle2 size={16} className="text-amber-400 shrink-0" />
                         {item}
                       </li>
@@ -199,7 +201,7 @@ const LandingPage = () => {
               </div>
               <div className="relative z-10 mt-8">
                 <h3 className="text-xl font-bold mb-2">Tủ thuốc số</h3>
-                <p className="text-blue-100 text-sm">
+                <p className="text-blue-50 text-base">
                   Quản lý số lượng và thiết lập <strong className="font-bold text-white">nhắc nhở uống thuốc</strong> tự động.
                 </p>
               </div>
@@ -212,7 +214,7 @@ const LandingPage = () => {
               </div>
               <div className="mt-8">
                 <h3 className="text-xl font-bold mb-2 text-slate-900">Đặt lịch khám</h3>
-                <p className="text-slate-600 text-sm">
+                <p className="text-slate-600 text-base">
                   Kết nối <strong className="font-bold text-slate-900">200+ bác sĩ</strong> chuyên khoa uy tín.
                 </p>
               </div>
@@ -277,7 +279,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <PricingSection />
       <PublicFooter />
     </div>
   );

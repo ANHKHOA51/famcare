@@ -121,22 +121,34 @@ const ScannerPage = () => {
       </div>
 
       <AlertDialog open={blurError} onOpenChange={setBlurError}>
-        <AlertDialogContent className="rounded-2xl border-destructive/20 max-w-sm">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-5 w-5" /> Không nhận diện được
+        <AlertDialogContent className="rounded-3xl border-destructive/20 max-w-md p-8">
+          <AlertDialogHeader className="space-y-4">
+            <div className="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+              <AlertCircle className="h-8 w-8 text-red-600" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-bold text-center text-slate-900">
+              Không nhận diện được đơn thuốc
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-600 pt-2">
-              Chất lượng ảnh đưa vào quá mờ. Vui lòng chụp lại ảnh rõ ràng hơn!
+            <AlertDialogDescription className="text-base text-slate-600 text-center leading-relaxed">
+              Chất lượng ảnh đưa vào quá mờ hoặc thiếu sáng. Vui lòng chụp lại ảnh rõ ràng hơn, hoặc bạn có thể tự nhập thông tin đơn thuốc thủ công.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-             <AlertDialogAction 
+          <AlertDialogFooter className="flex-col sm:flex-col gap-3 mt-4">
+            <AlertDialogAction
               onClick={() => setBlurError(false)}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl w-full"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl w-full h-12 text-base font-semibold"
             >
-              Chụp lại
+              Chụp lại ảnh khác
             </AlertDialogAction>
+            <button
+              onClick={() => {
+                setBlurError(false);
+                window.location.href = "/app/cabinet";
+              }}
+              className="bg-white border-2 border-slate-200 hover:bg-slate-50 text-slate-800 rounded-xl w-full h-12 text-base font-semibold transition-colors"
+            >
+              Tự nhập đơn thuốc
+            </button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
