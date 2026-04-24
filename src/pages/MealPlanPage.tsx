@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, ShoppingBag, Clock, Flame, Star, ChevronRight, Bookmark, ArrowLeft, Loader2, Sparkles, Utensils, User, RefreshCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -57,7 +57,6 @@ export default function MealPlanPage() {
 
   // Real Data States
   const [diagnosis, setDiagnosis] = useState("");
-  const [autoTrigger, setAutoTrigger] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedMeals, setGeneratedMeals] = useState<Meal[]>([]);
   const [generalAdvice, setGeneralAdvice] = useState<string[]>([]);
@@ -138,7 +137,7 @@ export default function MealPlanPage() {
     if (finalAge >= 60) setIsElderly(true);
     else setIsElderly(false);
 
-    // 2. Check for Vegetarian status (heuristics)
+    // 2. Check for Vegetarian status — only match explicit signals
     const healthNotes = `
       ${member.allergies || ""} 
       ${member.chronicIllness || ""}
@@ -146,7 +145,7 @@ export default function MealPlanPage() {
       ${member.linkedUser?.chronicIllness || ""}
     `.toLowerCase();
 
-    if (healthNotes.includes("ăn chay") || healthNotes.includes("chay") || healthNotes.includes("vegetarian")) {
+    if (/\b(ăn chay|vegetarian)\b/.test(healthNotes)) {
       setIsVegetarian(true);
     } else {
       setIsVegetarian(false);
@@ -154,26 +153,13 @@ export default function MealPlanPage() {
   }, [selectedMemberId, familyMembers]);
 
   // Read ?disease= query param from URL (e.g. navigated from Scanner CTA)
+  // Auto-fills the diagnosis field but does NOT auto-generate — user must press "Tạo thực đơn".
   useEffect(() => {
     const disease = searchParams.get("disease");
     if (disease) {
       setDiagnosis(disease);
-      setAutoTrigger(true); // will fire generation once diagnosis state settles
     }
   }, [searchParams]);
-
-  // Two-effect pattern: avoids stale closure on handleGenerate
-  useEffect(() => {
-    // Only fire when: 
-    // 1. autoTrigger is true
-    // 2. diagnosis is ready
-    // 3. familyMembers are loaded (to ensure smart filters are applied first)
-    if (autoTrigger && diagnosis && familyMembers.length > 0) {
-      handleGenerate();
-      setAutoTrigger(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoTrigger, diagnosis, familyMembers]);
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -395,9 +381,7 @@ export default function MealPlanPage() {
           </div>
         )}
         <div className="relative">
-          <button type="submit" className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-700 disabled:opacity-50" disabled={isGenerating}>
-            {isGenerating ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
-          </button>
+          <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none" size={18} />
           <input 
             type="text" 
             value={diagnosis}
@@ -457,7 +441,7 @@ export default function MealPlanPage() {
           🥗 Món chay
         </button>
 
-        {/* ── Dirty State Update Button ── */}
+        {/* ── Dirty State Update Button (shown only when meals already exist and filters changed) ── */}
         {isDirty && (
           <button
             type="button"
@@ -470,6 +454,19 @@ export default function MealPlanPage() {
           </button>
         )}
       </div>
+
+      {/* ── Primary Generate CTA (always visible when no meals yet or not in dirty-update mode) ── */}
+      {!isDirty && (
+        <button
+          type="button"
+          onClick={() => handleGenerate()}
+          disabled={isGenerating || !diagnosis.trim()}
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all text-base"
+        >
+          {isGenerating ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}
+          {isGenerating ? "Đang tạo thực đơn..." : "Tạo thực đơn"}
+        </button>
+      )}
 
       <div className="grid lg:grid-cols-12 gap-10 items-start">
         {/* Main Col */}
@@ -488,7 +485,7 @@ export default function MealPlanPage() {
             <p className="text-blue-100 md:text-lg max-w-xl relative z-10">
               {generatedMeals.length > 0 
                 ? (generalAdvice[0] || "Chọn menu dưới để xem chi tiết dinh dưỡng.")
-                : "Nhập tình trạng bệnh lý của bạn (VD: Tiểu đường, Gout, Mỡ máu cao...) để AI thiết kế thực đơn phù hợp và an toàn nhất."}
+                : "Nhập tình trạng bệnh lý, chọn tùy chọn phù hợp rồi nhấn Tạo thực đơn để AI thiết kế menu an toàn cho bạn."}
             </p>
           </div>
 
@@ -557,7 +554,7 @@ export default function MealPlanPage() {
               <div className="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
                  <Utensils size={40} className="text-slate-300 mb-4" />
                  <p className="text-slate-500 font-medium">Bạn chưa có thực đơn nào.</p>
-                 <p className="text-sm text-slate-400 mt-2 max-w-sm mx-auto">Vui lòng nhập tình trạng bệnh ở thanh phía trên và nhấn Enter để AI thiết kế món ăn nhé.</p>
+                 <p className="text-sm text-slate-400 mt-2 max-w-sm mx-auto">Nhập tình trạng bệnh ở thanh tìm kiếm phía trên, chọn tùy chọn phù hợp, rồi nhấn <strong className="text-blue-500">Tạo thực đơn</strong>.</p>
               </div>
             )}
           </div>

@@ -176,25 +176,46 @@ const ResultState = ({ result, onReset }: ResultStateProps) => {
         {(ruleInteractions.length > 0 || aiInteractions.length > 0) && (
           <div className="bg-red-50 border-2 border-red-400 rounded-2xl p-4 mb-4">
             <p className="font-bold text-red-700 flex items-center gap-2 mb-2 text-sm">
-              <AlertTriangle size={16} /> ⚠️ Cảnh báo tương tác thuốc
+              <AlertTriangle size={16} /> ⚠️ Cảnh báo tương tác thuốc (có thể)
             </p>
-            
-            {/* Rule-based interactions (Reliable) */}
-            {ruleInteractions.map(([a, b, warn], i) => (
-              <p key={`rule-${i}`} className="text-xs text-red-700 leading-relaxed mb-1 last:mb-0">
-                • <strong>{a}</strong> + <strong>{b}</strong>: {warn}
-              </p>
-            ))}
+
+            {/* Rule-based interactions — labelled clearly as reference only */}
+            {ruleInteractions.length > 0 && (
+              <div className="mb-2">
+                <p className="text-[0.65rem] font-bold text-red-500 uppercase tracking-wider mb-1">
+                  Theo quy tắc tham khảo (không thay thế ý kiến bác sĩ)
+                </p>
+                {ruleInteractions.map(([a, b, warn], i) => (
+                  <p key={`rule-${i}`} className="text-xs text-red-700 leading-relaxed mb-1 last:mb-0">
+                    • <strong>{a}</strong> + <strong>{b}</strong>: {warn}
+                    <span className="ml-1 text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-semibold">
+                      Tham khảo
+                    </span>
+                  </p>
+                ))}
+              </div>
+            )}
 
             {/* AI-detected interactions (Suggested) */}
-            {aiInteractions.map((inter, i) => (
-              <p key={`ai-${i}`} className="text-xs text-red-700 leading-relaxed mb-1 last:mb-0">
-                • <strong>{inter.meds.join(" + ")}</strong>: {inter.reason} 
-                <span className="ml-1 text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-bold uppercase">
-                  AI Alert ({inter.severity})
-                </span>
-              </p>
-            ))}
+            {aiInteractions.length > 0 && (
+              <div>
+                <p className="text-[0.65rem] font-bold text-red-500 uppercase tracking-wider mb-1">
+                  Gợi ý từ AI (cần xác nhận với chuyên gia y tế)
+                </p>
+                {aiInteractions.map((inter, i) => (
+                  <p key={`ai-${i}`} className="text-xs text-red-700 leading-relaxed mb-1 last:mb-0">
+                    • <strong>{inter.meds.join(" + ")}</strong>: {inter.reason}
+                    <span className="ml-1 text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-bold uppercase">
+                      AI gợi ý ({inter.severity})
+                    </span>
+                  </p>
+                ))}
+              </div>
+            )}
+
+            <p className="mt-2 text-[0.65rem] text-red-500 italic leading-relaxed">
+              Thông tin trên chỉ mang tính tham khảo. Vui lòng hỏi ý kiến dược sĩ hoặc bác sĩ trước khi dùng thuốc.
+            </p>
           </div>
         )}
         
