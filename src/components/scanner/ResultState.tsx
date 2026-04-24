@@ -25,7 +25,7 @@ const INTERACTION_PAIRS: [string, string, string][] = [
   ["metformin", "alcohol", "Nguy cơ hạ đường huyết nếu dùng cùng"],
   ["ibuprofen", "aspirin", "Tăng nguy cơ xuất huyết tiêu hóa"],
   ["ibuprofen", "paracetamol", "Cần thận về liều lượng khi dùng cùng"],
-  ["codeine", "benzodiazepine", "Nguy hiểm: [ức chế hô hấp nếu dùng cùng"],
+  ["codeine", "benzodiazepine", "Nguy hiểm: ức chế hô hấp nếu dùng cùng"],
   ["simvastatin", "clarithromycin", "Tăng nguy cơ tổn thương cơ"],
 ];
 

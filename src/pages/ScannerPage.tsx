@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import UploadState from "@/components/scanner/UploadState";
 import ScanningState from "@/components/scanner/ScanningState";
 import ResultState from "@/components/scanner/ResultState";
@@ -33,10 +34,18 @@ export interface ScanResult {
 }
 
 const ScannerPage = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState<ScannerStep>("upload");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [blurError, setBlurError] = useState(false);
+
+  // Cleanup object URL on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (imageUrl) URL.revokeObjectURL(imageUrl);
+    };
+  }, [imageUrl]);
 
   const handleFileSelected = useCallback(async (file: File) => {
     // Pass 3 Fix #4: revoke previous object URL to prevent memory leak
@@ -143,7 +152,7 @@ const ScannerPage = () => {
             <button
               onClick={() => {
                 setBlurError(false);
-                window.location.href = "/app/cabinet";
+                navigate("/app/cabinet");
               }}
               className="bg-white border-2 border-slate-200 hover:bg-slate-50 text-slate-800 rounded-xl w-full h-12 text-base font-semibold transition-colors"
             >
