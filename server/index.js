@@ -805,19 +805,23 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No image file provided' });
     const base64Image = req.file.buffer.toString('base64');
 
-    const prompt = `Analyze prescription image. 
-    If the image is entirely blurry, unreadable, or clearly NOT a prescription, medicine label, or medical document (e.g., random objects, selfies, landscapes), return ONLY this JSON: { "error": "Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại." }.
-    Otherwise, extract diagnosis, prescription details and medications. 
-    Also, identify any potentially dangerous drug interactions between the medications in this prescription.
-    Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
-    IMPORTANT: If your confidence_score is below 80, you MUST provide 'suggested_alternatives' (a list of 1-3 similarly named real-world medications that fit the diagnosis/pathology context). If confidence >= 80, 'suggested_alternatives' can be empty.
-    Return ONLY JSON: { 
-      "diagnosis": "string", 
-      "prescription_code": "string or null", 
-      "hospital_name": "string or null", 
-      "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }],
-      "ai_interactions": [{ "meds": ["string", "string"], "severity": "string", "reason": "string" }] 
-    }. All text in natural Vietnamese.`;
+    // PERF: cache identical images (same buffer) for 10 min — same scan = instant.
+    const imageHash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
+    const cacheKey = `scan:${imageHash}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      console.info('[AI][scan] cache HIT');
+      return res.json(cached);
+    }
+
+    // PERF: prompt rút gọn ~40% — vẫn giữ đầy đủ schema và rule.
+    const prompt = `Phân tích ảnh đơn thuốc (tiếng Việt).
+Nếu ảnh quá mờ, không đọc được, hoặc KHÔNG phải đơn thuốc/nhãn thuốc/tài liệu y tế, trả về DUY NHẤT: {"error":"Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại."}
+
+Nếu hợp lệ, trích xuất chẩn đoán + thuốc + tương tác nguy hiểm. Mỗi thuốc có confidence_score (0-100); nếu <80, BẮT BUỘC có suggested_alternatives 1-3 thuốc tương tự phù hợp chẩn đoán.
+
+Trả về DUY NHẤT JSON:
+{"diagnosis":"string","prescription_code":"string|null","hospital_name":"string|null","medications":[{"name":"string","dosage":"string","instructions":"string","suggested_symptoms":["string"],"confidence_score":95,"suggested_alternatives":["string"]}],"ai_interactions":[{"meds":["a","b"],"severity":"Cao/Trung bình/Thấp","reason":"string"}]}`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
 
@@ -826,6 +830,7 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     if (jsonResponse.error) {
       return res.status(400).json({ error: jsonResponse.error === 'BLURRY' ? 'Ảnh quá mờ hoặc không phải là đơn thuốc y tế. Vui lòng thử lại.' : jsonResponse.error });
     }
+    setCached(cacheKey, jsonResponse);
     res.json(jsonResponse);
   } catch (error) {
     console.error('SCAN ERROR:', error);
