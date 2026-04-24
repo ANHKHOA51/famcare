@@ -553,6 +553,35 @@ const GROQ_MODEL_CANDIDATES = [
   'llama-3.1-8b-instant'          // High limits
 ];
 
+// ── PERF: In-memory TTL cache for AI responses ──────────────────────────────
+// Avoid re-calling AI for identical (diagnosis + filters) within 10 minutes.
+// Bounded to 100 entries to prevent memory growth on serverless instances.
+const aiCache = new Map();
+const AI_CACHE_TTL_MS = 10 * 60 * 1000;
+const AI_CACHE_MAX = 100;
+
+const getCached = (key) => {
+  const entry = aiCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.t > AI_CACHE_TTL_MS) {
+    aiCache.delete(key);
+    return null;
+  }
+  // LRU touch
+  aiCache.delete(key);
+  aiCache.set(key, entry);
+  return entry.v;
+};
+
+const setCached = (key, value) => {
+  if (aiCache.size >= AI_CACHE_MAX) {
+    // Evict oldest
+    const firstKey = aiCache.keys().next().value;
+    if (firstKey) aiCache.delete(firstKey);
+  }
+  aiCache.set(key, { v: value, t: Date.now() });
+};
+
 const isRetryableGeminiError = (error) => {
   const status = error?.status ?? error?.response?.status;
   const message = `${error?.message || ''} ${error?.statusText || ''}`.toLowerCase();
@@ -675,7 +704,11 @@ const generateWithFallbackModels = async (contents, options = {}) => {
   // Step 1: Try Gemini models
   for (const modelName of GEMINI_MODEL_CANDIDATES) {
     try {
-      const model = genAI.getGenerativeModel({ model: modelName });
+      // PERF: Force native JSON output for faster + safer parsing (no markdown wrapper).
+      const generationConfig = strictJson
+        ? { responseMimeType: 'application/json', temperature: 0.7 }
+        : { temperature: 0.7 };
+      const model = genAI.getGenerativeModel({ model: modelName, generationConfig });
       const result = await model.generateContent(contents);
       console.info(`[AI][Gemini][${task}] success model=${modelName}`);
       return {
@@ -772,19 +805,23 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No image file provided' });
     const base64Image = req.file.buffer.toString('base64');
 
-    const prompt = `Analyze prescription image. 
-    If the image is entirely blurry, unreadable, or clearly NOT a prescription, medicine label, or medical document (e.g., random objects, selfies, landscapes), return ONLY this JSON: { "error": "Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại." }.
-    Otherwise, extract diagnosis, prescription details and medications. 
-    Also, identify any potentially dangerous drug interactions between the medications in this prescription.
-    Return a confidence_score (integer 0-100) for each medication read, reflecting how certain you are about the medication name.
-    IMPORTANT: If your confidence_score is below 80, you MUST provide 'suggested_alternatives' (a list of 1-3 similarly named real-world medications that fit the diagnosis/pathology context). If confidence >= 80, 'suggested_alternatives' can be empty.
-    Return ONLY JSON: { 
-      "diagnosis": "string", 
-      "prescription_code": "string or null", 
-      "hospital_name": "string or null", 
-      "medications": [{ "name": "string", "dosage": "string", "instructions": "string", "suggested_symptoms": ["string"], "confidence_score": 95, "suggested_alternatives": ["string"] }],
-      "ai_interactions": [{ "meds": ["string", "string"], "severity": "string", "reason": "string" }] 
-    }. All text in natural Vietnamese.`;
+    // PERF: cache identical images (same buffer) for 10 min — same scan = instant.
+    const imageHash = crypto.createHash('sha256').update(req.file.buffer).digest('hex');
+    const cacheKey = `scan:${imageHash}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      console.info('[AI][scan] cache HIT');
+      return res.json(cached);
+    }
+
+    // PERF: prompt rút gọn ~40% — vẫn giữ đầy đủ schema và rule.
+    const prompt = `Phân tích ảnh đơn thuốc (tiếng Việt).
+Nếu ảnh quá mờ, không đọc được, hoặc KHÔNG phải đơn thuốc/nhãn thuốc/tài liệu y tế, trả về DUY NHẤT: {"error":"Ảnh không phải là đơn thuốc, nhãn thuốc hoặc đã quá mờ. Vui lòng chụp lại."}
+
+Nếu hợp lệ, trích xuất chẩn đoán + thuốc + tương tác nguy hiểm. Mỗi thuốc có confidence_score (0-100); nếu <80, BẮT BUỘC có suggested_alternatives 1-3 thuốc tương tự phù hợp chẩn đoán.
+
+Trả về DUY NHẤT JSON:
+{"diagnosis":"string","prescription_code":"string|null","hospital_name":"string|null","medications":[{"name":"string","dosage":"string","instructions":"string","suggested_symptoms":["string"],"confidence_score":95,"suggested_alternatives":["string"]}],"ai_interactions":[{"meds":["a","b"],"severity":"Cao/Trung bình/Thấp","reason":"string"}]}`;
 
     const result = await generateWithFallbackModels([prompt, { inlineData: { data: base64Image, mimeType: req.file.mimetype } }], { task: 'scan', strictJson: true });
 
@@ -793,6 +830,7 @@ app.post('/api/scan', upload.single('image'), async (req, res) => {
     if (jsonResponse.error) {
       return res.status(400).json({ error: jsonResponse.error === 'BLURRY' ? 'Ảnh quá mờ hoặc không phải là đơn thuốc y tế. Vui lòng thử lại.' : jsonResponse.error });
     }
+    setCached(cacheKey, jsonResponse);
     res.json(jsonResponse);
   } catch (error) {
     console.error('SCAN ERROR:', error);
@@ -895,63 +933,52 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
   try {
     const { diagnosis, memberProfile, budget, isElderly, isVegetarian } = req.body;
 
+    if (!diagnosis || typeof diagnosis !== 'string' || !diagnosis.trim()) {
+      return res.status(400).json({ error: 'Vui lòng nhập tình trạng/bệnh lý cần tư vấn dinh dưỡng.' });
+    }
+
+    // PERF: Cache key — same input within 10 min returns instantly (no AI call).
+    const allergies = memberProfile?.allergies || '';
+    const chronic = memberProfile?.chronicIllness || '';
+    const cacheKey = `meal:${diagnosis.trim().toLowerCase()}|${budget}|${isElderly?1:0}|${isVegetarian?1:0}|${allergies}|${chronic}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      console.info('[AI][meal-plan] cache HIT');
+      return res.json(cached);
+    }
+
     let contextStr = '';
     if (memberProfile) {
-      contextStr = `\n[Context - Hồ sơ sức khoẻ của người dùng (${memberProfile.name || 'Bản thân'})]\n`;
-      if (memberProfile.allergies) contextStr += `- Dị ứng thực phẩm: ${memberProfile.allergies}\n`;
-      if (memberProfile.chronicIllness) contextStr += `- Bệnh nền chuyên sâu: ${memberProfile.chronicIllness}\n`;
+      contextStr = `\n[Hồ sơ: ${memberProfile.name || 'Bản thân'}]`;
+      if (allergies) contextStr += ` Dị ứng: ${allergies}.`;
+      if (chronic) contextStr += ` Bệnh nền: ${chronic}.`;
       if (memberProfile.height && memberProfile.weight) {
         const heightM = memberProfile.height > 3 ? memberProfile.height / 100 : memberProfile.height;
         const bmi = (memberProfile.weight / (heightM * heightM)).toFixed(1);
-        contextStr += `- Chỉ số BMI: ${bmi} (Cân nặng: ${memberProfile.weight}kg, Chiều cao: ${memberProfile.height})\n`;
+        contextStr += ` BMI: ${bmi}.`;
       }
-      if (memberProfile.age) contextStr += `- Tuổi: ${memberProfile.age}\n`;
+      if (memberProfile.age) contextStr += ` Tuổi: ${memberProfile.age}.`;
     }
 
-    // Additional personalization constraints
-    let personalConstraints = "";
-    if (isElderly) personalConstraints += "- Đối tượng: NGƯỜI CAO TUỔI (Ưu tiên món mềm, dễ nhai, ít gia vị, dễ tiêu hóa).\n";
-    if (isVegetarian) personalConstraints += "- Chế độ ăn: ĂN CHAY (Tuyệt đối không dùng thịt, cá, hải sản, chỉ dùng đạm thực vật/trứng/sữa).\n";
-    if (budget === 'tiet-kiem') personalConstraints += "- Ngân sách: TIẾT KIỆM (Sử dụng nguyên liệu bình dân, dễ tìm như trứng, đậu phụ, rau địa phương).\n";
-    if (budget === 'cao-cap') personalConstraints += "- Ngân sách: CAO CẤP (Sử dụng nguyên liệu bổ dưỡng cao cấp như cá hồi, yến sào, hạt nhập khẩu).\n";
+    // Compact constraints
+    const constraints = [];
+    if (isElderly) constraints.push('NGƯỜI CAO TUỔI (món mềm, dễ nhai, ít gia vị)');
+    if (isVegetarian) constraints.push('ĂN CHAY (không thịt/cá/hải sản)');
+    if (budget === 'tiet-kiem') constraints.push('Ngân sách TIẾT KIỆM (nguyên liệu bình dân)');
+    if (budget === 'cao-cap') constraints.push('Ngân sách CAO CẤP (nguyên liệu bổ dưỡng)');
+    const personalConstraints = constraints.length ? `Ràng buộc: ${constraints.join('; ')}.` : '';
 
-    const prompt = `Bạn là chuyên gia dinh dưỡng xuất sắc. 
-    LƯU Ý QUAN TRỌNG: Hãy kiểm tra xem "${diagnosis}" có thực sự là một tình trạng sức khỏe, tên bệnh lý, hoặc nhu cầu dinh dưỡng hợp lý đối với con người hay không. Nếu người dùng nhập những từ khóa vô nghĩa, tên vật dụng, trò đùa, chửi bới, hoặc không liên quan đến sức khỏe (VD: xe máy, điện thoại, abcxyz, tôi buồn...), hãy LẬP TỨC TRẢ VỀ JSON NÀY VÀ DỪNG LẠI: { "error": "Vui lòng nhập một tình trạng sức khỏe hoặc bệnh lý hợp lệ để AI có thể tư vấn." }
-    
-    Nếu hợp lệ, hãy xây dựng thực đơn CHUYÊN BIỆT VÀ ĐẶC THÙ MỚI LẠ dành riêng cho người có tình trạng/bệnh lý: "${diagnosis}". ${contextStr}
-    ${personalConstraints}
+    // PERF: Prompt rút gọn ~60% tokens, vẫn giữ logic validate đầu vào và cấu trúc JSON.
+    // Giảm 2 ngày → 1 ngày 4 món (UI chỉ hiển thị "gợi ý hôm nay") → AI nhanh ~2x.
+    const prompt = `Bạn là chuyên gia dinh dưỡng. Kiểm tra "${diagnosis}" có phải tình trạng/bệnh lý hợp lệ không. Nếu vô nghĩa/không liên quan sức khoẻ, trả về DUY NHẤT: {"error":"Vui lòng nhập một tình trạng sức khỏe hoặc bệnh lý hợp lệ để AI có thể tư vấn."}.
 
-    Đặc biệt lưu ý: Phân tích kỹ tình trạng bệnh và Thông tin Hồ sơ Sức khỏe (nếu có). 
-    - Nếu có dị ứng: TUYỆT ĐỐI không dùng/đề xuất nguyên liệu gây dị ứng.
-    - Nếu BMI phản ánh thừa cân/béo phì: Gợi ý thực đơn giảm calo, giảm tinh bột.
-    - TUYỆT ĐỐI TÙY BIẾN CHO TỪNG BỆNH: Ví dụ đau dạ dày thì thức ăn phải mềm, không cay nóng; gout thì không thịt đỏ, hải sản... Hãy chứng minh năng lực y khoa của bạn qua cách chọn món. Đảm bảo bệnh khác nhau thì thực đơn CẦN KHÁC BIỆT HOÀN TOÀN.
+Nếu hợp lệ, xây thực đơn 1 NGÀY gồm 4 món (Sáng, Trưa-Mặn, Trưa-Canh, Tối) CHUYÊN BIỆT cho "${diagnosis}".${contextStr} ${personalConstraints}
+Quy tắc: tránh nguyên liệu dị ứng tuyệt đối; nếu BMI cao thì giảm calo; tuỳ biến đúng bệnh (vd dạ dày: mềm, không cay; gout: không thịt đỏ/hải sản).
 
-    Tạo ra thực đơn 2 ngày. Mỗi ngày tạo ra từ 3 đến 4 món (gồm Bữa Sáng, Bữa Trưa có Mặn + Canh, Bữa Tối, Tráng miệng).
-    Yêu cầu:
-    1. Trả về ĐÚNG CẤU TRÚC JSON kèm số liệu macros, mảng alternative và general_dietary_advice: 
-    { 
-      "general_dietary_advice": ["Lời khuyên 1", "Lời khuyên 2"], 
-      "meal_plan": [ 
-        { 
-          "day": "Ngày 1", 
-          "meals": [ 
-            { 
-              "type": "Sáng", 
-              "tags": ["món canh"], // CHỈ ĐƯỢC CHỨA 1 trong các loại này: "món mặn", "món canh", "tráng miệng", hoặc "ăn vặt" (để ứng dụng lọc được mặn, canh, tráng miệng)
-              "name": "Tên món ăn cụ thể", 
-              "reason": "Giải thích chi tiết tại sao món này tốt cho bệnh lý này?", 
-              "macros": {"calories": 300, "protein": 15, "carbs": 40, "fat": 10, "sugar": 5}, 
-              "ingredients": ["100g ức gà", "50g nấm", "1 muỗng dầu oliu"],
-              "instructions": ["Bước 1: Rửa sạch nấm", "Bước 2: Áp chảo gà"],
-              "alternatives": ["Tên món thay thế 1", "Tên món thay thế 2"] 
-            } 
-          ] 
-        } 
-      ] 
-    }.
-    2. Các món ăn tạo ra phải phong phú, đúng chuẩn dinh dưỡng, ghi rõ nguyên liệu và các bước làm.
-    3. Trình bày bằng tiếng Việt tự nhiên.
-    4. CHỈ TRẢ VỀ DUY NHẤT CHUỖI JSON, KHÔNG MARKDOWN, KHÔNG TEXT DƯ THỪA.`;
+Trả về DUY NHẤT JSON đúng cấu trúc:
+{"general_dietary_advice":["lời khuyên 1","lời khuyên 2","lời khuyên 3"],"meal_plan":[{"day":"Hôm nay","meals":[{"type":"Sáng","tags":["món mặn"],"name":"Tên món","reason":"Vì sao tốt cho bệnh","macros":{"calories":300,"protein":15,"carbs":40,"fat":10,"sugar":5},"ingredients":["100g X","50g Y"],"instructions":["Bước 1...","Bước 2..."],"alternatives":["Món thay thế"]}]}]}
+
+tags CHỈ chứa 1 trong: "món mặn","món canh","tráng miệng","ăn vặt". Tiếng Việt tự nhiên. KHÔNG markdown.`;
 
     const result = await generateWithFallbackModels(prompt, { task: 'meal-plan', strictJson: true });
     const rawText = result.text();
@@ -961,11 +988,12 @@ app.post('/api/generate-meal-plan', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: cleanJson.error });
     }
 
-    // Pass raw AI data directly without hydrating from FOOD_DATABASE
-    res.json({
+    const payload = {
       general_dietary_advice: cleanJson.general_dietary_advice || [],
       meal_plan: cleanJson.meal_plan || []
-    });
+    };
+    setCached(cacheKey, payload);
+    res.json(payload);
   } catch (error) {
     console.error('MEAL PLAN ERROR:', error);
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
@@ -1031,7 +1059,7 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     Find the best medicine(s) to treat this symptom. Return ONLY JSON: { "top_match": { "name": "string", "reason": "string", "instructions": "string", "owner": "string" }, "alternatives": [{ "name": "string", "reason": "string" }], "warning": "string" }. If no match found, explain why. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels(prompt, { task: 'cabinet-search', strictJson: true });
-    res.json(parseJsonStrict(result.response.text()));
+    res.json(parseJsonStrict(result.text()));
   } catch (error) {
     console.error('AI SEARCH ERROR:', error);
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
