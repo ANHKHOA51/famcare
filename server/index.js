@@ -675,7 +675,11 @@ const generateWithFallbackModels = async (contents, options = {}) => {
   // Step 1: Try Gemini models
   for (const modelName of GEMINI_MODEL_CANDIDATES) {
     try {
-      const model = genAI.getGenerativeModel({ model: modelName });
+      // PERF: Force native JSON output for faster + safer parsing (no markdown wrapper).
+      const generationConfig = strictJson
+        ? { responseMimeType: 'application/json', temperature: 0.7 }
+        : { temperature: 0.7 };
+      const model = genAI.getGenerativeModel({ model: modelName, generationConfig });
       const result = await model.generateContent(contents);
       console.info(`[AI][Gemini][${task}] success model=${modelName}`);
       return {
@@ -1031,7 +1035,7 @@ app.post('/api/cabinet/search', authenticateToken, async (req, res) => {
     Find the best medicine(s) to treat this symptom. Return ONLY JSON: { "top_match": { "name": "string", "reason": "string", "instructions": "string", "owner": "string" }, "alternatives": [{ "name": "string", "reason": "string" }], "warning": "string" }. If no match found, explain why. All text in natural Vietnamese.`;
 
     const result = await generateWithFallbackModels(prompt, { task: 'cabinet-search', strictJson: true });
-    res.json(parseJsonStrict(result.response.text()));
+    res.json(parseJsonStrict(result.text()));
   } catch (error) {
     console.error('AI SEARCH ERROR:', error);
     if (error?.status === 429 || error?.message?.toLowerCase().includes('quota') || error?.message?.toLowerCase().includes('overload')) {
