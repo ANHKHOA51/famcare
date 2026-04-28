@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -30,12 +31,33 @@ import SignupPage from "./pages/SignupPage";
 
 const queryClient = new QueryClient();
 
+const MarqueeBanner = () => {
+  const [atTop, setAtTop] = useState(true);
+  useEffect(() => {
+    const onScroll = () => setAtTop(window.scrollY < 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!atTop) return null;
+  return (
+    <div className="bg-amber-400 text-slate-900 font-bold py-1.5 text-xs tracking-widest uppercase relative z-[40] flex overflow-hidden">
+      <div className="animate-marquee whitespace-nowrap">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <span key={i}>ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
-        <div className="bg-amber-400 text-slate-900 font-bold py-1.5 text-xs tracking-widest uppercase relative z-[9999] flex overflow-hidden">
-          <div className="animate-marquee whitespace-nowrap">
+        <MarqueeBanner />
+        <div className="hidden">
+          <div>
             ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
