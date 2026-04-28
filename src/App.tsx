@@ -56,18 +56,6 @@ const App = () => (
     <AuthProvider>
       <TooltipProvider>
         <MarqueeBanner />
-        <div className="hidden">
-          <div>
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            ĐÂY LÀ DỰ ÁN MÔN HỌC CỦA SINH VIÊN UEH &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </div>
-        </div>
         <Toaster />
         <Sonner />
         <BrowserRouter>
