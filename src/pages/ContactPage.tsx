@@ -73,7 +73,7 @@ export default function ContactPage() {
                 <PhoneCall size={20} className="text-white" />
               </div>
               <h3 className="font-bold text-lg text-[#083344] mb-2">Hotline khẩn cấp</h3>
-              <p className="text-2xl font-display font-extrabold text-[#083344] mb-1">1900 1234</p>
+              <p className="text-2xl font-display font-extrabold text-[#083344] mb-1">0388 224 736</p>
               <p className="text-xs font-bold text-[#0e7490] uppercase tracking-wider">Phục vụ 24/7 kể cả ngày lễ</p>
             </div>
 
