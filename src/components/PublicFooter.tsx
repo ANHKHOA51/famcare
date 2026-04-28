@@ -50,7 +50,7 @@ export default function PublicFooter() {
                 <Phone className="w-4 h-4 mt-0.5 text-[#0ea5e9] shrink-0" />
                 <div>
                   <p className="text-slate-400 text-xs mb-0.5">Hotline hỗ trợ (24/7)</p>
-                  <a href="tel:19001234" className="text-slate-200 font-semibold hover:text-white transition-colors text-base">1900 1234</a>
+                  <a href="tel:0388224736" className="text-slate-200 font-semibold hover:text-white transition-colors text-base">0388 224 736</a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
