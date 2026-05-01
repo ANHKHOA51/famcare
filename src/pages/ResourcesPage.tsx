@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Search, FileText, MessageSquare, ChevronRight, FileSearch, UserPlus, ShieldAlert, CreditCard } from "lucide-react";
@@ -132,11 +133,11 @@ export default function ResourcesPage() {
               
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Article 1 */}
-                <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-shadow hover:shadow-md group cursor-pointer">
+                <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-shadow hover:shadow-md group cursor-pointer block">
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=800" 
-                      alt="Dinh dưỡng" 
+                      src="/bai-1/hinh1.jpg" 
+                      alt="Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
@@ -146,13 +147,13 @@ export default function ResourcesPage() {
                       <span className="text-[0.6875rem] text-slate-400">15 Th05, 2024</span>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Phòng tránh dị ứng thức ăn cho bệnh nhân mãn tính
+                      Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
-                      Tìm hiểu các dấu hiệu nhận biết và phương pháp lựa chọn thực phẩm an toàn cho người nhạy cảm.
+                      Tương tác giữa thuốc với thực phẩm là kiến thức y khoa quan trọng, giúp điều trị hiệu quả và an toàn hơn.
                     </p>
                   </div>
-                </div>
+                </Link>
 
                 {/* Article 2 */}
                 <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-shadow hover:shadow-md group cursor-pointer">
