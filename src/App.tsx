@@ -12,6 +12,7 @@ import AboutPage from "./pages/AboutPage.tsx";
 import ResourcesPage from "./pages/ResourcesPage.tsx";
 import TermsPage from "./pages/TermsPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
+import Article1Page from "./pages/Article1Page.tsx";
 
 // App pages (protected, rendered inside AppLayout via <Outlet />)
 import DashboardPage from "./pages/DashboardPage.tsx";
@@ -57,6 +58,7 @@ const App = () => (
             <Route path="/resources" element={<ResourcesPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" element={<Article1Page />} />
 
             {/* ── Protected App Routes (nested under AppLayout) ── */}
             {/* AppLayout renders <Outlet /> for each child page.       */}
