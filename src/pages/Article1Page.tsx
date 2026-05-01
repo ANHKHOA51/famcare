@@ -13,7 +13,7 @@ interface TocItem {
 
 const tocItems: TocItem[] = [
   { id: "co-che", text: "Cơ chế tương tác của thực phẩm và thuốc", level: 2 },
-  { id: "thuc-pham-vang", text: "Nhóm thực phẩm "vàng" giúp tăng cường hiệu quả điều trị", level: 2 },
+  { id: "thuc-pham-vang", text: "Nhóm thực phẩm \u201Cvàng\u201D giúp tăng cường hiệu quả điều trị", level: 2 },
   { id: "chat-beo", text: "Nhóm thực phẩm giàu chất béo lành mạnh", level: 3 },
   { id: "do-uong-axit", text: "Các đồ uống có tính Axit", level: 3 },
   { id: "tinh-duoc", text: "Nhóm các thực phẩm có tính dược", level: 3 },
