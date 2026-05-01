@@ -33,7 +33,7 @@ const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
       className="w-full max-w-3xl rounded-xl shadow-md border border-slate-200/60 object-cover"
       loading="lazy"
     />
-    <figcaption className="mt-3 text-sm text-slate-500 font-['Source_Serif_4',_Georgia,_serif] italic">
+    <figcaption className="mt-3 text-sm text-slate-500 font-body italic">
       {alt}
     </figcaption>
   </figure>
@@ -41,10 +41,10 @@ const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
 
 const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
   <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
-    <span className="font-['Playfair_Display',_Georgia,_serif] text-5xl font-black text-blue-200/60 leading-none -mt-1 shrink-0">
+    <span className="font-display text-5xl font-black text-blue-200/60 leading-none -mt-1 shrink-0">
       {number}
     </span>
-    <h2 className="font-['Playfair_Display',_Georgia,_serif] text-2xl sm:text-[1.7rem] font-bold text-slate-900 leading-snug border-b-2 border-amber-500 pb-2">
+    <h2 className="font-display text-2xl sm:text-[1.7rem] font-bold text-slate-900 leading-snug border-b-2 border-amber-500 pb-2">
       {title}
     </h2>
   </div>
@@ -54,10 +54,10 @@ const AvoidListItem = ({ icon, title, desc }: { icon: string, title: React.React
   <li className="flex gap-4 bg-red-50/50 border-l-[3px] border-red-500 p-5 rounded-r-xl">
     <span className="text-2xl shrink-0 mt-0.5">{icon}</span>
     <div>
-      <strong className="block text-red-700 font-['Playfair_Display',_Georgia,_serif] text-lg mb-1.5">
+      <strong className="block text-red-700 font-display text-lg mb-1.5">
         {title}
       </strong>
-      <p className="text-[0.95rem] text-slate-700 leading-relaxed m-0 font-['Source_Serif_4',_Georgia,_serif]">
+      <p className="text-[0.95rem] text-slate-700 leading-relaxed m-0 font-body">
         {desc}
       </p>
     </div>
@@ -94,15 +94,15 @@ export default function Article1Page() {
   };
 
   return (
-    <div className="min-h-screen bg-sky-50 selection:bg-amber-200 selection:text-amber-900 font-['Source_Serif_4',_Georgia,_serif] pb-10">
+    <div className="min-h-screen bg-sky-50 selection:bg-amber-200 selection:text-amber-900 font-body pb-10">
       <PublicNavbar />
 
       <header className="bg-slate-900 pt-16 pb-12 sm:pt-20 sm:pb-16 relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 relative z-10">
-          <div className="inline-block font-['Source_Serif_4',_Georgia,_serif] text-xs font-semibold tracking-[0.2em] uppercase text-amber-500 border border-amber-600/50 px-3.5 py-1.5 mb-6 rounded-sm">
+          <div className="inline-block font-body text-xs font-semibold tracking-[0.2em] uppercase text-amber-500 border border-amber-600/50 px-3.5 py-1.5 mb-6 rounded-sm">
             Sức khỏe &amp; Dược lý
           </div>
-          <h1 className="font-['Playfair_Display',_Georgia,_serif] text-3xl sm:text-5xl lg:text-[3.2rem] font-black text-amber-50 leading-[1.2] mb-5 tracking-tight">
+          <h1 className="font-display text-3xl sm:text-5xl lg:text-[3.2rem] font-black text-amber-50 leading-[1.2] mb-5 tracking-tight">
             Lựa chọn thực phẩm <em className="text-amber-500 italic font-medium">đúng</em> để phát huy tác dụng thuốc
           </h1>
           <p className="text-[13px] text-slate-400 tracking-wide uppercase font-sans">
@@ -160,7 +160,7 @@ export default function Article1Page() {
           Không phải mọi tương tác thực phẩm với thuốc đều có hại. Với nhiều loại thuốc, ăn đúng loại thực phẩm, đúng thời điểm chính là "chìa khóa" giúp thuốc phát huy tối đa công dụng. Dưới đây là những nhóm thực phẩm được ghi nhận có tác dụng hỗ trợ điều trị rõ rệt:
         </p>
 
-        <h3 id="chat-beo" className="font-['Playfair_Display',_Georgia,_serif] text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
+        <h3 id="chat-beo" className="font-display text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
           # Nhóm thực phẩm giàu chất béo lành mạnh
         </h3>
         <ArticleImage src="/bai-1/hinh2.jpg" alt="Các loại hạt, bơ giàu chất béo tốt" />
@@ -168,7 +168,7 @@ export default function Article1Page() {
           Các nhà nghiên cứu đã chỉ ra chất béo kích thích tiết mật, giúp hòa tan thuốc Liphophilic. Đối với các loại thuốc trị nhiễm ký sinh trùng như Albendazole hay thuốc trị nấm Griseofulvin, một bữa ăn giàu chất béo có thể làm tăng khả năng hấp thụ thuốc lên gấp nhiều lần. Tương tự, thuốc điều trị mụn Isotretinoin cũng phát huy tác dụng tốt hơn khi dùng chung với bữa ăn.
         </p>
 
-        <h3 id="do-uong-axit" className="font-['Playfair_Display',_Georgia,_serif] text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
+        <h3 id="do-uong-axit" className="font-display text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
           # Các đồ uống có tính Axit
         </h3>
         <p className="mb-5">
@@ -179,12 +179,12 @@ export default function Article1Page() {
         {/* Pull quote */}
         <div className="bg-slate-900 text-amber-50 my-12 p-8 sm:p-10 rounded-xl relative shadow-lg">
           <Quote className="absolute top-6 left-6 text-amber-500/40 w-16 h-16" strokeWidth={1} />
-          <p className="font-['Playfair_Display',_Georgia,_serif] text-xl sm:text-2xl italic m-0 pl-10 leading-relaxed z-10 relative">
+          <p className="font-display text-xl sm:text-2xl italic m-0 pl-10 leading-relaxed z-10 relative">
             "Tương tác thực phẩm–thuốc có thể vô tình làm giảm hoặc tăng tác dụng của thuốc, dẫn đến thất bại điều trị hoặc gia tăng độc tính – ảnh hưởng bất lợi đến chăm sóc bệnh nhân."
           </p>
         </div>
 
-        <h3 id="tinh-duoc" className="font-['Playfair_Display',_Georgia,_serif] text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
+        <h3 id="tinh-duoc" className="font-display text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
           # Nhóm các thực phẩm có tính dược
         </h3>
         <p className="mb-5">
@@ -239,13 +239,13 @@ export default function Article1Page() {
 
         {/* Conclusion Box */}
         <div id="ket-luan" className="bg-slate-900 text-slate-100 p-8 sm:p-12 rounded-2xl scroll-mt-28 relative">
-          <h2 className="font-['Playfair_Display',_Georgia,_serif] text-3xl font-bold text-amber-400 mb-5 pb-4 border-b border-white/10">
+          <h2 className="font-display text-3xl font-bold text-amber-400 mb-5 pb-4 border-b border-white/10">
             Kết luận
           </h2>
-          <p className="text-[1.05rem] text-slate-300 mb-4 font-['Source_Serif_4',_Georgia,_serif]">
+          <p className="text-[1.05rem] text-slate-300 mb-4 font-body">
             Hiểu đúng về tương tác giữa thực phẩm và thuốc không chỉ giúp bạn dùng thuốc hiệu quả hơn mà còn bảo vệ sức khỏe mỗi ngày. 
           </p>
-          <p className="text-[1.05rem] text-slate-300 font-['Source_Serif_4',_Georgia,_serif]">
+          <p className="text-[1.05rem] text-slate-300 font-body">
             Thay vì phải tự ghi nhớ từng tương tác phức tạp, giờ đây bạn có thể chủ động chăm sóc bản thân với gợi ý thực đơn an toàn, được cá nhân hóa theo các đơn thuốc bạn đang dùng!
           </p>
           
