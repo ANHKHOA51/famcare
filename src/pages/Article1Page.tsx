@@ -106,7 +106,7 @@ export default function Article1Page() {
             Lựa chọn thực phẩm <em className="text-amber-500 italic font-medium">đúng</em> để phát huy tác dụng thuốc
           </h1>
           <p className="text-[13px] text-slate-400 tracking-wide uppercase font-sans">
-            Biên soạn dựa trên nghiên cứu của <span className="text-amber-500 font-medium">Schmidt &amp; Dalhoff</span> · Tạp chí Drugs
+            Biên soạn dựa trên nghiên cứu của <span className="text-amber-500 font-medium">Schmidt &amp; Dalhoff</span> (Tạp chí Drugs, 2002) cùng các cập nhật y khoa từ Tạp chí Lifestyle Medicine (2017) và Tạp chí European Pharmaceutical Science (2019)
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-1bg-gradient-to-r from-red-800 via-amber-500 to-emerald-700 h-1 opacity-90"></div>
@@ -116,7 +116,7 @@ export default function Article1Page() {
         
         {/* Lead text */}
         <div className="text-[1.2rem] sm:text-[1.3rem] italic text-slate-600 border-l-4 border-amber-500 pl-6 mb-12 py-1">
-          Bạn có biết rằng cùng một viên thuốc, nhưng uống cùng thức ăn hay uống lúc đói bụng có thể tạo ra sự khác biệt rất lớn về hiệu quả điều trị? Tương tác giữa thực phẩm và thuốc là một trong những yếu tố thường bị bỏ qua nhất – nhưng lại có thể quyết định thành bại của cả một liệu trình.
+          Tương tác giữa thuốc với thực phẩm là một kiến thức y khoa quan trọng, có thể tạo ra sự khác biệt giữa việc điều trị thành công và thất bại, thậm chí giữa an toàn và nguy hiểm. Hiểu đúng về cơ chế này, người chăm sóc và cả bệnh nhân có thể biến một bữa ăn thông thường thành một công cụ điều trị hiệu quả. Cùng chúng tôi tìm hiểu ngay bây giờ!
         </div>
 
         {/* Table of Contents */}
@@ -145,10 +145,10 @@ export default function Article1Page() {
         <SectionHeading number="01" id="co-che" title="Cơ chế tương tác của thực phẩm và thuốc" />
         
         <p className="mb-5">
-          Thực phẩm không chỉ là nguồn dinh dưỡng mà còn có thể tương tác với thuốc, từ đó làm tăng hiệu quả điều trị hoặc ngược lại gây ra những tác dụng phụ không mong muốn. Các nhà khoa học phân loại các tương tác thành hai nhóm chính: <strong>tương tác dược động học</strong> (ảnh hưởng đến quá trình hấp thụ, chuyển hóa và đào thải thuốc) và <strong>tương tác dược lực học</strong> (tác động trực tiếp vào cơ chế hoạt động của thuốc trong cơ thể).
+          Thực phẩm không chỉ là nguồn dinh dưỡng mà còn có thể tương tác với thuốc, từ đó làm tăng hiệu quả điều trị hoặc ngược lại gây ra những tác dụng phụ không mong muốn. Các nhà khoa học phân loại các tương tác thành hai nhóm chính: tương tác dược động học (ảnh hưởng đến quá trình hấp thụ, chuyển hóa và đào thải thuốc) và tương tác dược lực học (tác động trực tiếp vào cơ chế hoạt động của thuốc trong cơ thể).
         </p>
         <p className="mb-8">
-          Các đặc điểm bữa ăn, bao gồm hàm lượng dinh dưỡng, thời điểm ăn so với giờ uống thuốc, đều có thể ảnh hưởng đến mức độ tương tác. Các nhà nghiên cứu cũng nhấn mạnh rằng không thể dự đoán chính xác tương tác thực phẩm với thuốc nếu chỉ dựa vào tính chất hóa lý của thuốc nói chung, cần có các nghiên cứu lâm sàng cụ thể cho từng loại thuốc.
+          Các đặc điểm bữa ăn, bao gồm hàm lượng dinh dưỡng, thời điểm ăn so với giờ uống thuốc, đều có thể ảnh hưởng đến mức độ tương tác. Các nhà nghiên cứu cũng nhấn mạnh rằng không thể dự đoán chính xác tương tác thực phẩm - thuốc nếu chỉ dựa vào tính chất hóa lý của thuốc nói chung, cần có các nghiên cứu lâm sàng cho từng loại thuốc.
         </p>
 
         <ArticleImage src="/bai-1/hinh1.jpg" alt="Mô phỏng cơ chế làm việc của thuốc trong dạ dày" />
@@ -157,19 +157,19 @@ export default function Article1Page() {
         <SectionHeading number="02" id="thuc-pham-vang" title="Nhóm thực phẩm &quot;vàng&quot; giúp tăng cường hiệu quả điều trị" />
         
         <p className="mb-8">
-          Không phải mọi tương tác thực phẩm với thuốc đều có hại. Với nhiều loại thuốc, ăn đúng loại thực phẩm, đúng thời điểm chính là "chìa khóa" giúp thuốc phát huy tối đa công dụng. Dưới đây là những nhóm thực phẩm được ghi nhận có tác dụng hỗ trợ điều trị rõ rệt:
+          Không phải mọi tương tác thực phẩm - thuốc đều có hại. Với nhiều loại thuốc, ăn đúng loại thực phẩm, đúng thời điểm chính là "chìa khóa" giúp thuốc phát huy tối đa công dụng. Dưới đây là những nhóm thực phẩm được ghi nhận có tác dụng hỗ trợ điều trị rõ rệt:
         </p>
 
         <h3 id="chat-beo" className="font-display text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
-          # Nhóm thực phẩm giàu chất béo lành mạnh
+          Nhóm thực phẩm giàu chất béo lành mạnh
         </h3>
         <ArticleImage src="/bai-1/hinh2.jpg" alt="Các loại hạt, bơ giàu chất béo tốt" />
         <p className="mb-5">
-          Các nhà nghiên cứu đã chỉ ra chất béo kích thích tiết mật, giúp hòa tan thuốc Liphophilic. Đối với các loại thuốc trị nhiễm ký sinh trùng như Albendazole hay thuốc trị nấm Griseofulvin, một bữa ăn giàu chất béo có thể làm tăng khả năng hấp thụ thuốc lên gấp nhiều lần. Tương tự, thuốc điều trị mụn Isotretinoin cũng phát huy tác dụng tốt hơn khi dùng chung với bữa ăn.
+          Các nhà nghiên cứu đã chỉ ra chất béo kích thích tiết mật, giúp hòa tan thuốc Liphophilic. Đối với các loại thuốc trị nhiễm ký sinh trùng như Albendazole hay thuốc trị nấm Griseofulvin, một bữa ăn giàu chất béo có thể làm tăng khả năng hấp thụ thuốc lên gấp nhiều lần. Tương tự, thuốc điều trị mụn Isotretinoin cũng phát huy tác dụng tốt hơn khi dùng chung với bữa ăn. Đồng thời, các nhóm chất béo cũng làm albendazole tăng tới 295-299%; saquinavir tăng 600-1800% so với khi đói.
         </p>
 
         <h3 id="do-uong-axit" className="font-display text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
-          # Các đồ uống có tính Axit
+          Các đồ uống có tính Axit
         </h3>
         <p className="mb-5">
           Đối với các bệnh nhân có vấn đề về tiết axit dạ dày (viêm dạ dày), môi trường axit thấp sẽ ngăn cản sự hòa tan của một số thuốc cơ bản yếu. Uống các loại nước giải khát có tính axit như Cola cùng với Itraconazole hoặc Ketoconazole có thể tăng khả năng hấp thụ thuốc từ 38% đến 220% ở những bệnh nhân này.
@@ -185,42 +185,61 @@ export default function Article1Page() {
         </div>
 
         <h3 id="tinh-duoc" className="font-display text-xl font-bold text-amber-800 mt-10 mb-3 scroll-mt-28">
-          # Nhóm các thực phẩm có tính dược
+          Nhóm các thực phẩm có tính dược
         </h3>
         <p className="mb-5">
-          Một số thực phẩm có tính dược tự nhiên khi phối hợp đúng cách có thể hỗ trợ hiệu quả của thuốc chính. Việc sử dụng các thực phẩm chức catechin (EGCG) thường có trong trà xanh, trà olong, có thể làm tăng nồng độ Tacrolimus trong huyết tương. Nghệ cũng là một thực phẩm hữu hiệu giúp giảm độc tính của các thuốc hóa trị mạnh như Cisplatin và Methotrexate.
+          Một số thực phẩm có tính dược tự nhiên khi phối hợp đúng cách có thể hỗ trợ hiệu quả của thuốc chính. Theo Choi and Chang, 2017, việc sử dụng các thực phẩm chức catechin (EGCG) thường có trong trà xanh, trà olong, có thể làm tăng nồng độ Tacrolimus trong huyết tương, hỗ trợ duy trì nồng độ thuốc cần thiết cho bệnh nhân ghép tạng. Nghệ cũng là một thực phẩm cần bổ sung trong bữa ăn của người bệnh. Các nhà nghiên cứu cho rằng việc phối hợp nghệ có thể giúp giảm độc tính và tác dụng phụ của các thuốc hóa trị mạnh như Cisplatin và Methotrexate cho các bệnh nhân ung thư.
         </p>
         <ArticleImage src="/bai-1/hinh4.jpg" alt="Trà xanh và nghệ nghệ tươi" />
 
         {/* Section 3 */}
         <div className="clear-both"></div>
-        <SectionHeading number="03" id="thuc-pham-tranh" title="Một vài thực phẩm cần tránh trong quá trình điều trị" />
+        <SectionHeading number="03" id="thuc-pham-tranh" title="Một vài thực phẩm cần tránh trong quá trình điều trị thuốc" />
         
         <p className="mb-8">
-          Bên cạnh những thực phẩm hỗ trợ điều trị, một số loại có thể làm giảm đáng kể hiệu quả của thuốc hoặc thậm chí gây ra phản ứng cực kỳ nguy hiểm:
+          Bên cạnh những thực phẩm hỗ trợ điều trị, một số loại thực phẩm có thể làm giảm đáng kể hiệu quả của thuốc hoặc thậm chí gây ra các phản ứng nguy hiểm đe dọa tính mạng. Dưới đây là những thực phẩm quan trọng cần lưu ý:
         </p>
 
-        <ul className="flex flex-col gap-4 mb-10">
-          <AvoidListItem 
-            icon="🍊" 
-            title={<span>Nước bưởi <span className="text-slate-500 font-sans text-sm font-normal ml-1 border pl-2 pr-2 rounded-full hidden sm:inline-block">Grapefruit</span></span>}
-            desc="Chứa chất ức chế mạnh enzyme CYP3A4, làm tăng sinh khả dụng của felodipine lên tới 284%, statins (hạ mỡ máu) lên trên 1000%. Cần tránh hoàn toàn khi dùng thuốc huyết áp và tim mạch."
-          />
-          <AvoidListItem 
-            icon="🥛" 
-            title="Sữa và các chế phẩm từ sữa"
-            desc="Canxi tạo thành phức hợp không hòa tan, ảnh hưởng đến nhóm kháng sinh Tetracycline và Quinolone. Tránh dùng sữa trong vòng 2 giờ trước và sau khi uống thuốc."
-          />
-          <AvoidListItem 
-            icon="🥦" 
-            title="Rau xanh giàu vitamin K"
-            desc="Làm giảm tác dụng của các thuốc chống đông máu như Warfarin do đặc tính kích thích đông máu của nó. Lưu ý ăn lượng vừa phải và ổn định."
-          />
-          <AvoidListItem 
-            icon="🍷" 
-            title="Đồ uống có cồn"
-            desc="Tăng nguy hiểm với các nhóm thuốc an thần, trầm cảm. Uống cùng các loại giảm đau có thể kích ứng dạ dày nghiêm trọng."
-          />
+        <ul className="flex flex-col gap-10 mb-10 mt-6">
+          <li>
+            <h3 id="nuoc-buoi" className="font-display text-xl font-bold text-red-800 mb-3 flex items-center gap-2 scroll-mt-28">
+              <span className="text-2xl">🍊</span> Nước bưởi, nguy hiểm với thuốc tim mạch và hạ lipid
+            </h3>
+            <p className="mb-5">
+              Các nhà nghiên cứu đã chỉ ra, nước bưởi chất ức chế mạnh enzyme CYP3A4, làm tăng sinh khả dụng của felodipine lên tới 284%, lovastatin lên tới 1.400%, simvastatin lên tới 1.500%. Với terfenadine (một thuốc kháng histamine), tương tác này đã gây ra tử vong ở người trẻ khỏe mạnh. Do đó, cần tránh hoàn toàn nước bưởi khi sử dụng các thuốc statin, thuốc chẹn kênh canxi thường được dùng khi điều trị cao huyết áp và bệnh tim mạch.
+            </p>
+            <ArticleImage src="/bai-1/hinh5.jpg" alt="Nước bưởi và rủi ro với thuốc tim mạch" />
+          </li>
+
+          <li>
+            <h3 id="sua" className="font-display text-xl font-bold text-red-800 mb-3 flex items-center gap-2 scroll-mt-28">
+              <span className="text-2xl">🥛</span> Sữa và các sản phẩm từ sữa, vô hiệu hóa thuốc kháng sinh
+            </h3>
+            <p className="mb-5">
+              Sữa và các sản phẩm chế biến từ sữa như phô mai có nhiều canxi. Nó có thể liên kết với sắt tạo thành các phức hợp không hòa tan, ảnh hưởng đến khả năng hấp thu của một số nhóm thuốc kháng sinh nhóm Tetracycline và Quinolone (như Ciprofloxacin, Norfloxacin), làm giảm đáng kể sự hấp thụ thuốc. Thậm chí một lượng nhỏ sữa pha vào trà hay cà phê cũng đủ làm giảm 49% sinh khả dụng của tetracycline. Do đó, tránh dùng sữa trong vòng 2 giờ trước và sau khi uống các thuốc này để tránh làm mất khả năng điều trị của thuốc.
+            </p>
+            <ArticleImage src="/bai-1/hinh6.jpg" alt="Sữa, phomai và nguy cơ vô hiệu hóa thuốc kháng sinh" />
+          </li>
+
+          <li>
+            <h3 id="rau-xanh" className="font-display text-xl font-bold text-red-800 mb-3 flex items-center gap-2 scroll-mt-28">
+              <span className="text-2xl">🥦</span> Rau xanh giàu vitamin K, ảnh hưởng đến thuốc chống đông máu
+            </h3>
+            <p className="mb-5">
+              Thuốc chống đông máu như warfarin giúp ngăn ngừa hình thành cục máu đông, trong khi vitamin K lại đóng vai trò hỗ trợ quá trình đông máu. Vì vậy, nếu ăn nhiều thực phẩm giàu vitamin K như bắp cải, bông cải xanh, rau bina hay gan động vật, tác dụng của thuốc có thể bị giảm đi. Tuy nhiên, không cần phải kiêng hoàn toàn những thực phẩm này; điều quan trọng là duy trì chế độ ăn ổn định, không tăng hoặc giảm đột ngột lượng vitamin K mỗi ngày. Việc ăn quá nhiều rau giàu vitamin K trong thời gian dài có thể khiến thuốc kém hiệu quả và cần điều chỉnh liều, còn ăn một lượng bình thường và đều đặn thì vẫn an toàn.
+            </p>
+            <ArticleImage src="/bai-1/hinh7.jpg" alt="Rau xanh nhiều vitamin K" />
+          </li>
+
+          <li>
+            <h3 id="do-uong-con" className="font-display text-xl font-bold text-red-800 mb-3 flex items-center gap-2 scroll-mt-28">
+              <span className="text-2xl">🍷</span> Đồ uống có cồn
+            </h3>
+            <p className="mb-5">
+              Rượu có thể gây nhiều tương tác nguy hiểm khi dùng chung với thuốc, nên cần đặc biệt cẩn trọng. Với các thuốc tác động lên thần kinh như thuốc an thần, giảm đau (có codeine hoặc tramadol), thuốc chống trầm cảm hay thuốc dị ứng, rượu sẽ làm tăng cảm giác buồn ngủ, giảm phản xạ, rất nguy hiểm khi lái xe hoặc vận hành máy móc. Ngoài ra, uống rượu cùng thuốc giảm đau, kháng viêm hoặc aspirin có thể gây kích ứng dạ dày và tăng nguy cơ tổn thương gan. Đặc biệt, khi dùng metronidazole, tuyệt đối không uống rượu trong thời gian dùng thuốc và ít nhất 48 giờ sau đó, vì có thể gây phản ứng nghiêm trọng như buồn nôn, đỏ mặt, tim đập nhanh, tụt huyết áp và khó thở.
+            </p>
+            <ArticleImage src="/bai-1/hinh8.jpg" alt="Thức uống chứa cồn" />
+          </li>
         </ul>
 
         {/* Tip Box */}
@@ -246,15 +265,15 @@ export default function Article1Page() {
             Hiểu đúng về tương tác giữa thực phẩm và thuốc không chỉ giúp bạn dùng thuốc hiệu quả hơn mà còn bảo vệ sức khỏe mỗi ngày. 
           </p>
           <p className="text-[1.05rem] text-slate-300 font-body">
-            Thay vì phải tự ghi nhớ từng tương tác phức tạp, giờ đây bạn có thể chủ động chăm sóc bản thân với gợi ý thực đơn an toàn, được cá nhân hóa theo các đơn thuốc bạn đang dùng!
+            Chủ động chăm sóc sức khỏe của mình ngay từ bữa ăn hằng ngày với tính năng gợi ý thực đơn cá nhân hóa theo tình trạng sức khỏe và thuốc đang sử dụng!
           </p>
           
           <div className="mt-10 sm:mt-12 flex justify-center">
             <Link
               to="/app/meal-plan"
-              className="inline-flex items-center justify-center gap-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold font-sans text-base px-8 py-4 sm:py-5 rounded-full shadow-lg transition-all duration-200 group w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold font-sans text-base px-8 py-4 sm:py-5 rounded-full shadow-lg transition-all duration-200 group w-full sm:w-auto"
             >
-              Phân tích thực đơn cùng AI FamCare
+              Trải nghiệm ngay AI Nutrition của FamCare
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
