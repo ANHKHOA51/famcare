@@ -58,6 +58,7 @@ const App = () => (
             <Route path="/resources" element={<ResourcesPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" element={<Article1Page />} />
 
             {/* ── Protected App Routes (nested under AppLayout) ── */}
             {/* AppLayout renders <Outlet /> for each child page.       */}
