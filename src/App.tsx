@@ -12,6 +12,7 @@ import AboutPage from "./pages/AboutPage.tsx";
 import ResourcesPage from "./pages/ResourcesPage.tsx";
 import TermsPage from "./pages/TermsPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
+import Article1Page from "./pages/Article1Page.tsx";
 
 // App pages (protected, rendered inside AppLayout via <Outlet />)
 import DashboardPage from "./pages/DashboardPage.tsx";
