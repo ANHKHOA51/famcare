@@ -28,6 +28,7 @@ import ComingSoonPage from "./pages/ComingSoonPage.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* ── Public Routes ── */}
             <Route path="/" element={<Index />} />
