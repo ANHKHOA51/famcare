@@ -60,13 +60,6 @@ export default function Article2Page() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    // SEO
-    document.title = "Cách đọc đơn thuốc giấy - FamCare Medical Blog";
-
-    // Increment view count
-    fetch('/api/articles/cach-doc-don-thuoc-giay/view', { method: 'POST' })
-      .catch(err => console.error("Failed to track view:", err));
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter(e => e.isIntersecting);
@@ -117,7 +110,7 @@ export default function Article2Page() {
         <div className="mb-14">
           <p className="text-[1.15rem] leading-[1.9] text-slate-700 font-body text-justify italic border-l-[3px] border-amber-500 bg-gradient-to-r from-amber-50/50 to-transparent p-5 sm:py-6 sm:px-7 rounded-r-2xl">
             <span className="font-bold text-slate-900 tracking-wide uppercase text-xs mr-3 not-italic">PHÂN TÍCH CHUYÊN SÂU &mdash;</span>
-            Việc đọc đơn thuốc giấy tưởng chừng là bước đơn giản sau khi rời phòng khám, nhưng thực tế lại tiềm ẩn không ít rào cản nếu chúng ta không có chuyên môn y khoa sâu rộng. Các ký hiệu chuyên ngành phức tạp và cách trình bày đặc thù của ngành y đôi khi dẫn đến những hiểu lầm không đáng có về liều lượng hay cách dùng. Bài viết này sẽ chỉ ra 5 sai lầm thường gặp nhất và hướng dẫn bạn cách số hóa thông tin cực kỳ đơn giản. Hãy cùng FamCare nâng tầm quản lý sức khỏe gia đình thảnh thơi và an toàn hơn ngay hôm nay!
+            Việc <strong>đọc đơn thuốc giấy</strong> tưởng chừng là bước đơn giản sau khi rời phòng khám, nhưng thực tế lại tiềm ẩn không ít rào cản nếu chúng ta không có chuyên môn y khoa sâu rộng. Các ký hiệu chuyên ngành phức tạp và cách trình bày đặc thù của ngành y đôi khi dẫn đến những hiểu lầm không đáng có về liều lượng hay cách dùng. Bài viết này sẽ chỉ ra 5 sai lầm thường gặp nhất và hướng dẫn bạn cách số hóa thông tin cực kỳ đơn giản. Hãy cùng <strong>FamCare</strong> nâng tầm quản lý sức khỏe gia đình thảnh thơi và an toàn hơn ngay hôm nay!
           </p>
         </div>
 
@@ -227,7 +220,7 @@ export default function Article2Page() {
         {/* Section 3 */}
         <SectionHeading number="03" id="sai-lam" title="5 sai lầm thường gặp khi tự đọc đơn thuốc giấy tại nhà" />
         <p className="text-justify mb-5">
-          Khi thiếu đi sự hỗ trợ từ các công cụ thông minh, việc tự đọc đơn thuốc giấy tại nhà thường dễ mắc phải những sai sót sau đây, gây ảnh hưởng đến tính an toàn trong điều trị.
+          Khi thiếu đi sự hỗ trợ từ các công cụ thông minh, việc tự <strong>đọc đơn thuốc giấy</strong> tại nhà thường dễ mắc phải những sai sót sau đây, gây ảnh hưởng đến tính an toàn trong điều trị.
         </p>
 
         <SubHeading id="nham-lieu" title="3.1 Nhầm lẫn liều lượng do ký hiệu đơn vị" />
@@ -262,19 +255,19 @@ export default function Article2Page() {
         {/* Section 4 */}
         <SectionHeading number="04" id="famcare" title="FamCare: Giải pháp số hóa đơn thuốc thông minh cho người bận rộn" />
         <p className="text-justify mb-5">
-          Để khắc phục những hạn chế của đơn thuốc truyền thống, FamCare mang đến tính năng <strong className="text-sky-700">Máy quét đơn thuốc AI</strong>. Đây là công cụ đắc lực giúp bạn chuyển đổi những dòng chữ tay phức tạp thành dữ liệu số rõ ràng, minh bạch.
+          Để khắc phục những hạn chế của đơn thuốc truyền thống, <strong>FamCare</strong> mang đến tính năng <strong className="text-sky-700">Máy quét đơn thuốc AI</strong>. Đây là công cụ đắc lực giúp bạn chuyển đổi những dòng chữ tay phức tạp thành dữ liệu số rõ ràng, minh bạch.
         </p>
         <p className="text-justify mb-5">
-          Thay vì loay hoay tự đoán nội dung, bạn chỉ cần quét ảnh đơn thuốc qua FamCare. Công nghệ AI sẽ hỗ trợ nhận diện tên thuốc và chỉ dẫn y tế, sau đó lưu trữ an toàn trong hệ thống. Điều này giúp bạn dễ dàng tra cứu đơn thuốc bất cứ khi nào cần mà không sợ thất lạc hay hư hỏng giấy tờ.
+          Thay vì loay hoay tự đoán nội dung, bạn chỉ cần quét ảnh đơn thuốc qua <strong>FamCare</strong>. Công nghệ AI sẽ hỗ trợ nhận diện tên thuốc và chỉ dẫn y tế, sau đó lưu trữ an toàn trong hệ thống. Điều này giúp bạn dễ dàng <strong>tra cứu đơn thuốc</strong> bất cứ khi nào cần mà không sợ thất lạc hay hư hỏng giấy tờ.
         </p>
         <p className="text-justify mb-8">
-          Đặc biệt, dữ liệu này sẽ được đồng bộ trực tiếp vào <strong>Tủ thuốc AI</strong> và <strong>Hồ sơ gia đình</strong>. Hệ thống sẽ tự động nhắc nhở khi thuốc sắp hết và đưa ra các cảnh báo về tương tác thực phẩm thông qua tính năng <em>AI Nutrition</em>, giúp hành trình chăm sóc sức khỏe của bạn trở nên tinh tế và thảnh thơi hơn bao giờ hết.
+          Đặc biệt, dữ liệu này sẽ được đồng bộ trực tiếp vào <strong>Tủ thuốc AI</strong> và <strong>Hồ sơ gia đình</strong>. Hệ thống sẽ tự động nhắc nhở khi thuốc sắp hết và đưa ra các cảnh báo về tương tác thực phẩm thông qua tính năng <em><strong>AI Nutrition</strong></em>, giúp hành trình chăm sóc sức khỏe của bạn trở nên tinh tế và thảnh thơi hơn bao giờ hết.
         </p>
 
         {/* Section 5: Conclusion */}
         <SectionHeading number="05" id="ket-bai" title="Kết bài" />
         <p className="text-justify mb-10">
-          Tóm lại, việc tự đọc đơn thuốc giấy mà không có sự hỗ trợ của công nghệ hiện đại có thể dẫn đến những sai sót không đáng có trong quá trình chăm sóc sức khỏe. Với sự đồng hành của FamCare, bạn hoàn toàn có thể số hóa mọi dữ liệu y tế một cách nhanh chóng và chính xác. Hãy để công nghệ thay bạn quản lý những con số phức tạp, để bạn có thêm thời gian trọn vẹn bên gia đình.
+          Tóm lại, việc tự <strong>đọc đơn thuốc giấy</strong> mà không có sự hỗ trợ của công nghệ hiện đại có thể dẫn đến những sai sót không đáng có trong quá trình chăm sóc sức khỏe. Với sự đồng hành của <strong>FamCare</strong>, bạn hoàn toàn có thể số hóa mọi dữ liệu y tế một cách nhanh chóng và chính xác. Hãy để công nghệ thay bạn quản lý những con số phức tạp, để bạn có thêm thời gian trọn vẹn bên gia đình.
         </p>
 
         {/* CTA Block */}
@@ -302,14 +295,14 @@ export default function Article2Page() {
 
         {/* Footer info box */}
         <div className="border border-slate-200/60 rounded-xl p-6 bg-slate-50/50 text-[0.85rem] text-slate-500 font-sans leading-relaxed">
-          <p className="text-justify font-semibold text-slate-700 mb-2">Bài viết và hình ảnh được thực hiện bởi FamCare.</p>
+          <p className="text-justify font-semibold text-slate-700 mb-2">Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong>.</p>
           <p className="text-justify mb-4">
             <em>Lưu ý:</em> Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ về cách xử lý liều thuốc cụ thể của bạn.
           </p>
           <div className="h-[1px] w-12 bg-slate-300 mb-4"></div>
-          <p className="text-justify font-bold text-slate-800">FamCare - Nền tảng y tế thông minh - Chăm sóc gia đình từ xa.</p>
-          <p>Website: <a href="https://famcare.site/" className="text-blue-600 hover:underline">https://famcare.site/</a></p>
-          <p>Email: <a href="mailto:famcare.support@gmail.com" className="text-blue-600 hover:underline">famcare.support@gmail.com</a></p>
+          <p className="text-justify font-bold text-slate-800"><strong>FamCare</strong> - Nền tảng y tế thông minh - Chăm sóc gia đình từ xa.</p>
+          <p>Website: <a href="https://famcare.site/" className="text-blue-600 hover:underline">https://<strong>famcare</strong>.site/</a></p>
+          <p>Email: <a href="mailto:famcare.support@gmail.com" className="text-blue-600 hover:underline"><strong>famcare</strong>.support@gmail.com</a></p>
         </div>
 
       </main>

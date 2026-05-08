@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Search, FileText, MessageSquare, ChevronRight, FileSearch, UserPlus, ShieldAlert, CreditCard, User, Calendar, Eye } from "lucide-react";
 
 export default function ResourcesPage() {
-  const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    fetch('/api/articles/views')
-      .then(res => res.json())
-      .then(data => setViewCounts(data))
-      .catch(err => console.error("Failed to fetch views:", err));
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <PublicNavbar />
@@ -162,11 +153,7 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
-                      <span className="text-[0.6875rem] text-slate-400">18 Th05, 2026</span>
-                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
-                        <Eye size={14} className="text-slate-400" />
-                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['quen-uong-thuoc-va-cach-xu-ly'] || 0}</span>
-                      </div>
+                      <span className="text-[0.6875rem] text-slate-400">05 Th05, 2026</span>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
                       Quên Uống Thuốc Thì Có Sao Không? Hướng Dẫn Xử Lý Đúng
@@ -176,7 +163,6 @@ export default function ResourcesPage() {
                     </p>
                   </div>
                 </Link>
-
 
                 {/* Article 1 */}
                 <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
@@ -190,17 +176,13 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-[#ccfbf1] text-teal-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Dinh dưỡng</span>
-                      <span className="text-[0.6875rem] text-slate-400">15 Th05, 2026</span>
-                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
-                        <Eye size={14} className="text-slate-400" />
-                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc'] || 0}</span>
-                      </div>
+                      <span className="text-[0.6875rem] text-slate-400">01 Th05, 2026</span>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
                       Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
-                      Tương tác giữa thuốc với thực phẩm là kiến thức y khoa quan trọng.
+                      Tương tác giữa thuốc với thực phẩm là kiến thức y khoa quan trọng, giúp điều trị hiệu quả và an toàn hơn.
                     </p>
                   </div>
                 </Link>
@@ -217,17 +199,13 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
-                      <span className="text-[0.6875rem] text-slate-400">16 Th05, 2026</span>
-                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
-                        <Eye size={14} className="text-slate-400" />
-                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['cach-doc-don-thuoc-giay'] || 0}</span>
-                      </div>
+                      <span className="text-[0.6875rem] text-slate-400">08 Th05, 2026</span>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
                       Cách Đọc Đơn Thuốc Giấy: 5 Sai Lầm Phổ Biến Và Cách Xử Lý
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
-                      Việc đọc đơn thuốc giấy tiềm ẩn không ít rào cản. Tìm hiểu ngay.
+                      Việc đọc đơn thuốc giấy tiềm ẩn không ít rào cản. Bài viết chỉ ra 5 sai lầm thường gặp nhất và cách giải quyết.
                     </p>
                   </div>
                 </Link>
@@ -274,7 +252,7 @@ export default function ResourcesPage() {
                   <div className="w-1.5 h-1.5 rounded-full bg-teal-600 mt-1.5 shrink-0" />
                   <div>
                     <h4 className="text-sm font-bold text-slate-700 hover:text-teal-600 cursor-pointer transition-colors line-clamp-2">Cảnh báo: Lừa đảo tin nhắn giả danh bác sĩ</h4>
-                    <p className="text-[0.6875rem] text-slate-400 mt-1">15 TH05, 2026</p>
+                    <p className="text-[0.6875rem] text-slate-400 mt-1">15 TH05, 2024</p>
                   </div>
                 </div>
               </div>

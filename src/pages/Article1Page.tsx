@@ -68,13 +68,6 @@ export default function Article1Page() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    // SEO
-    document.title = "Lựa chọn thực phẩm đúng cách - FamCare Medical Blog";
-
-    // Increment view count
-    fetch('/api/articles/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc/view', { method: 'POST' })
-      .catch(err => console.error("Failed to track view:", err));
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter(e => e.isIntersecting);

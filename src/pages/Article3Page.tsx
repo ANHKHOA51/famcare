@@ -5,15 +5,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Activity, ShieldCheck, Cpu } from "lucide-react";
 
 export default function Article3Page() {
-  useEffect(() => {
-    // SEO & View Tracking
-    document.title = "Hệ sinh thái FamCare - Giải pháp chăm sóc sức khỏe gia đình";
-    
-    // Increment view count
-    fetch('/api/articles/he-sinh-thai-famcare/view', { method: 'POST' })
-      .catch(err => console.error("Failed to track view:", err));
-  }, []);
-
   return (
     <div className="min-h-screen bg-neutral-50 selection:bg-indigo-200 selection:text-indigo-900 font-body">
       <PublicNavbar />
@@ -68,7 +59,7 @@ export default function Article3Page() {
             Sức khỏe là tài sản quý giá nhất, nhưng việc quản lý "tài sản" này cho cả gia đình thường trở thành gánh nặng vô hình giữa nhịp sống bận rộn. Nhiều người hiện nay không có đủ thời gian để quản lý từng loại giấy tờ, hồ sơ của người thân nhưng vẫn khao khát được theo dõi sức khỏe gia đình thường xuyên một cách khoa học và thảnh thơi nhất.
           </p>
           <p className="text-justify mb-16">
-            Nắm bắt nhu cầu thực tế này, FamCare ra đời với sứ mệnh thay đổi hoàn toàn phương thức chăm sóc sức khỏe truyền thống. Chúng tôi kiến tạo một hệ sinh thái y tế số toàn diện, nơi công nghệ trí tuệ nhân tạo (AI) đóng vai trò là "mắt xích" kết nối, giúp mọi dữ liệu y tế trở nên minh bạch, tinh tế và mang tính cá nhân hóa cao cho từng hộ gia đình.
+            Nắm bắt nhu cầu thực tế này, <strong>FamCare</strong> ra đời với sứ mệnh thay đổi hoàn toàn phương thức chăm sóc sức khỏe truyền thống. Chúng tôi kiến tạo một hệ sinh thái y tế số toàn diện, nơi công nghệ trí tuệ nhân tạo (AI) đóng vai trò là "mắt xích" kết nối, giúp mọi dữ liệu y tế trở nên minh bạch, tinh tế và mang tính cá nhân hóa cao cho từng hộ gia đình.
           </p>
 
           {/* Section 2 */}
@@ -77,7 +68,7 @@ export default function Article3Page() {
             icon={<Cpu className="text-cyan-500" size={28} />}
           />
           <p className="text-justify mb-10">
-            Một trong những rào cản tâm lý lớn nhất của người bệnh khi rời khỏi phòng khám chính là tờ đơn thuốc giấy. Những dòng chữ viết tay vắn tắt đôi khi khiến người dùng bối rối. Với tính năng Máy quét đơn thuốc AI, FamCare cho phép bạn chụp ảnh và chuyển đổi mọi thông tin từ đơn thuốc giấy thành dữ liệu số ngay lập tức. Hệ thống không chỉ nhận diện tên thuốc mà còn tự động lưu trữ vào hồ sơ sức khỏe trọn đời, giúp việc tra cứu lịch sử dùng thuốc trở nên dễ dàng hơn bao giờ hết.
+            Một trong những rào cản tâm lý lớn nhất của người bệnh khi rời khỏi phòng khám chính là tờ đơn thuốc giấy. Những dòng chữ viết tay vắn tắt đôi khi khiến người dùng bối rối. Với tính năng <strong>Máy quét đơn thuốc AI</strong>, <strong>FamCare</strong> cho phép bạn chụp ảnh và chuyển đổi mọi thông tin từ đơn thuốc giấy thành dữ liệu số ngay lập tức. Hệ thống không chỉ nhận diện tên thuốc mà còn tự động lưu trữ vào hồ sơ sức khỏe trọn đời, giúp việc tra cứu lịch sử dùng thuốc trở nên dễ dàng hơn bao giờ hết.
           </p>
           
 
@@ -88,7 +79,7 @@ export default function Article3Page() {
             icon={<ShieldCheck className="text-cyan-500" size={28} />}
           />
           <p className="text-justify mb-10">
-            Việc quên liều hay nhầm lẫn giữa các loại thuốc trong gia đình là rủi ro hiện hữu. Tủ thuốc AI của FamCare giúp bạn quản lý danh mục thuốc hiện có một cách khoa học. Ứng dụng sẽ tự động nhắc lịch uống thuốc chính xác đến từng phút, đồng thời đưa ra cảnh báo khi thuốc sắp hết hoặc đã quá hạn sử dụng, đảm bảo tính an toàn tối đa cho mọi thành viên.
+            Việc quên liều hay nhầm lẫn giữa các loại thuốc trong gia đình là rủi ro hiện hữu. <strong>Tủ thuốc AI</strong> của <strong>FamCare</strong> giúp bạn quản lý danh mục thuốc hiện có một cách khoa học. Ứng dụng sẽ tự động nhắc lịch uống thuốc chính xác đến từng phút, đồng thời đưa ra cảnh báo khi thuốc sắp hết hoặc đã quá hạn sử dụng, đảm bảo tính an toàn tối đa cho mọi thành viên.
           </p>
 
           <EditorialImage src="/bai-3/hinh2.jpg" alt="Nhắc nhở dùng thuốc và quản lý dược phẩm" />
@@ -96,7 +87,7 @@ export default function Article3Page() {
           {/* Section 4 */}
           <h2 className="font-display text-3xl font-bold text-slate-900 mt-20 mb-6 tracking-tight">AI Nutrition: Tối ưu hóa thực đơn dựa trên tình trạng sức khỏe</h2>
           <p className="text-justify mb-10">
-            Dinh dưỡng là chìa khóa của sự phục hồi. Tính năng AI Nutrition tích hợp trong hệ sinh thái sẽ phân tích đơn thuốc và tình trạng bệnh lý hiện tại để gợi ý thực đơn phù hợp. Hệ thống sẽ cảnh báo các tương tác thực phẩm - thuốc nguy hiểm (như uống thuốc tim mạch thì không nên dùng nước bưởi) và gợi ý những món ăn hỗ trợ phát huy tối đa tác dụng của thuốc điều trị.
+            Dinh dưỡng là chìa khóa của sự phục hồi. Tính năng <strong>AI Nutrition</strong> tích hợp trong hệ sinh thái sẽ phân tích đơn thuốc và tình trạng bệnh lý hiện tại để gợi ý thực đơn phù hợp. Hệ thống sẽ cảnh báo các tương tác thực phẩm - thuốc nguy hiểm (như uống thuốc tim mạch thì không nên dùng nước bưởi) và gợi ý những món ăn hỗ trợ phát huy tối đa tác dụng của thuốc điều trị.
           </p>
 
           <EditorialImage src="/bai-3/hinh3.jpg" alt="Trợ lý dinh dưỡng AI đề xuất khẩu phần phù hợp" />
@@ -104,12 +95,12 @@ export default function Article3Page() {
           {/* Section 5 */}
           <h2 className="font-display text-3xl font-bold text-slate-900 mt-20 mb-6 tracking-tight">Hồ sơ gia đình: Kết nối dữ liệu y tế tập trung cho mọi thành viên</h2>
           <p className="text-justify mb-8">
-            Sức mạnh lớn nhất của FamCare chính là khả năng kết nối. Trong một thế giới bận rộn, việc thấu hiểu tình trạng sức khỏe của những người thân yêu đôi khi bị lãng quên.
+            Sức mạnh lớn nhất của <strong>FamCare</strong> chính là khả năng kết nối. Trong một thế giới bận rộn, việc thấu hiểu tình trạng sức khỏe của những người thân yêu đôi khi bị lãng quên.
           </p>
 
           <h3 className="font-display text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-cyan-500 pl-4 py-1">Quản lý tập trung mọi chỉ số sức khỏe</h3>
           <p className="text-justify mb-8">
-            Không cần phải quản lý nhiều tài khoản phức tạp, FamCare cho phép bạn theo dõi biến động chỉ số sức khỏe, lịch sử tiêm chủng hay diễn biến bệnh lý của bố mẹ, anh chị em và con trẻ trên cùng một giao diện. Mọi dữ liệu như biểu đồ huyết áp, chỉ số BMI đều được lưu trữ trực quan và khoa học.
+            Không cần phải quản lý nhiều tài khoản phức tạp, <strong>FamCare</strong> cho phép bạn theo dõi biến động chỉ số sức khỏe, lịch sử tiêm chủng hay diễn biến bệnh lý của bố mẹ, anh chị em và con trẻ trên cùng một giao diện. Mọi dữ liệu như biểu đồ huyết áp, chỉ số BMI đều được lưu trữ trực quan và khoa học.
           </p>
 
           <h3 className="font-display text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-cyan-500 pl-4 py-1">Chăm sóc dựa trên sự thấu hiểu thực tế</h3>
@@ -123,7 +114,7 @@ export default function Article3Page() {
           <h2 className="font-display text-3xl font-bold text-slate-900 mt-20 mb-6 tracking-tight text-center">Tại sao FamCare là lựa chọn hàng đầu cho sức khỏe gia đình bạn?</h2>
           <p className="text-justify mb-16 text-[1.15rem] leading-[1.9] bg-white p-8 rounded-2xl border border-slate-100 shadow-sm relative italic text-slate-700">
             <span className="absolute -top-4 left-8 text-5xl text-cyan-200">"</span>
-            Hệ sinh thái FamCare không chỉ đơn thuần là một ứng dụng y tế số; đó là lời cam kết cho một lối sống an tâm, khoa học và tràn đầy yêu thương. Bằng cách kết hợp giữa sức mạnh của trí tuệ nhân tạo và nhu cầu thực tế của từng hộ gia đình, FamCare tự hào là người bạn đồng hành tin cậy trên hành trình bảo vệ "tài sản" quý giá nhất của mỗi người. Gia đình khỏe mạnh là khởi đầu của hạnh phúc. Hãy để FamCare đồng hành cùng bạn nâng tầm chất lượng sống ngay hôm nay.
+            Hệ sinh thái <strong>FamCare</strong> không chỉ đơn thuần là một ứng dụng y tế số; đó là lời cam kết cho một lối sống an tâm, khoa học và tràn đầy yêu thương. Bằng cách kết hợp giữa sức mạnh của trí tuệ nhân tạo và nhu cầu thực tế của từng hộ gia đình, <strong>FamCare</strong> tự hào là người bạn đồng hành tin cậy trên hành trình bảo vệ "tài sản" quý giá nhất của mỗi người. Gia đình khỏe mạnh là khởi đầu của hạnh phúc. Hãy để <strong>FamCare</strong> đồng hành cùng bạn nâng tầm chất lượng sống ngay hôm nay.
           </p>
 
           {/* Special CTA Feature Box */}
@@ -154,11 +145,11 @@ export default function Article3Page() {
 
           {/* Minimal Footer Signature */}
           <div className="text-center pt-8 border-t border-slate-200 text-sm font-sans text-slate-500 pb-10">
-            <p className="font-bold text-slate-800 mb-2 uppercase tracking-widest">Bản quyền thuộc về FamCare - Nền tảng y tế thông minh.</p>
+            <p className="font-bold text-slate-800 mb-2 uppercase tracking-widest">Bản quyền thuộc về <strong>FamCare</strong> - Nền tảng y tế thông minh.</p>
             <div className="flex justify-center gap-6 mt-4">
-              <a href="https://famcare.site/" className="hover:text-cyan-600 transition-colors">Website: famcare.site</a>
+              <a href="https://famcare.site/" className="hover:text-cyan-600 transition-colors">Website: <strong>famcare</strong>.site</a>
               <span>&bull;</span>
-              <a href="mailto:famcare.support@gmail.com" className="hover:text-cyan-600 transition-colors">Email: famcare.support@gmail.com</a>
+              <a href="mailto:famcare.support@gmail.com" className="hover:text-cyan-600 transition-colors">Email: <strong>famcare</strong>.support@gmail.com</a>
             </div>
           </div>
 
