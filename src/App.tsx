@@ -32,6 +32,7 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ScrollToTop from "./components/ScrollToTop";
+import AuthInterceptor from "./components/AuthInterceptor";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <AuthInterceptor />
           <Routes>
             {/* ── Public Routes ── */}
             <Route path="/" element={<Index />} />

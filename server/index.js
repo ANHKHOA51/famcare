@@ -110,10 +110,16 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  if (!token) return res.status(401).json({ error: 'Unauthorized', code: 'no_token' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Forbidden' });
+    if (err) {
+      console.error('JWT verify failed:', err.name, err.message);
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ error: 'Token expired', code: 'token_expired' });
+      }
+      return res.status(403).json({ error: 'Forbidden', code: 'token_invalid' });
+    }
     req.user = user;
     next();
   });

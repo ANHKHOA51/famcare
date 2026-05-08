@@ -7,11 +7,13 @@ interface User {
   name: string;
 }
 
+type LogoutReason = "manual" | "expired";
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (token: string, user: User) => void;
-  logout: () => void;
+  logout: (reason?: LogoutReason) => void;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -48,12 +50,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     toast.success(`Chào mừng trở lại, ${newUser.name || 'bạn'}!`);
   };
 
-  const logout = () => {
+  const logout = (reason: LogoutReason = "manual") => {
     setToken(null);
     setUser(null);
     localStorage.removeItem("aura_token");
     localStorage.removeItem("aura_user");
-    toast.info("Đã đăng xuất.");
+    if (reason === "expired") {
+      toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+    } else {
+      toast.info("Đã đăng xuất.");
+    }
   };
 
   return (
