@@ -103,7 +103,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const JWT_SECRET = process.env.JWT_SECRET || 'aura_health_secret_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is required');
+}
 
 // --- Authentication Middleware ---
 const authenticateToken = (req, res, next) => {

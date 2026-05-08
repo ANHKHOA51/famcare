@@ -32,10 +32,12 @@ export default function AuthInterceptor() {
 
         const hasAuth =
           reqHeaders?.has("authorization") || reqHeaders?.has("Authorization");
+        const skipAuthInterceptor = reqHeaders?.has("X-Skip-Auth-Interceptor");
 
         if (
           url.includes("/api/") &&
           hasAuth &&
+          !skipAuthInterceptor &&
           (response.status === 401 || response.status === 403)
         ) {
           const body = await response

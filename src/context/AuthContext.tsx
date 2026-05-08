@@ -30,15 +30,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const savedUser = localStorage.getItem("aura_user");
 
     if (savedToken && savedUser) {
+      let parsedUser: User;
+
       try {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        parsedUser = JSON.parse(savedUser);
       } catch {
         // Pass 3 Fix #3: corrupted localStorage — clear it to prevent permanent white screen
         localStorage.removeItem("aura_token");
         localStorage.removeItem("aura_user");
+        setIsLoading(false);
+        return;
       }
+
+      fetch('/api/auth/profile', {
+        headers: {
+          Authorization: `Bearer ${savedToken}`,
+          "X-Skip-Auth-Interceptor": "1",
+        },
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            const profile = await res.json();
+            setToken(savedToken);
+            setUser({
+              id: profile.id || parsedUser.id,
+              email: profile.email || parsedUser.email,
+              name: profile.name || parsedUser.name,
+            });
+            return;
+          }
+
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("aura_token");
+            localStorage.removeItem("aura_user");
+            toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+            return;
+          }
+
+          setToken(savedToken);
+          setUser(parsedUser);
+        })
+        .catch(() => {
+          setToken(savedToken);
+          setUser(parsedUser);
+        })
+        .finally(() => setIsLoading(false));
+      return;
     }
+
     setIsLoading(false);
   }, []);
 
