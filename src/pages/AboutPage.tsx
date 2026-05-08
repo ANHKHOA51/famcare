@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Eye, Rocket, Heart, ShieldCheck, Lightbulb, ArrowRight } from "lucide-react";
@@ -23,10 +24,10 @@ export default function AboutPage() {
             <p className="text-slate-500 text-[1rem] leading-relaxed mb-10 max-w-md">
               FamCare không chỉ là ứng dụng, chúng tôi là người đồng hành đáng tin cậy giúp mỗi gia đình Việt tối ưu hóa hành trình sức khỏe thông qua công nghệ AI và sự thấu cảm y học.
             </p>
-            <button className="flex items-center gap-2 bg-[#0f172a] hover:bg-slate-800 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
+            <Link to="/resources/he-sinh-thai-famcare" className="inline-flex items-center gap-2 bg-[#0f172a] hover:bg-slate-800 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
               Khám phá giải pháp
               <ArrowRight size={16} />
-            </button>
+            </Link>
           </div>
 
           <div className="relative rounded-3xl overflow-hidden shadow-2xl">
@@ -131,3 +132,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
+

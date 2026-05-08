@@ -1073,6 +1073,36 @@ app.get('/api/foods', (req, res) => {
   res.json(FOOD_DATABASE);
 });
 
+// --- Article View Routes ---
+app.post('/api/articles/:slug/view', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const article = await prisma.article.upsert({
+      where: { slug },
+      update: { views: { increment: 1 } },
+      create: { id: slug, slug, views: 1 },
+    });
+    res.json(article);
+  } catch (error) {
+    console.error('ARTICLE VIEW ERROR:', error);
+    res.status(500).json({ error: 'Failed to update article view' });
+  }
+});
+
+app.get('/api/articles/views', async (req, res) => {
+  try {
+    const articles = await prisma.article.findMany();
+    const viewMap = articles.reduce((acc, art) => {
+      acc[art.slug] = art.views;
+      return acc;
+    }, {});
+    res.json(viewMap);
+  } catch (error) {
+    console.error('GET ARTICLE VIEWS ERROR:', error);
+    res.status(500).json({ error: 'Failed to fetch article views' });
+  }
+});
+
 export default app;
 
 if (process.env.VERCEL !== '1') {

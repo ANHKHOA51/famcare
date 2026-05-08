@@ -68,13 +68,6 @@ export default function Article1Page() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    // SEO
-    document.title = "Lựa chọn thực phẩm đúng cách - FamCare Medical Blog";
-
-    // Increment view count
-    fetch('/api/articles/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc/view', { method: 'POST' })
-      .catch(err => console.error("Failed to track view:", err));
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter(e => e.isIntersecting);
@@ -122,11 +115,8 @@ export default function Article1Page() {
       <main className="px-4 sm:px-8 lg:px-16 py-10 max-w-[860px] mx-auto text-[1.125rem] text-slate-800 leading-[1.85] font-light">
         
         {/* Lead text */}
-        <div className="mb-14">
-          <p className="text-[1.15rem] leading-[1.9] text-slate-700 font-body text-justify italic border-l-[3px] border-amber-500 bg-gradient-to-r from-amber-50/50 to-transparent p-5 sm:py-6 sm:px-7 rounded-r-2xl">
-            <span className="font-bold text-slate-900 tracking-wide uppercase text-xs mr-3 not-italic">PHÂN TÍCH CHUYÊN SÂU &mdash;</span>
-            Tương tác giữa thuốc với thực phẩm là kiến thức y khoa quan trọng, có thể tạo ra sự khác biệt giữa điều trị thành công và thất bại, thậm chí giữa an toàn và nguy hiểm. Hiểu đúng về cơ chế này, người chăm sóc và cả bệnh nhân có thể biến một bữa ăn thông thường thành một công cụ điều trị hiệu quả. Cùng chúng tôi tìm hiểu ngay bây giờ!
-          </p>
+        <div className="text-[1.05rem] sm:text-[1.1rem] text-slate-700 font-medium leading-[1.85] mb-10">
+          Tương tác giữa thuốc với thực phẩm là một kiến thức y khoa quan trọng, có thể tạo ra sự khác biệt giữa việc điều trị thành công và thất bại, thậm chí giữa an toàn và nguy hiểm. Hiểu đúng về cơ chế này, người chăm sóc và cả bệnh nhân có thể biến một bữa ăn thông thường thành một công cụ điều trị hiệu quả. Cùng chúng tôi tìm hiểu ngay bây giờ!
         </div>
 
         {/* Table of Contents */}

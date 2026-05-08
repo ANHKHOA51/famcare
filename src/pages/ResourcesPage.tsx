@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
-import { Search, FileText, MessageSquare, ChevronRight, FileSearch, UserPlus, ShieldAlert, CreditCard } from "lucide-react";
+import { Search, FileText, MessageSquare, ChevronRight, FileSearch, UserPlus, ShieldAlert, CreditCard, User, Calendar, Eye } from "lucide-react";
 
 export default function ResourcesPage() {
+  const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch('/api/articles/views')
+      .then(res => res.json())
+      .then(data => setViewCounts(data))
+      .catch(err => console.error("Failed to fetch views:", err));
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <PublicNavbar />
@@ -128,12 +137,49 @@ export default function ResourcesPage() {
             </div>
 
             {/* Medical Knowledge */}
-            <div>
-              <h2 className="text-2xl font-bold font-display text-slate-800 mb-8">Kiến thức Y khoa</h2>
+            <div className="w-full relative">
+              <div className="flex justify-between items-end mb-8">
+                <h2 className="text-2xl font-bold font-display text-slate-800">Kiến thức Y khoa</h2>
+                <div className="hidden sm:flex gap-2">
+                  <span className="text-xs text-slate-400 font-medium italic">Vuốt để xem thêm &rarr;</span>
+                </div>
+              </div>
               
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                
+                {/* Article 4 (Mới nhất) */}
+                <Link to="/resources/quen-uong-thuoc-va-cach-xu-ly" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden relative">
+                    <img 
+                      src="/bai-4/hinh1.jpg" 
+                      alt="Quên uống thuốc thì có sao không?" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-rose-100 text-rose-700 text-[0.625rem] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Mới nhất</span>
+                    </div>
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">18 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['quen-uong-thuoc-va-cach-xu-ly'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Quên Uống Thuốc Thì Có Sao Không? Hướng Dẫn Xử Lý Đúng
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Nên uống bù hay bỏ qua? Những loại thuốc nào bắt buộc phải dùng đúng giờ? Đọc ngay.
+                    </p>
+                  </div>
+                </Link>
+
+
                 {/* Article 1 */}
-                <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-shadow hover:shadow-md group cursor-pointer block">
+                <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
                   <div className="h-48 overflow-hidden">
                     <img 
                       src="/bai-1/hinh1.jpg" 
@@ -141,42 +187,50 @@ export default function ResourcesPage() {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-[#ccfbf1] text-teal-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Dinh dưỡng</span>
-                      <span className="text-[0.6875rem] text-slate-400">15 Th05, 2024</span>
+                      <span className="text-[0.6875rem] text-slate-400">15 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc'] || 0}</span>
+                      </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
                       Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc
                     </h3>
-                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
-                      Tương tác giữa thuốc với thực phẩm là kiến thức y khoa quan trọng, giúp điều trị hiệu quả và an toàn hơn.
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Tương tác giữa thuốc với thực phẩm là kiến thức y khoa quan trọng.
                     </p>
                   </div>
                 </Link>
 
                 {/* Article 2 */}
-                <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-shadow hover:shadow-md group cursor-pointer">
+                <Link to="/resources/cach-doc-don-thuoc-giay" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1576091160550-2173ff9e5944?auto=format&fit=crop&q=80&w=800" 
-                      alt="Chuyên khoa" 
+                      src="/bai-2/hinh1.jpg" 
+                      alt="Cách Đọc Đơn Thuốc Giấy" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
-                      <span className="bg-indigo-100 text-indigo-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Chuyên khoa</span>
-                      <span className="text-[0.6875rem] text-slate-400">12 Th05, 2024</span>
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">16 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['cach-doc-don-thuoc-giay'] || 0}</span>
+                      </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Khi nào cần đặt lịch khám chuyên gia tiêu hóa?
+                      Cách Đọc Đơn Thuốc Giấy: 5 Sai Lầm Phổ Biến Và Cách Xử Lý
                     </h3>
-                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
-                      Những dấu hiệu bất thường về tiêu hóa bạn không nên bỏ qua và quy trình thăm khám tại FamCare.
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Việc đọc đơn thuốc giấy tiềm ẩn không ít rào cản. Tìm hiểu ngay.
                     </p>
                   </div>
-                </div>
+                </Link>
               </div>
             </div>
 
@@ -220,7 +274,7 @@ export default function ResourcesPage() {
                   <div className="w-1.5 h-1.5 rounded-full bg-teal-600 mt-1.5 shrink-0" />
                   <div>
                     <h4 className="text-sm font-bold text-slate-700 hover:text-teal-600 cursor-pointer transition-colors line-clamp-2">Cảnh báo: Lừa đảo tin nhắn giả danh bác sĩ</h4>
-                    <p className="text-[0.6875rem] text-slate-400 mt-1">15 TH05, 2024</p>
+                    <p className="text-[0.6875rem] text-slate-400 mt-1">15 TH05, 2026</p>
                   </div>
                 </div>
               </div>
