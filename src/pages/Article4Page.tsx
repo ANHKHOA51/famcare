@@ -123,7 +123,7 @@ export default function Article4Page() {
             Quên uống thuốc thì <em className="text-cyan-400 italic font-medium">có sao không?</em> Hướng dẫn xử lý đúng
           </h1>
           <p className="text-justify text-[13px] text-slate-400 tracking-wide uppercase font-sans">
-            Biên soạn dựa trên các nghiên cứu từ Tạp chí Patient (2014), Tạp chí Thyroid (2014), Pharmacokinetics and Pharmacodynamics (2021) và WHO
+            Biên soạn dựa trên các nghiên cứu đến từ Tạp chí Patient (2014), Tạp chí Thyroid (2014), Tạp chí Pharmacokinetics and Pharmacodynamics (2021) và Tổ chức Y tế Thế giới.
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-800 via-cyan-500 to-blue-700 h-1 opacity-90"></div>
