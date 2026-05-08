@@ -134,7 +134,7 @@ export default function Article4Page() {
         <div className="mb-14">
           <p className="text-[1.15rem] leading-[1.9] text-slate-700 font-body text-justify italic border-l-[3px] border-cyan-500 bg-gradient-to-r from-cyan-50/50 to-transparent p-5 sm:py-6 sm:px-7 rounded-r-2xl">
             <span className="font-bold text-slate-900 tracking-wide uppercase text-xs mr-3 not-italic">PHÂN TÍCH CHUYÊN SÂU &mdash;</span>
-            Quên uống thuốc là tình huống rất phổ biến, nhưng xử lý sai cách có thể ảnh hưởng lớn đến hiệu quả điều trị. Nên uống bù hay bỏ qua liều đã quên? Những loại thuốc nào bắt buộc phải dùng đúng giờ? FamCare sẽ giúp bạn hiểu rõ cách xử trí an toàn!
+            Quên uống thuốc là tình huống rất phổ biến trong cuộc sống bận rộn, nhưng xử lý sai cách có thể đem ảnh hưởng rất lớn đến hiệu quả điều trị. Nên uống bù hay bỏ qua liều đã quên? Những loại thuốc nào bắt buộc phải dùng đúng giờ, đúng liều? Bài viết của FamCare sẽ giúp bạn hiểu rõ cách xử trí an toàn!
           </p>
         </div>
 
@@ -164,90 +164,125 @@ export default function Article4Page() {
         <SectionHeading number="01" id="tai-sao-quen" title="Tại sao chúng ta quên uống thuốc?" />
         
         <p className="text-justify mb-5">
-          Việc quên uống thuốc thường đến từ những xáo trộn trong nhịp sống hằng ngày. Nghiên cứu trên tạp chí Patient cho thấy các nguyên nhân phổ biến bao gồm thay đổi thói quen (đi du lịch, khách đến nhà), bị phân tâm bởi các hoạt động xã hội, hoặc đơn giản là những gián đoạn nhỏ như điện thoại.
+          Việc quên uống thuốc không hẳn xuất phát từ sự chủ quan, mà thường đến từ những xáo trộn rất “đời thường” trong nhịp sống hằng ngày. Theo nghiên cứu đăng trên tạp chí Patient (Brod và cộng sự, 2013–2014) tại Canada, Đức và Trung Quốc, những nguyên nhân phổ biến nhất bao gồm sự thay đổi thói quen sinh hoạt như đi du lịch, có khách đến nhà hay xử lý tình huống khẩn cấp; bị phân tâm bởi các hoạt động xã hội như ăn tối, tụ họp; hoặc đơn giản là những gián đoạn nhỏ như một cuộc điện thoại hay tin nhắn. Bên cạnh đó, trạng thái quá bận rộn: vội vàng vào buổi sáng, mệt mỏi vào buổi tối, cũng khiến việc uống thuốc dễ bị bỏ sót.
         </p>
         <p className="text-justify mb-8">
-          Trạng thái quá bận rộn hoặc mệt mỏi cũng khiến việc uống thuốc dễ bị bỏ sót. Nhiều người thậm chí không chắc mình đã uống thuốc hay chưa, dẫn đến lo lắng và xử lý sai.
+          Đáng chú ý, nhiều người không chỉ “quên hẳn” mà còn rơi vào tình huống không chắc mình đã uống thuốc hay chưa, dẫn đến lo lắng và có thể xử lý sai như uống trùng liều hoặc bỏ qua liều cần thiết.
         </p>
 
         <ArticleImage src="/bai-4/hinh1.jpg" alt="Tại sao chúng ta quên uống thuốc?" />
 
         {/* Section 2 */}
-        <SectionHeading number="02" id="uong-bu-hay-bo" title="Uống bù hay bỏ qua? Nguyên tắc chung" />
+        <SectionHeading number="02" id="uong-bu-hay-bo" title="Uống bù hay bỏ qua?" />
         
         <p className="text-justify mb-5">
-          Việc nên "uống bù hay bỏ qua" phụ thuộc vào "thời gian bán hủy" của thuốc. Nếu thuốc tồn tại lâu trong cơ thể, bạn có thể uống bù ngay khi nhớ ra. Ngược lại, nếu thuốc đào thải nhanh, uống bù có thể khiến nồng độ thuốc tăng đột ngột gây nguy hiểm.
+          Khi lỡ quên một liều thuốc, việc nên “uống bù hay bỏ qua” thực ra phụ thuộc vào đặc tính của chính loại thuốc bạn đang dùng. Theo nghiên cứu của Counterman & Lawley (2021), yếu tố quan trọng nhất là “thời gian bán hủy”. Thời gian bán hủy có thể hiểu đơn giản là thời gian thuốc tồn tại trong cơ thể. 
         </p>
-        
-        {/* Pull quote */}
-        <div className="bg-slate-900 text-cyan-50 my-12 p-8 sm:p-10 rounded-xl relative shadow-lg">
-          <Quote className="absolute top-6 left-6 text-cyan-500/40 w-16 h-16" strokeWidth={1} />
-          <p className="text-justify font-display text-xl sm:text-2xl italic m-0 pl-10 leading-relaxed z-10 relative">
-            "Không bao giờ tự ý uống gấp đôi liều để 'bù' cho liều đã quên mà không có chỉ dẫn của chuyên gia y tế."
-          </p>
-        </div>
+        <p className="text-justify mb-5">
+          Nếu thuốc “ở lại” trong cơ thể lâu (vài ngày), bạn có thể uống bù ngay khi nhớ ra vì nồng độ thuốc chỉ tăng nhẹ, gần như không gây nguy hiểm. Ngược lại, nếu thuốc bị đào thải nhanh (chỉ vài giờ), việc uống bù có thể khiến nồng độ thuốc tăng đột ngột, nên cách an toàn hơn trong trường hợp này là bỏ qua liều đã quên và uống liều tiếp theo đúng giờ.
+        </p>
+        <p className="text-justify mb-8">
+          Tuy nhiên, đây chỉ là nguyên tắc chung, vì mỗi loại thuốc và mỗi tình trạng sức khỏe sẽ khác nhau. Do đó, bạn vẫn nên hỏi bác sĩ hoặc dược sĩ trước khi tự quyết định để tránh rủi ro không đáng có.
+        </p>
 
         <ArticleImage src="/bai-4/hinh2.jpg" alt="Uống thuốc bù hay nên bỏ qua?" />
 
         {/* Section 3 */}
         <div className="clear-both"></div>
-        <SectionHeading number="03" id="huong-dan-xu-ly" title="Hướng dẫn xử lý cho từng loại thuốc cụ thể" />
+        <SectionHeading number="03" id="huong-dan-xu-ly" title="Vậy, xử lý như thế nào khi quên uống thuốc?" />
         
         <h3 id="huyet-ap" className="font-display text-xl font-bold text-cyan-800 mt-10 mb-3 scroll-mt-28">
-          3.1. Quên uống thuốc huyết áp
+          3.1. Quên uống thuốc huyết áp thì phải làm sao?
         </h3>
         <p className="text-justify mb-5">
-          Thuốc huyết áp thường có tác dụng dài. Nếu nhớ ra sớm và còn xa liều tiếp theo, hãy uống ngay. Nếu gần liều kế tiếp (còn 2-3 tiếng), hãy bỏ qua.
+          Phần lớn thuốc huyết áp phổ biến như amlodipine, losartan hay lisinopril có thời gian tác dụng khá dài, nên nếu lỡ quên một liều, bạn không cần quá lo lắng. Trường hợp bạn có lịch uống thuốc lúc 7h sáng nhưng đến 2h chiều mới nhớ ra, FamCare gợi ý bạn cách giải quyết như sau:
         </p>
         <InfoBox icon={ShieldCheck} title="Cách xử lý an toàn" colorClass="green">
-          Nếu vẫn còn xa thời điểm uống liều tiếp theo, bạn hãy uống ngay khi nhớ ra. Nếu đã gần tới giờ, hãy bỏ qua.
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Nếu vẫn còn xa thời điểm uống liều tiếp theo, bạn hãy uống ngay khi nhớ ra.</li>
+            <li>Nếu đã gần tới giờ uống liều kế tiếp (còn khoảng 2–3 tiếng), bạn hãy bỏ qua liều đã quên, uống liều tiếp theo như bình thường.</li>
+          </ul>
         </InfoBox>
         <InfoBox icon={AlertTriangle} title="Tuyệt đối tránh" colorClass="red">
-          Không uống gấp đôi liều. Điều này có thể khiến huyết áp tụt nhanh, gây chóng mặt hoặc té ngã.
+          Không uống gấp đôi liều để “bù” lại liều đã quên. Điều này có thể khiến huyết áp tụt nhanh, gây chóng mặt hoặc té ngã.
         </InfoBox>
 
         <h3 id="tranh-thai" className="font-display text-xl font-bold text-cyan-800 mt-10 mb-3 scroll-mt-28">
-          3.2. Quên uống thuốc tránh thai
+          3.2. Quên uống thuốc tránh thai (dạng viên uống hằng ngày) thì phải làm sao?
         </h3>
         <p className="text-justify mb-5">
-          Với loại kết hợp, nếu quên dưới 24 tiếng, hãy uống ngay khi nhớ ra (kể cả phải uống 2 viên cùng ngày). Nếu quên trên 24 tiếng, cần dùng thêm biện pháp bảo vệ trong 7 ngày.
+          Thuốc tránh thai là một trong những loại thuốc phụ thuộc rất chặt vào việc uống đúng giờ, nên khi quên liều, bạn cần xử lý cẩn thận hơn so với nhiều loại thuốc khác. Với thuốc tránh thai kết hợp (loại phổ biến nhất), nếu bạn quên dưới 24 tiếng, hãy uống ngay khi nhớ ra, kể cả khi bạn phải uống 2 viên trong cùng ngày thì hiệu quả tránh thai vẫn được đảm bảo.
         </p>
-        <InfoBox icon={Info} title="Lưu ý" colorClass="blue">
-          Thuốc chỉ chứa progestin (mini-pill) rất nghiêm ngặt: trễ quá 3 tiếng là đã cần dùng thêm biện pháp tránh thai bổ sung.
+        <p className="text-justify mb-5">
+          Tuy nhiên, nếu quên quá 24 tiếng hoặc quên liên tiếp 2 ngày, bạn chỉ nên uống viên gần nhất, bỏ qua viên đã quên và cần dùng thêm biện pháp bảo vệ như bao cao su trong ít nhất 7 ngày. Trong trường hợp đã có quan hệ không bảo vệ gần đây, nên cân nhắc hỏi bác sĩ về thuốc tránh thai khẩn cấp.
+        </p>
+        <InfoBox icon={Info} title="Lưu ý quan trọng" colorClass="blue">
+          Với thuốc chỉ chứa progestin (mini-pill), nguyên tắc còn nghiêm ngặt hơn: bạn phải uống đúng trong khung giờ cố định mỗi ngày, và chỉ cần trễ quá 3 tiếng là đã cần dùng thêm biện pháp tránh thai bổ sung ngay. Đặc biệt, việc quên thuốc ở tuần đầu tiên của vỉ là rủi ro cao nhất vì cơ thể chưa được bảo vệ hoàn toàn. Do đó, lúc này, tốt nhất bạn nên kiểm tra kỹ hướng dẫn sử dụng hoặc tham khảo ý kiến bác sĩ để đảm bảo an toàn.
         </InfoBox>
 
         <h3 id="insulin" className="font-display text-xl font-bold text-cyan-800 mt-10 mb-3 scroll-mt-28">
-          3.3. Quên tiêm Insulin
+          3.3. Quên tiêm Insulin thì phải làm sao?
         </h3>
         <p className="text-justify mb-5">
-          Rất khó xử lý vì phụ thuộc vào mức đường huyết. Nếu là insulin tác dụng nhanh, có thể tiêm ngay nếu đang ăn. Nếu đã qua 1-2 tiếng, KHÔNG nên tiêm bù.
+          Insulin và các thuốc điều trị tiểu đường là nhóm khó xử lý nhất khi quên liều, vì cách dùng phụ thuộc vào nhiều yếu tố như loại insulin, bữa ăn và mức đường huyết tại thời điểm đó. Nếu là insulin tác dụng nhanh (tiêm trước bữa ăn), bạn có thể tiêm ngay nếu vẫn đang ăn hoặc vừa ăn xong. Nhưng nếu đã qua 1–2 tiếng sau bữa ăn, không nên tiêm bù vì có thể gây hạ đường huyết nguy hiểm. Lúc này, cách an toàn hơn là kiểm tra đường huyết và theo dõi cơ thể.
+        </p>
+        <p className="text-justify mb-5">
+          Với insulin tác dụng chậm (tiêm nền mỗi ngày), bạn có thể tiêm ngay khi nhớ ra nếu chưa quá gần thời điểm của liều kế tiếp, sau đó tiếp tục lịch tiêm như bình thường và tuyệt đối không tiêm gấp đôi.
+        </p>
+        <p className="text-justify mb-5">
+          Điều quan trọng là nhiều người bệnh không chỉ quên mà còn không chắc mình đã tiêm hay chưa, dẫn đến xử lý sai như tiêm trùng liều hoặc bỏ liều không cần thiết. Vì vậy, việc ghi lại thời gian tiêm hoặc sử dụng công cụ nhắc nhở là rất cần thiết. Và cần nhớ rằng, với insulin, không nên tự ý điều chỉnh liều nếu chưa có hướng dẫn từ bác sĩ, vì mỗi quyết định đều ảnh hưởng trực tiếp đến mức đường huyết và an toàn của bạn.
         </p>
 
         <h3 id="hiv" className="font-display text-xl font-bold text-cyan-800 mt-10 mb-3 scroll-mt-28">
-          3.4. Quên uống thuốc HIV (ARV)
+          3.4. Quên uống thuốc HIV thì phải làm sao?
         </h3>
         <p className="text-justify mb-5">
-          Đòi hỏi tuân thủ cực cao để tránh virus kháng thuốc. Nếu còn cách xa liều tiếp theo ({'>'}8 tiếng), hãy uống ngay. Nếu gần ({'<'}4-6 tiếng), bỏ qua liều đã quên.
+          Thuốc điều trị HIV (ARV) đòi hỏi mức độ tuân thủ rất cao, vì chỉ cần bỏ liều không đúng cách cũng có thể khiến virus hoạt động trở lại và tăng nguy cơ kháng thuốc. Nếu bạn nhớ ra sớm, khi vẫn còn cách xa thời điểm uống liều tiếp theo (khoảng trên 8 tiếng), hãy uống ngay liều đã quên rồi tiếp tục lịch uống như bình thường. Ngược lại, nếu đã gần tới giờ uống liều kế tiếp (khoảng dưới 4–6 tiếng), tốt nhất là bỏ qua liều đã quên và không uống gấp đôi, sau đó uống liều tiếp theo đúng giờ.
+        </p>
+        <p className="text-justify mb-5">
+          Điều quan trọng là mỗi phác đồ điều trị HIV có thể có hướng dẫn riêng, nên bạn không nên tự ý xử lý theo cảm tính. Nếu lỡ quên thuốc, hãy theo dõi sát và trao đổi với bác sĩ để được hướng dẫn chính xác, đảm bảo hiệu quả điều trị lâu dài và an toàn cho sức khỏe.
         </p>
 
         <h3 id="khang-sinh" className="font-display text-xl font-bold text-cyan-800 mt-10 mb-3 scroll-mt-28">
-          3.5. Quên uống thuốc kháng sinh
+          3.5. Quên uống thuốc kháng sinh thì phải làm sao?
         </h3>
         <p className="text-justify mb-5">
-          Cần duy trì nồng độ ổn định. Uống ngay nếu còn xa liều tiếp theo. Quan trọng nhất là luôn uống ĐỦ liệu trình kể cả khi đã thấy khỏe hơn.
+          Kháng sinh cần được uống đều đặn để duy trì nồng độ ổn định trong cơ thể, giúp tiêu diệt vi khuẩn hiệu quả. Vì vậy, khi lỡ quên một liều, cách xử lý sẽ phụ thuộc vào thời điểm bạn nhớ ra. Nếu vẫn còn khá xa liều tiếp theo (hơn nửa khoảng cách giữa hai liều), bạn có thể uống ngay khi nhớ rồi tiếp tục lịch uống như bình thường. Nhưng nếu đã gần tới giờ uống liều kế tiếp, tốt nhất là bỏ qua liều đã quên và không uống gấp đôi, vì điều này không giúp tăng hiệu quả mà còn có thể gây tác dụng phụ.
+        </p>
+        <p className="text-justify mb-5">
+          Một điều rất quan trọng là luôn uống đủ liệu trình kháng sinh, ngay cả khi bạn đã thấy khỏe hơn. Việc tự ý ngưng giữa chừng hoặc uống không đúng cách có thể khiến vi khuẩn chưa bị tiêu diệt hoàn toàn và làm tăng nguy cơ kháng kháng sinh về sau.
         </p>
 
-        {/* Tip Box */}
-        <div className="bg-cyan-50/80 border border-cyan-200 border-l-4 border-l-cyan-600 p-6 rounded-r-xl my-10 relative overflow-hidden" id="meo-ghi-nho">
-          <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-cyan-700 mb-2">
-            💡 Mẹo để không bao giờ quên
+        {/* Section 4 */}
+        <SectionHeading number="04" id="meo-ghi-nho" title="Làm thế nào để luôn uống thuốc đúng giờ, đúng cử?" />
+        <p className="text-justify mb-6">
+          Nghiên cứu của Brod et al. ghi nhận rằng khoảng một phần ba bệnh nhân đã chủ động áp dụng chiến lược nhắc nhở trực quan - ví dụ dán giấy ghi chú, đặt hộp thuốc bên cạnh bàn chải, hay di chuyển đồ vật để biết mình đã uống hay chưa. Nhưng những phương pháp thủ công này rất dễ thất bại. Do đó, chúng tôi gợi ý bạn thử các phương pháp sau:
+        </p>
+        
+        <div className="grid sm:grid-cols-2 gap-6 mb-10">
+          <div className="bg-white border border-slate-100 shadow-sm p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-200 transition-colors">
+            <div className="text-5xl font-black text-slate-50 absolute -right-2 -top-4 select-none group-hover:text-cyan-50 transition-colors">01</div>
+            <h4 className="font-bold text-slate-800 mb-2 relative z-10">Kết hợp với thói quen cố định</h4>
+            <p className="text-sm text-slate-500 relative z-10 leading-relaxed">Đặt thuốc cạnh bàn chải đánh răng, cốc cà phê sáng, hoặc chìa khóa. Não bộ liên kết thói quen với kích hoạt (trigger) rất hiệu quả.</p>
           </div>
-          <ul className="text-justify text-[0.95rem] text-cyan-900 m-0 leading-relaxed font-sans list-disc pl-5 space-y-2">
-            <li>Kết hợp với thói quen cố định (để cạnh bàn chải đánh răng).</li>
-            <li>Cài đặt nhắc nhở trên điện thoại với tên thuốc cụ thể.</li>
-            <li>Dùng hộp thuốc chia ngăn theo ngày/tuần.</li>
-            <li>Sử dụng ứng dụng FamCare để quản lý tủ thuốc thông minh.</li>
-          </ul>
+          
+          <div className="bg-white border border-slate-100 shadow-sm p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-200 transition-colors">
+            <div className="text-5xl font-black text-slate-50 absolute -right-2 -top-4 select-none group-hover:text-cyan-50 transition-colors">02</div>
+            <h4 className="font-bold text-slate-800 mb-2 relative z-10">Cài đặt nhắc nhở trên điện thoại</h4>
+            <p className="text-sm text-slate-500 relative z-10 leading-relaxed">Báo thức lặp lại hàng ngày đúng giờ uống thuốc. Đặt tên báo thức cụ thể (ví dụ: "Uống thuốc huyết áp") để tránh nhầm lẫn.</p>
+          </div>
+
+          <div className="bg-white border border-slate-100 shadow-sm p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-200 transition-colors">
+            <div className="text-5xl font-black text-slate-50 absolute -right-2 -top-4 select-none group-hover:text-cyan-50 transition-colors">03</div>
+            <h4 className="font-bold text-slate-800 mb-2 relative z-10">Dùng hộp thuốc chia ngăn theo ngày/tuần</h4>
+            <p className="text-sm text-slate-500 relative z-10 leading-relaxed">Cách đơn giản để kiểm tra ngay: "Ngăn hôm nay còn thuốc không?" Nếu còn → chưa uống. Nếu trống → đã uống.</p>
+          </div>
+
+          <div className="bg-white border border-slate-100 shadow-sm p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-200 transition-colors">
+            <div className="text-5xl font-black text-slate-50 absolute -right-2 -top-4 select-none group-hover:text-cyan-50 transition-colors">04</div>
+            <h4 className="font-bold text-slate-800 mb-2 relative z-10">Dùng ứng dụng quản lý thuốc thông minh</h4>
+            <p className="text-sm text-slate-500 relative z-10 leading-relaxed">Nhắc nhở tự động, ghi lịch sử uống thuốc, cảnh báo khi sắp hết — giải pháp toàn diện nhất để không còn phụ thuộc vào trí nhớ.</p>
+          </div>
         </div>
 
         <div className="text-center text-cyan-500/50 tracking-[10px] my-10 text-xl font-serif">
@@ -257,10 +292,13 @@ export default function Article4Page() {
         {/* Conclusion Box */}
         <div id="ket-luan" className="bg-slate-900 text-slate-100 p-8 sm:p-12 rounded-2xl scroll-mt-28 relative">
           <h2 className="font-display text-3xl font-bold text-cyan-400 mb-5 pb-4 border-b border-white/10">
-            Kết luận
+            5. Kết luận
           </h2>
           <p className="text-justify text-[1.05rem] text-slate-300 mb-4 font-body">
-            Quên uống thuốc là điều bình thường, nhưng biết cách xử lý đúng là chìa khóa để điều trị an toàn. FamCare cung cấp Tủ thuốc AI giúp bạn không còn lo lắng về lịch trình điều trị của gia đình.
+            Quên uống thuốc là một điều rất bình thường trong cuộc sống bận rộn. Điều quan trọng là chúng ta biết cách xử lý đúng đối với từng loại thuốc và xây dựng thói quen để giảm bớt tần suất quên.
+          </p>
+          <p className="text-justify text-[1.05rem] text-slate-300 mb-4 font-body">
+            Tại FamCare cung cấp Tủ thuốc AI và Hồ sơ sức khỏe cá nhân — giúp bạn theo dõi lịch uống thuốc, nhận nhắc nhở đúng giờ, và quản lý toàn bộ thông tin y tế của cả gia đình trong một nơi duy nhất.
           </p>
           
           <div className="mt-10 sm:mt-12 flex justify-center">
@@ -274,9 +312,17 @@ export default function Article4Page() {
           </div>
         </div>
 
-        <p className="text-justify text-[13px] text-center text-slate-400 mt-16 pt-8 border-t border-slate-200 font-sans">
-          Nội dung mang tính tham khảo, không thay thế tư vấn y tế chuyên nghiệp.
-        </p>
+        <div className="mt-16 pt-8 border-t border-slate-200">
+          <p className="text-justify text-[13px] text-slate-500 font-sans mb-4">
+            Bài viết và hình ảnh được thực hiện bởi FamCare.<br/>
+            Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ về cách xử lý liều thuốc cụ thể của bạn.
+          </p>
+          <div className="text-[13px] text-slate-500 font-sans p-4 bg-slate-50 rounded-lg border border-slate-100">
+            <strong className="block text-slate-700 mb-1 uppercase tracking-wider text-xs">FamCare - Nền tảng y tế thông minh - Chăm sóc gia đình từ xa</strong>
+            <span className="block mb-1">Website: <a href="https://famcare.site/" className="text-cyan-600 hover:underline">https://famcare.site/</a></span>
+            <span className="block">Email: <a href="mailto:famcare.support@gmail.com" className="text-cyan-600 hover:underline">famcare.support@gmail.com</a></span>
+          </div>
+        </div>
 
       </main>
 
