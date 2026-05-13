@@ -148,6 +148,7 @@ npm install
 
 Đợi 1-3 phút để tải xong (sẽ tạo ra thư mục `node_modules`).
 
+
 ---
 
 ### 🔐 BƯỚC 4: Tạo file cấu hình `.env`
