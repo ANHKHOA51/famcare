@@ -15,12 +15,12 @@ const LandingPage = () => {
     <>
       <Helmet>
         <title>
-          FamCare - AI chăm sóc sức khỏe gia đình và quản lý thuốc thông minh
+          FamCare - Quản lý thuốc & chăm sóc sức khỏe gia đình
         </title>
 
         <meta
           name="description"
-          content="FamCare giúp quản lý thuốc, nhắc lịch uống thuốc, hồ sơ sức khỏe gia đình và hỗ trợ chăm sóc sức khỏe thông minh bằng AI."
+          content="FamCare giúp quản lý thuốc, nhắc lịch uống thuốc, lưu hồ sơ sức khỏe và hỗ trợ chăm sóc sức khỏe gia đình bằng AI."
         />
 
         <meta
@@ -28,14 +28,15 @@ const LandingPage = () => {
           content="FamCare, quản lý thuốc, nhắc uống thuốc, AI sức khỏe, hồ sơ sức khỏe gia đình, tủ thuốc thông minh"
         />
 
+        {/* Open Graph */}
         <meta
           property="og:title"
-          content="FamCare - AI chăm sóc sức khỏe gia đình"
+          content="FamCare - Quản lý thuốc & chăm sóc sức khỏe gia đình"
         />
 
         <meta
           property="og:description"
-          content="Nền tảng AI hỗ trợ quản lý thuốc và chăm sóc sức khỏe gia đình."
+          content="Ứng dụng AI hỗ trợ quản lý thuốc và chăm sóc sức khỏe gia đình."
         />
 
         <meta property="og:type" content="website" />
@@ -47,7 +48,46 @@ const LandingPage = () => {
           content="https://famcare.site/og-image.jpg"
         />
 
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta
+          name="twitter:title"
+          content="FamCare - Quản lý thuốc & chăm sóc sức khỏe gia đình"
+        />
+
+        <meta
+          name="twitter:description"
+          content="Ứng dụng AI hỗ trợ quản lý thuốc và chăm sóc sức khỏe gia đình."
+        />
+
+        <meta
+          name="twitter:image"
+          content="https://famcare.site/og-image.jpg"
+        />
+
+        {/* Canonical */}
         <link rel="canonical" href="https://famcare.site/" />
+
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MedicalWebPage",
+            name: "FamCare",
+            url: "https://famcare.site",
+            description:
+              "Nền tảng AI hỗ trợ quản lý thuốc và chăm sóc sức khỏe gia đình.",
+            publisher: {
+              "@type": "Organization",
+              name: "FamCare",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://famcare.site/logo.png"
+              }
+            }
+          })}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-white text-slate-900 selection:bg-amber-200 selection:text-slate-900 font-sans">
         <PublicNavbar />
