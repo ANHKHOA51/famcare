@@ -16,6 +16,12 @@ import Article1Page from "./pages/Article1Page.tsx";
 import Article2Page from "./pages/Article2Page.tsx";
 import Article3Page from "./pages/Article3Page.tsx";
 import Article4Page from "./pages/Article4Page.tsx";
+import Article5Page from "./pages/Article5Page.tsx";
+import Article6Page from "./pages/Article6Page.tsx";
+import Article7Page from "./pages/Article7Page.tsx";
+import Article8Page from "./pages/Article8Page.tsx";
+import Article9Page from "./pages/Article9Page.tsx";
+import Article10Page from "./pages/Article10Page.tsx";
 
 // App pages (protected, rendered inside AppLayout via <Outlet />)
 import DashboardPage from "./pages/DashboardPage.tsx";
@@ -69,6 +75,12 @@ const App = () => (
             <Route path="/resources/cach-doc-don-thuoc-giay" element={<Article2Page />} />
             <Route path="/resources/he-sinh-thai-famcare" element={<Article3Page />} />
             <Route path="/resources/quen-uong-thuoc-va-cach-xu-ly" element={<Article4Page />} />
+            <Route path="/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong" element={<Article5Page />} />
+            <Route path="/resources/danh-muc-thuoc-thiet-yeu-cho-tu-thuoc-gia-dinh-2026" element={<Article6Page />} />
+            <Route path="/resources/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap" element={<Article7Page />} />
+            <Route path="/resources/mat-giay-kham-suc-khoe-va-ho-so-y-te" element={<Article8Page />} />
+            <Route path="/resources/quan-ly-tu-thuoc-gia-dinh-an-toan" element={<Article9Page />} />
+            <Route path="/resources/co-nen-uong-thuoc-bang-nuoc-tra" element={<Article10Page />} />
 
             {/* ── Protected App Routes (nested under AppLayout) ── */}
             {/* AppLayout renders <Outlet /> for each child page.       */}

@@ -230,6 +230,195 @@ export default function ResourcesPage() {
                     </p>
                   </div>
                 </Link>
+
+                {/* Article 3 */}
+                <Link to="/resources/he-sinh-thai-famcare" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-3/hinh1.jpg" 
+                      alt="Hệ Sinh Thái FamCare" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">10 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['he-sinh-thai-famcare'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Hệ Sinh Thái FamCare
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Khám phá nền tảng y tế thông minh FamCare và cách nó giúp chăm sóc sức khỏe gia đình bạn.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 5 */}
+                <Link to="/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-5/hinh1.jpg" 
+                      alt="Uống Kháng Sinh Với Sữa" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">11 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['uong-khang-sinh-voi-sua-co-nguy-hiem-khong'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Uống Kháng Sinh Với Sữa: Thói Quen Tiện Lợi Hay Nguy Cơ Gây Hại?
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Uống kháng sinh với sữa tiềm ẩn rủi ro tương tác thuốc. Tìm hiểu sự thật để bảo vệ sức khỏe gia đình.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 6 */}
+                <Link to="/resources/danh-muc-thuoc-thiet-yeu-cho-tu-thuoc-gia-dinh-2026" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-6/hinh1.jpg" 
+                      alt="Tủ Thuốc Gia Đình" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">12 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['danh-muc-thuoc-thiet-yeu-cho-tu-thuoc-gia-dinh-2026'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Tủ Thuốc Gia Đình Cần Có Gì? Danh Mục 2026
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Khám phá danh mục thuốc thiết yếu cho tủ thuốc gia đình. Cập nhật các loại thuốc nên có sẵn.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 7 */}
+                <Link to="/resources/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-7/hinh1.jpg" 
+                      alt="Lưu Trữ Đơn Thuốc" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">13 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      3 Dấu Hiệu Lưu Trữ Đơn Thuốc Sai Cách
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Nhận diện 3 dấu hiệu sai lầm phổ biến và giải pháp số hóa hồ sơ y tế từ FamCare.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 8 */}
+                <Link to="/resources/mat-giay-kham-suc-khoe-va-ho-so-y-te" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-8/hinh1.jpg" 
+                      alt="Mất Hồ Sơ Y Tế" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">14 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['mat-giay-kham-suc-khoe-va-ho-so-y-te'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Mất Giấy Khám Sức Khỏe Thì Phải Làm Sao?
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Giải pháp tìm lại hồ sơ y tế và cách xử lý khi mất tài liệu y tế quan trọng.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 9 */}
+                <Link to="/resources/quan-ly-tu-thuoc-gia-dinh-an-toan" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-9/hinh1.jfif" 
+                      alt="Quản Lý Tủ Thuốc An Toàn" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">15 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['quan-ly-tu-thuoc-gia-dinh-an-toan'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Nguy Hiểm Dùng Nhầm Thuốc: Quản Lý Tủ Thuốc An Toàn
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Bí quyết quản lý tủ thuốc thông minh và phân loại thuốc riêng biệt cho từng thành viên.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 10 */}
+                <Link to="/resources/co-nen-uong-thuoc-bang-nuoc-tra" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-10/hinh1.jpg" 
+                      alt="Uống Thuốc Bằng Nước Trà" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
+                      <span className="text-[0.6875rem] text-slate-400">16 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['co-nen-uong-thuoc-bang-nuoc-tra'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Có Nên Uống Thuốc Bằng Nước Trà?
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Những tương tác thuốc cần tránh để bảo vệ sức khỏe và hiệu quả điều trị của bạn.
+                    </p>
+                  </div>
+                </Link>
               </div>
             </div>
 
