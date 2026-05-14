@@ -378,7 +378,7 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
-                      <span className="text-[0.6875rem] text-slate-400">15 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">09 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['quan-ly-tu-thuoc-gia-dinh-an-toan'] || 0}</span>
@@ -405,7 +405,7 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-sky-100 text-sky-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kiến thức y khoa</span>
-                      <span className="text-[0.6875rem] text-slate-400">16 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">07 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['co-nen-uong-thuoc-bang-nuoc-tra'] || 0}</span>
