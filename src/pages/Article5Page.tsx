@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 
 interface TocItem {
   id: string;
@@ -94,7 +95,7 @@ export default function Article5Page() {
 
         <meta
           name="description"
-          content="Uống kháng sinh với sữa là thói quen của nhiều người nhưng tiềm ẩn rủi ro tương tác thuốc. Tìm hiểu ngay sự thật để bảo vệ sức khỏe gia đình cùng FamCare."
+          content="Uống kháng sinh với sữa là thói quen nguy hiểm. Tìm hiểu thực hư khi uống kháng sinh cùng sữa có tác dụng gì và cách xử lý đúng từ FamCare."
         />
 
         <meta
@@ -104,7 +105,7 @@ export default function Article5Page() {
 
         <link
           rel="canonical"
-          href="https://famcare.site/bai-viet/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"
+          href="https://famcare.site/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"
         />
 
         <meta
@@ -121,6 +122,8 @@ export default function Article5Page() {
           property="og:image"
           content="https://famcare.site/bai-5/hinh1.jpg"
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <meta
           property="og:type"
@@ -129,8 +132,22 @@ export default function Article5Page() {
 
         <meta
           property="og:url"
-          content="https://famcare.site/bai-viet/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"
+          content="https://famcare.site/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Uống kháng sinh với sữa: Thói quen tiện lợi hay nguy cơ gây hại sức khỏe?",
+            "description": "Uống kháng sinh với sữa là thói quen nguy hiểm. Tìm hiểu cách xử lý đúng cùng FamCare.",
+            "image": "https://famcare.site/bai-5/hinh1.jpg",
+            "datePublished": "2026-05-15",
+            "dateModified": "2026-05-15",
+            "author": {"@type": "Organization", "name": "FamCare", "url": "https://famcare.site"},
+            "publisher": {"@type": "Organization", "name": "FamCare", "logo": {"@type": "ImageObject", "url": "https://famcare.site/logo.png"}},
+            "mainEntityOfPage": {"@type": "WebPage", "@id": "https://famcare.site/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"}
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-slate-50 selection:bg-cyan-200 selection:text-cyan-900 font-body pb-10">
@@ -286,6 +303,28 @@ export default function Article5Page() {
               </p>
             </div>
           </div>
+          <div className="mt-20 pt-16 border-t-2 border-slate-200">
+            <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link to="/resources/cach-doc-don-thuoc-giay" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy</h3>
+                <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác và tránh sai lầm.</p>
+              </Link>
+              <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng</h3>
+                <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc.</p>
+              </Link>
+              <a href="/app/cabinet" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">✨ Tủ thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Quản lý thông minh lịch uống thuốc.</p>
+              </a>
+              <a href="/app/meal-plan" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lập kế hoạch ăn uống</h3>
+                <p className="text-slate-600 text-sm">Nhận gợi ý thực đơn cá nhân hóa.</p>
+              </a>
+            </div>
+          </div>
+
         </main>
 
         <PublicFooter />

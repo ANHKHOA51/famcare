@@ -106,7 +106,7 @@ export default function Article1Page() {
 
         <meta
           name="description"
-          content="Tìm hiểu các tương tác giữa thực phẩm và thuốc giúp tăng hiệu quả điều trị và tránh tác dụng phụ nguy hiểm."
+          content="Hướng dẫn lựa chọn thực phẩm phù hợp khi dùng thuốc, tránh tương tác nguy hiểm với tim mạch, kháng sinh. Hiểu cơ chế tương tác thực phẩm-thuốc để phát huy hiệu quả điều trị từ FamCare."
         />
 
         <meta
@@ -116,7 +116,7 @@ export default function Article1Page() {
 
         <link
           rel="canonical"
-          href="https://famcare.site/bai-viet/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
+          href="https://famcare.site/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
         />
 
         <meta
@@ -133,6 +133,8 @@ export default function Article1Page() {
           property="og:image"
           content="https://famcare.site/bai-1/hinh1.jpg"
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <meta
           property="og:type"
@@ -141,8 +143,36 @@ export default function Article1Page() {
 
         <meta
           property="og:url"
-          content="https://famcare.site/bai-viet/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
+          content="https://famcare.site/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc",
+            "description": "Hướng dẫn lựa chọn thực phẩm phù hợp khi dùng thuốc, tránh tương tác nguy hiểm với tim mạch, kháng sinh. Hiểu cơ chế tương tác thực phẩm-thuốc để phát huy hiệu quả điều trị từ FamCare.",
+            "image": "https://famcare.site/bai-1/hinh1.jpg",
+            "datePublished": "2026-05-15",
+            "dateModified": "2026-05-15",
+            "author": {
+              "@type": "Organization",
+              "name": "FamCare",
+              "url": "https://famcare.site"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "FamCare",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://famcare.site/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://famcare.site/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
+            }
+          })}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-sky-50 selection:bg-amber-200 selection:text-amber-900 font-body pb-10">
         <PublicNavbar />
@@ -334,6 +364,41 @@ export default function Article1Page() {
           <p className="text-justify text-[13px] text-center text-slate-400 mt-16 pt-8 border-t border-slate-200 font-sans">
             Nội dung mang tính tham khảo, không thay thế tư vấn y tế chuyên nghiệp định kỳ.
           </p>
+
+          {/* Related Articles Section */}
+          <div className="mt-20 pt-16 border-t-2 border-slate-200">
+            <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link 
+                to="/resources/cach-doc-don-thuoc-giay"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Cách đọc đơn thuốc giấy: 5 sai lầm phổ biến</h3>
+                <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác, tránh nhầm lẫn liều lượng và hiểu ký hiệu y tế.</p>
+              </Link>
+              <Link 
+                to="/resources/quan-ly-tuy-thuoc"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Hướng dẫn quản lý tủ thuốc gia đình</h3>
+                <p className="text-slate-600 text-sm">Các mẹo và kỹ năng quản lý tủ thuốc hiệu quả, tránh thuốc hết hạn và mất mát.</p>
+              </Link>
+              <a 
+                href="/app/meal-plan"
+                className="p-6 border border-emerald-200 bg-emerald-50/50 rounded-xl hover:border-emerald-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-emerald-600 transition-colors">✨ Lập kế hoạch ăn uống thông minh</h3>
+                <p className="text-slate-600 text-sm">Nhận gợi ý thực đơn cá nhân hóa theo tình trạng sức khỏe và thuốc đang sử dụng.</p>
+              </a>
+              <a 
+                href="/app/cabinet"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Tủ thuốc AI - Quản lý thông minh</h3>
+                <p className="text-slate-600 text-sm">Lưu trữ và theo dõi tất cả thông tin thuốc của gia đình trong một ứng dụng.</p>
+              </a>
+            </div>
+          </div>
 
         </main>
 

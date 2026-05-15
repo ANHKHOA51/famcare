@@ -111,7 +111,7 @@ export default function Article7Page() {
 
         <link
           rel="canonical"
-          href="https://famcare.site/bai-viet/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap"
+          href="https://famcare.site/resources/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap"
         />
 
         <meta
@@ -128,6 +128,8 @@ export default function Article7Page() {
           property="og:image"
           content="https://famcare.site/bai-7/hinh1.jpg"
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <meta
           property="og:type"
@@ -136,8 +138,22 @@ export default function Article7Page() {
 
         <meta
           property="og:url"
-          content="https://famcare.site/bai-viet/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap"
+          content="https://famcare.site/resources/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap"
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "3 Dấu Hiệu Lưu Trữ Đơn Thuốc Sai Cách: Rủi Ro Tiềm Ẩn Và Cách Xử Lý",
+            "description": "Bạn có đang lưu trữ đơn thuốc đúng quy định? Khám phá ngay 3 dấu hiệu sai lầm phổ biến và giải pháp số hóa hồ sơ y tế từ FamCare.",
+            "image": "https://famcare.site/bai-7/hinh1.jpg",
+            "datePublished": "2026-05-15",
+            "dateModified": "2026-05-15",
+            "author": {"@type": "Organization", "name": "FamCare", "url": "https://famcare.site"},
+            "publisher": {"@type": "Organization", "name": "FamCare", "logo": {"@type": "ImageObject", "url": "https://famcare.site/logo.png"}},
+            "mainEntityOfPage": {"@type": "WebPage", "@id": "https://famcare.site/resources/3-dau-hieu-luu-tru-don-thuoc-sai-cach-va-giai-phap"}
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-slate-50 selection:bg-cyan-200 selection:text-cyan-900 font-body pb-10">
@@ -279,6 +295,29 @@ export default function Article7Page() {
                 Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a><br />
                 Email: famcare.support@gmail.com
               </p>
+            </div>
+          </div>
+
+          {/* Related Articles Section */}
+          <div className="mt-20 pt-16 border-t-2 border-slate-200">
+            <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link to="/resources/cach-doc-don-thuoc-giay" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy</h3>
+                <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác.</p>
+              </Link>
+              <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc</h3>
+                <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc.</p>
+              </Link>
+              <a href="/app/cabinet" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">✨ Tủ thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Quản lý thông minh hồ sơ.</p>
+              </a>
+              <a href="/app/scanner" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quét đơn thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Số hóa đơn thuốc giấy tự động.</p>
+              </a>
             </div>
           </div>
         </main>

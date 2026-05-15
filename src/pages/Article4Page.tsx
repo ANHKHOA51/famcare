@@ -120,7 +120,7 @@ export default function Article4Page() {
 
         <meta
           name="description"
-          content="Quên uống thuốc có nguy hiểm không? Tìm hiểu cách xử lý đúng khi quên thuốc huyết áp, tránh thai, insulin, ARV và kháng sinh cùng FamCare."
+          content="Quên uống thuốc có nguy hiểm không? Tìm hiểu cách xử lý đúng khi quên thuốc huyết áp, tránh thai, insulin, ARV và kháng sinh. Hướng dẫn chi tiết cho mỗi loại thuốc từ chuyên gia FamCare."
         />
 
         <meta
@@ -142,20 +142,50 @@ export default function Article4Page() {
 
         <meta
           property="og:url"
-          content="https://famcare.site/blog/quen-uong-thuoc-va-cach-xu-ly"
+          content="https://famcare.site/resources/quen-uong-thuoc-va-cach-xu-ly"
         />
 
         <meta
           property="og:image"
           content="https://famcare.site/bai-4/hinh1.jpg"
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <meta name="twitter:card" content="summary_large_image" />
 
         <link
           rel="canonical"
-          href="https://famcare.site/blog/quen-uong-thuoc-va-cach-xu-ly"
+          href="https://famcare.site/resources/quen-uong-thuoc-va-cach-xu-ly"
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Quên uống thuốc thì có sao không? Hướng dẫn xử lý đúng",
+            "description": "Quên uống thuốc có nguy hiểm không? Tìm hiểu cách xử lý đúng khi quên thuốc huyết áp, tránh thai, insulin, ARV và kháng sinh. Hướng dẫn chi tiết cho mỗi loại thuốc từ chuyên gia FamCare.",
+            "image": "https://famcare.site/bai-4/hinh1.jpg",
+            "datePublished": "2026-05-15",
+            "dateModified": "2026-05-15",
+            "author": {
+              "@type": "Organization",
+              "name": "FamCare",
+              "url": "https://famcare.site"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "FamCare",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://famcare.site/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://famcare.site/resources/quen-uong-thuoc-va-cach-xu-ly"
+            }
+          })}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-slate-50 selection:bg-cyan-200 selection:text-cyan-900 font-body pb-10">
         <PublicNavbar />
@@ -367,6 +397,41 @@ export default function Article4Page() {
               <strong className="block text-slate-700 mb-1 uppercase tracking-wider text-xs">FamCare - Nền tảng y tế thông minh - Chăm sóc gia đình từ xa</strong>
               <span className="block mb-1">Website: <a href="https://famcare.site/" className="text-cyan-600 hover:underline">https://famcare.site/</a></span>
               <span className="block">Email: <a href="mailto:famcare.support@gmail.com" className="text-cyan-600 hover:underline">famcare.support@gmail.com</a></span>
+            </div>
+          </div>
+
+          {/* Related Articles Section */}
+          <div className="mt-20 pt-16 border-t-2 border-slate-200">
+            <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link 
+                to="/resources/cach-doc-don-thuoc-giay"
+                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy: 5 sai lầm phổ biến</h3>
+                <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác, tránh nhầm lẫn liều lượng và hiểu ký hiệu y tế.</p>
+              </Link>
+              <Link 
+                to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
+                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc</h3>
+                <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc để tối ưu hóa điều trị.</p>
+              </Link>
+              <a 
+                href="/app/cabinet"
+                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">✨ Tủ thuốc AI - Nhắc nhở tự động</h3>
+                <p className="text-slate-600 text-sm">Quản lý thông minh lịch uống thuốc để không quên bao giờ.</p>
+              </a>
+              <a 
+                href="/app/scanner"
+                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quét đơn thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Số hóa đơn thuốc giấy một cách tự động và chính xác.</p>
+              </a>
             </div>
           </div>
 

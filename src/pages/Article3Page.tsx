@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
@@ -6,7 +7,64 @@ import { ArrowRight, Activity, ShieldCheck, Cpu } from "lucide-react";
 
 export default function Article3Page() {
   return (
-    <div className="min-h-screen bg-neutral-50 selection:bg-indigo-200 selection:text-indigo-900 font-body">
+    <>
+      <Helmet>
+        <title>Hệ sinh thái FamCare: Giải pháp toàn diện chăm sóc sức khỏe gia đình</title>
+        <meta
+          name="description"
+          content="Khám phá hệ sinh thái FamCare - nền tảng y tế số toàn diện với máy quét đơn thuốc AI, tủ thuốc thông minh, và tối ưu hóa dinh dưỡng cho sức khỏe gia đình."
+        />
+
+        <meta name="keywords" content="hệ sinh thái FamCare, nền tảng y tế số, quét đơn thuốc AI, tủ thuốc AI, quản lý sức khỏe gia đình" />
+
+        <link
+          rel="canonical"
+          href="https://famcare.site/resources/he-sinh-thai-famcare-giai-phap-toan-dien"
+        />
+
+        <meta
+          property="og:title"
+          content="Hệ sinh thái FamCare: Giải pháp toàn diện chăm sóc sức khỏe gia đình"
+        />
+
+        <meta
+          property="og:description"
+          content="Khám phá hệ sinh thái FamCare - nền tảng y tế số toàn diện với máy quét đơn thuốc AI, tủ thuốc thông minh, và tối ưu hóa dinh dưỡng cho sức khỏe gia đình."
+        />
+
+        <meta
+          property="og:image"
+          content="https://famcare.site/bai-3/hinh1.jpg"
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <meta
+          property="og:type"
+          content="article"
+        />
+
+        <meta
+          property="og:url"
+          content="https://famcare.site/resources/he-sinh-thai-famcare-giai-phap-toan-dien"
+        />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Hệ sinh thái FamCare: Giải pháp toàn diện chăm sóc sức khỏe gia đình",
+            "description": "Khám phá hệ sinh thái FamCare - nền tảng y tế số toàn diện với máy quét đơn thuốc AI, tủ thuốc thông minh, và tối ưu hóa dinh dưỡng cho sức khỏe gia đình.",
+            "image": "https://famcare.site/bai-3/hinh1.jpg",
+            "datePublished": "2026-05-15",
+            "dateModified": "2026-05-15",
+            "author": {"@type": "Organization", "name": "FamCare", "url": "https://famcare.site"},
+            "publisher": {"@type": "Organization", "name": "FamCare", "logo": {"@type": "ImageObject", "url": "https://famcare.site/logo.png"}},
+            "mainEntityOfPage": {"@type": "WebPage", "@id": "https://famcare.site/resources/he-sinh-thai-famcare-giai-phap-toan-dien"}
+          })}
+        </script>
+      </Helmet>
+
+      <div className="min-h-screen bg-neutral-50 selection:bg-indigo-200 selection:text-indigo-900 font-body">
       <PublicNavbar />
 
       {/* Feature Article Hero - Full width image background */}
@@ -153,11 +211,35 @@ export default function Article3Page() {
             </div>
           </div>
 
+          {/* Related Articles Section */}
+          <div className="mt-20 pt-16 border-t-2 border-slate-200">
+            <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link to="/resources/cach-doc-don-thuoc-giay" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy: 5 sai lầm phổ biến</h3>
+                <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác và tránh sai lầm.</p>
+              </Link>
+              <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc</h3>
+                <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc.</p>
+              </Link>
+              <a href="/app/cabinet" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">✨ Tủ thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Quản lý thông minh lịch uống thuốc.</p>
+              </a>
+              <a href="/app/scanner" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quét đơn thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Số hóa đơn thuốc giấy tự động.</p>
+              </a>
+            </div>
+          </div>
+
         </div>
       </main>
 
       <PublicFooter />
-    </div>
+      </div>
+    </>
   );
 }
 

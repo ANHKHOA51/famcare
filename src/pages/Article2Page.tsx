@@ -98,9 +98,7 @@ export default function Article2Page() {
 
         <meta
           name="description"
-          content="
-      Hướng dẫn cách đọc đơn thuốc giấy chuẩn xác, giải thích ký hiệu kê đơn và tránh 5 sai lầm phổ biến khi sử dụng thuốc tại nhà.
-    "
+          content="Học cách đọc đơn thuốc giấy chuẩn xác, tránh 5 sai lầm phổ biến (nhầm liều lượng, thời điểm uống) và hiểu ký hiệu y tế. Hướng dẫn chi tiết từ FamCare với công nghệ quét đơn thuốc AI thông minh."
         />
 
         <meta
@@ -146,6 +144,8 @@ export default function Article2Page() {
           property="og:image"
           content="https://famcare.site/bai-2/hinh1.jpg"
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <meta
           name="twitter:card"
@@ -171,6 +171,34 @@ export default function Article2Page() {
           rel="canonical"
           href="https://famcare.site/resources/cach-doc-don-thuoc-giay"
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Cách Đọc Đơn Thuốc Giấy: 5 Sai Lầm Phổ Biến Và Cách Xử Lý",
+            "description": "Học cách đọc đơn thuốc giấy chuẩn xác, tránh 5 sai lầm phổ biến (nhầm liều lượng, thời điểm uống) và hiểu ký hiệu y tế. Hướng dẫn chi tiết từ FamCare với công nghệ quét đơn thuốc AI thông minh.",
+            "image": "https://famcare.site/bai-2/hinh1.jpg",
+            "datePublished": "2026-05-15",
+            "dateModified": "2026-05-15",
+            "author": {
+              "@type": "Organization",
+              "name": "FamCare",
+              "url": "https://famcare.site"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "FamCare",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://famcare.site/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://famcare.site/resources/cach-doc-don-thuoc-giay"
+            }
+          })}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-sky-50 selection:bg-amber-200 selection:text-amber-900 font-body pb-10">
         <PublicNavbar />
@@ -388,6 +416,41 @@ export default function Article2Page() {
             <p className="text-justify font-bold text-slate-800"><strong>FamCare</strong> - Nền tảng y tế thông minh - Chăm sóc gia đình từ xa.</p>
             <p>Website: <a href="https://famcare.site/" className="text-blue-600 hover:underline">https://<strong>famcare</strong>.site/</a></p>
             <p>Email: <a href="mailto:famcare.support@gmail.com" className="text-blue-600 hover:underline"><strong>famcare</strong>.support@gmail.com</a></p>
+          </div>
+
+          {/* Related Articles Section */}
+          <div className="mt-20 pt-16 border-t-2 border-slate-200">
+            <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link 
+                to="/resources/cach-lua-chon-thuoc-an-toan"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Cách lựa chọn thuốc an toàn cho gia đình</h3>
+                <p className="text-slate-600 text-sm">Tìm hiểu cách chọn lựa thuốc phù hợp và an toàn nhất cho sức khỏe gia đình của bạn.</p>
+              </Link>
+              <Link 
+                to="/resources/quan-ly-tuy-thuoc"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Hướng dẫn quản lý tủ thuốc gia đình</h3>
+                <p className="text-slate-600 text-sm">Các mẹo và kỹ năng quản lý tủ thuốc hiệu quả, tránh thuốc hết hạn và mất mát.</p>
+              </Link>
+              <a 
+                href="/app/scanner"
+                className="p-6 border border-sky-200 bg-sky-50/50 rounded-xl hover:border-sky-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-sky-600 transition-colors">✨ Quét đơn thuốc bằng AI</h3>
+                <p className="text-slate-600 text-sm">Sử dụng công nghệ AI để số hóa và quản lý đơn thuốc của bạn một cách tự động.</p>
+              </a>
+              <a 
+                href="/app/cabinet"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Tủ thuốc AI - Quản lý thông minh</h3>
+                <p className="text-slate-600 text-sm">Lưu trữ và theo dõi tất cả thông tin thuốc của gia đình trong một ứng dụng.</p>
+              </a>
+            </div>
           </div>
 
         </main>
