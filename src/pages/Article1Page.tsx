@@ -5,6 +5,7 @@ import PublicFooter from "@/components/PublicFooter";
 import { List, ArrowRight, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
+import SocialShareButtons from '@/components/SocialShareButtons';
 
 interface TocItem {
   id: string;
@@ -111,7 +112,7 @@ export default function Article1Page() {
 
         <meta
           name="keywords"
-          content="thực phẩm và thuốc, tương tác thuốc, nước bưởi thuốc tim mạch"
+          content="lựa chọn thực phẩm, tương tác thuốc thực phẩm, nước bưởi thuốc, thuốc tim mạch, hiệu quả thuốc, phòng tránh tương tác"
         />
 
         <link
@@ -135,6 +136,26 @@ export default function Article1Page() {
         />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+
+        <meta
+          name="twitter:card"
+          content="summary_large_image"
+        />
+
+        <meta
+          name="twitter:title"
+          content="Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc"
+        />
+
+        <meta
+          name="twitter:description"
+          content="Hướng dẫn lựa chọn thực phẩm phù hợp khi dùng thuốc, tránh tương tác nguy hiểm."
+        />
+
+        <meta
+          name="twitter:image"
+          content="https://famcare.site/bai-1/hinh1.jpg"
+        />
 
         <meta
           property="og:type"
@@ -361,6 +382,12 @@ export default function Article1Page() {
             </div>
           </div>
 
+          <SocialShareButtons 
+            title="Lựa chọn thực phẩm để phát huy tác dụng thuốc"
+            url="https://famcare.site/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
+            description="Khám phá cách lựa chọn thực phẩm phù hợp để tối ưu hóa hiệu quả của thuốc"
+          />
+
           <p className="text-justify text-[13px] text-center text-slate-400 mt-16 pt-8 border-t border-slate-200 font-sans">
             Nội dung mang tính tham khảo, không thay thế tư vấn y tế chuyên nghiệp định kỳ.
           </p>
@@ -368,7 +395,7 @@ export default function Article1Page() {
           {/* Related Articles Section */}
           <div className="mt-20 pt-16 border-t-2 border-slate-200">
             <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Link 
                 to="/resources/cach-doc-don-thuoc-giay"
                 className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
@@ -377,11 +404,18 @@ export default function Article1Page() {
                 <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác, tránh nhầm lẫn liều lượng và hiểu ký hiệu y tế.</p>
               </Link>
               <Link 
-                to="/resources/quan-ly-tuy-thuoc"
+                to="/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"
                 className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
               >
-                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Hướng dẫn quản lý tủ thuốc gia đình</h3>
-                <p className="text-slate-600 text-sm">Các mẹo và kỹ năng quản lý tủ thuốc hiệu quả, tránh thuốc hết hạn và mất mát.</p>
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Uống kháng sinh với sữa: Thói quen nguy hiểm?</h3>
+                <p className="text-slate-600 text-sm">Khám phá tương tác giữa kháng sinh và sữa, cách uống thuốc an toàn.</p>
+              </Link>
+              <Link 
+                to="/resources/co-nen-uong-thuoc-bang-nuoc-tra"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Có nên uống thuốc bằng nước trà?</h3>
+                <p className="text-slate-600 text-sm">Hiểu về tương tác thuốc với các loại thức uống khác nhau.</p>
               </Link>
               <a 
                 href="/app/meal-plan"

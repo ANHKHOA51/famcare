@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Helmet } from 'react-helmet-async';
+import SocialShareButtons from '@/components/SocialShareButtons';
 
 interface TocItem {
   id: string;
@@ -108,7 +109,7 @@ export default function Article9Page() {
 
         <meta
           name="keywords"
-          content="uống nhầm thuốc, quản lý tủ thuốc gia đình, phân loại thuốc cho thành viên, nguy hiểm khi dùng nhầm thuốc, cách sắp xếp tủ thuốc gia đình, an toàn sử dụng thuốc tại nhà"
+          content="uống nhầm thuốc, quản lý tủ thuốc gia đình, phân loại thuốc cho thành viên, nguy hiểm khi dùng nhầm thuốc, cách sắp xếp tủ thuốc gia đình, an toàn sử dụng thuốc tại nhà, tủ thuốc riêng biệt, nguy hiểm dùng nhầm, phòng tránh nhầm lẫn thuốc, sắp xếp thuốc an toàn"
         />
 
         <link
@@ -132,6 +133,26 @@ export default function Article9Page() {
         />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+
+        <meta
+          name="twitter:card"
+          content="summary_large_image"
+        />
+
+        <meta
+          name="twitter:title"
+          content="Nguy hiểm từ việc dùng nhầm thuốc: Bí quyết quản lý tủ thuốc riêng biệt"
+        />
+
+        <meta
+          name="twitter:description"
+          content="Khám phá bí quyết quản lý tủ thuốc thông minh cho từng thành viên gia đình."
+        />
+
+        <meta
+          name="twitter:image"
+          content="https://famcare.site/bai-9/hinh1.jfif"
+        />
 
         <meta
           property="og:type"
@@ -331,10 +352,16 @@ export default function Article9Page() {
             </div>
           </div>
 
+          <SocialShareButtons 
+            title="Nguy hiểm từ việc dùng nhầm thuốc: Bí quyết quản lý tủ thuốc riêng biệt"
+            url="https://famcare.site/resources/quan-ly-tu-thuoc-gia-dinh-an-toan"
+            description="Bí quyết quản lý tủ thuốc thông minh cho gia đình"
+          />
+
           {/* Related Articles Section */}
           <div className="mt-20 pt-16 border-t-2 border-slate-200">
             <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Link to="/resources/cach-doc-don-thuoc-giay" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy</h3>
                 <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác.</p>
@@ -343,13 +370,21 @@ export default function Article9Page() {
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc</h3>
                 <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc.</p>
               </Link>
+              <Link to="/resources/co-nen-uong-thuoc-bang-nuoc-tra" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Có nên uống thuốc bằng nước trà?</h3>
+                <p className="text-slate-600 text-sm">Hiểu về tương tác thuốc với các loại thức uống khác.</p>
+              </Link>
               <a href="/app/cabinet" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">✨ Tủ thuốc AI</h3>
                 <p className="text-slate-600 text-sm">Quản lý thông minh phân loại.</p>
               </a>
-              <a href="/app/scanner" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+              <a href="/app/scanner" className="p-6 border border-cyan-200 bg-cyan-50/50 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quét đơn thuốc AI</h3>
                 <p className="text-slate-600 text-sm">Số hóa đơn thuốc giấy tự động.</p>
+              </a>
+              <a href="/app/meal-plan" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lập kế hoạch ăn uống</h3>
+                <p className="text-slate-600 text-sm">Nhận gợi ý thực đơn cá nhân hóa.</p>
               </a>
             </div>
           </div>

@@ -3,6 +3,7 @@ import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import SocialShareButtons from '@/components/SocialShareButtons';
 
 interface TocItem {
   id: string;
@@ -100,7 +101,7 @@ export default function Article5Page() {
 
         <meta
           name="keywords"
-          content="uống kháng sinh với sữa, sữa có làm mất tác dụng của thuốc, uống sữa trước khi uống thuốc, pha sữa với thuốc kháng sinh, uống kháng sinh cần kiêng gì, uống thuốc xong bao lâu được uống sữa"
+          content="uống kháng sinh với sữa, sữa có làm mất tác dụng của thuốc, uống sữa trước khi uống thuốc, pha sữa với thuốc kháng sinh, uống kháng sinh cần kiêng gì, uống thuốc xong bao lâu được uống sữa, tương tác thuốc với sữa, calcium và kháng sinh, an toàn dùng kháng sinh"
         />
 
         <link
@@ -303,16 +304,27 @@ export default function Article5Page() {
               </p>
             </div>
           </div>
+
+          <SocialShareButtons 
+            title="Uống kháng sinh với sữa: Có nguy hiểm không?"
+            url="https://famcare.site/resources/uong-khang-sinh-voi-sua-co-nguy-hiem-khong"
+            description="Khám phá tương tác giữa kháng sinh và sữa"
+          />
+
           <div className="mt-20 pt-16 border-t-2 border-slate-200">
             <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Link to="/resources/cach-doc-don-thuoc-giay" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
-                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy</h3>
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Cách đọc đơn thuốc giấy: 5 sai lầm phổ biến</h3>
                 <p className="text-slate-600 text-sm">Học cách đọc đơn thuốc chuẩn xác và tránh sai lầm.</p>
               </Link>
               <Link to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
-                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng</h3>
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm để phát huy tác dụng thuốc</h3>
                 <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc.</p>
+              </Link>
+              <Link to="/resources/quen-uong-thuoc-thi-co-sao-khong" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quên uống thuốc thì có sao không?</h3>
+                <p className="text-slate-600 text-sm">Xử lý an toàn khi quên liều thuốc.</p>
               </Link>
               <a href="/app/cabinet" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">✨ Tủ thuốc AI</h3>
@@ -321,6 +333,10 @@ export default function Article5Page() {
               <a href="/app/meal-plan" className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lập kế hoạch ăn uống</h3>
                 <p className="text-slate-600 text-sm">Nhận gợi ý thực đơn cá nhân hóa.</p>
+              </a>
+              <a href="/app/scanner" className="p-6 border border-cyan-200 bg-cyan-50/50 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group">
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quét đơn thuốc AI</h3>
+                <p className="text-slate-600 text-sm">Số hóa đơn thuốc giấy tự động với AI.</p>
               </a>
             </div>
           </div>

@@ -4,6 +4,7 @@ import PublicFooter from "@/components/PublicFooter";
 import { List, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import SocialShareButtons from '@/components/SocialShareButtons';
 
 interface TocItem {
   id: string;
@@ -103,15 +104,7 @@ export default function Article2Page() {
 
         <meta
           name="keywords"
-          content="
-      cách đọc đơn thuốc giấy,
-      ký hiệu đơn thuốc,
-      đọc đơn thuốc bác sĩ,
-      đơn thuốc viết tay,
-      tra cứu đơn thuốc,
-      famcare,
-      quét đơn thuốc AI
-    "
+          content="cách đọc đơn thuốc giấy, ký hiệu đơn thuốc, đọc đơn thuốc bác sĩ, đơn thuốc viết tay, tra cứu đơn thuốc, famcare, quét đơn thuốc AI, nhầm liều lượng đơn thuốc, 5 sai lầm đọc đơn, hiểu ký hiệu y tế"
         />
 
         <meta
@@ -418,23 +411,36 @@ export default function Article2Page() {
             <p>Email: <a href="mailto:famcare.support@gmail.com" className="text-blue-600 hover:underline"><strong>famcare</strong>.support@gmail.com</a></p>
           </div>
 
+          <SocialShareButtons 
+            title="Cách đọc đơn thuốc giấy: 5 sai lầm phổ biến"
+            url="https://famcare.site/resources/cach-doc-don-thuoc-giay"
+            description="Học cách đọc đơn thuốc chuẩn xác và tránh 5 sai lầm phổ biến"
+          />
+
           {/* Related Articles Section */}
           <div className="mt-20 pt-16 border-t-2 border-slate-200">
             <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Link 
-                to="/resources/cach-lua-chon-thuoc-an-toan"
+                to="/resources/lua-chon-thuc-pham-dung-de-phat-huy-tac-dung-thuoc"
                 className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
               >
-                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Cách lựa chọn thuốc an toàn cho gia đình</h3>
-                <p className="text-slate-600 text-sm">Tìm hiểu cách chọn lựa thuốc phù hợp và an toàn nhất cho sức khỏe gia đình của bạn.</p>
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Lựa chọn thực phẩm để phát huy tác dụng thuốc</h3>
+                <p className="text-slate-600 text-sm">Hiểu về tương tác giữa thực phẩm và thuốc để tối ưu hiệu quả điều trị.</p>
               </Link>
               <Link 
-                to="/resources/quan-ly-tuy-thuoc"
+                to="/resources/quen-uong-thuoc-thi-co-sao-khong"
                 className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
               >
-                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Hướng dẫn quản lý tủ thuốc gia đình</h3>
-                <p className="text-slate-600 text-sm">Các mẹo và kỹ năng quản lý tủ thuốc hiệu quả, tránh thuốc hết hạn và mất mát.</p>
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Quên uống thuốc thì có sao không?</h3>
+                <p className="text-slate-600 text-sm">Hướng dẫn xử lý an toàn khi quên liều thuốc theo từng loại.</p>
+              </Link>
+              <Link 
+                to="/resources/mat-giay-kham-suc-khoe-va-ho-so-y-te"
+                className="p-6 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Mất giấy khám sức khỏe: Cách xử lý</h3>
+                <p className="text-slate-600 text-sm">Giải pháp nhanh khi mất hồ sơ bệnh án và giấy khám sức khỏe.</p>
               </Link>
               <a 
                 href="/app/scanner"
@@ -449,6 +455,13 @@ export default function Article2Page() {
               >
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Tủ thuốc AI - Quản lý thông minh</h3>
                 <p className="text-slate-600 text-sm">Lưu trữ và theo dõi tất cả thông tin thuốc của gia đình trong một ứng dụng.</p>
+              </a>
+              <a 
+                href="/app/meal-plan"
+                className="p-6 border border-emerald-200 bg-emerald-50/50 rounded-xl hover:border-emerald-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-emerald-600 transition-colors">Lập kế hoạch ăn uống thông minh</h3>
+                <p className="text-slate-600 text-sm">Nhận gợi ý thực đơn cá nhân hóa theo tình trạng sức khỏe và thuốc đang sử dụng.</p>
               </a>
             </div>
           </div>

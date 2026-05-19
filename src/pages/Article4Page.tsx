@@ -5,6 +5,7 @@ import { List, ArrowRight, ShieldCheck, AlertTriangle, Info } from "lucide-react
 import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
+import SocialShareButtons from '@/components/SocialShareButtons';
 
 interface TocItem {
   id: string;
@@ -125,7 +126,7 @@ export default function Article4Page() {
 
         <meta
           name="keywords"
-          content="quên uống thuốc, quên uống thuốc có sao không, quên uống thuốc huyết áp, quên thuốc tránh thai, quên tiêm insulin, quên thuốc kháng sinh, lịch uống thuốc"
+          content="quên uống thuốc, quên uống thuốc có sao không, quên uống thuốc huyết áp, quên thuốc tránh thai, quên tiêm insulin, quên thuốc kháng sinh, lịch uống thuốc, xử lý khi quên thuốc, an toàn sử dụng thuốc, ghi nhớ lịch thuốc"
         />
 
         <meta
@@ -153,6 +154,21 @@ export default function Article4Page() {
         <meta property="og:image:height" content="630" />
 
         <meta name="twitter:card" content="summary_large_image" />
+
+        <meta
+          name="twitter:title"
+          content="Quên uống thuốc thì có sao không? Hướng dẫn xử lý đúng"
+        />
+
+        <meta
+          name="twitter:description"
+          content="Hướng dẫn xử lý an toàn khi quên uống thuốc: thuốc huyết áp, tránh thai, insulin, HIV và kháng sinh."
+        />
+
+        <meta
+          name="twitter:image"
+          content="https://famcare.site/bai-4/hinh1.jpg"
+        />
 
         <link
           rel="canonical"
@@ -400,10 +416,16 @@ export default function Article4Page() {
             </div>
           </div>
 
+          <SocialShareButtons 
+            title="Quên uống thuốc thì có sao không? Hướng dẫn xử lý đúng"
+            url="https://famcare.site/resources/quen-uong-thuoc-thi-co-sao-khong"
+            description="Hướng dẫn xử lý an toàn khi quên uống thuốc"
+          />
+
           {/* Related Articles Section */}
           <div className="mt-20 pt-16 border-t-2 border-slate-200">
             <h2 className="font-display text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Link 
                 to="/resources/cach-doc-don-thuoc-giay"
                 className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
@@ -418,6 +440,13 @@ export default function Article4Page() {
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lựa chọn thực phẩm đúng để phát huy tác dụng thuốc</h3>
                 <p className="text-slate-600 text-sm">Hiểu cơ chế tương tác thực phẩm-thuốc để tối ưu hóa điều trị.</p>
               </Link>
+              <Link 
+                to="/resources/mat-giay-kham-suc-khoe-va-ho-so-y-te"
+                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Mất giấy khám sức khỏe: Cách xử lý</h3>
+                <p className="text-slate-600 text-sm">Giải pháp nhanh khi mất hồ sơ bệnh án và giấy khám sức khỏe.</p>
+              </Link>
               <a 
                 href="/app/cabinet"
                 className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
@@ -427,10 +456,17 @@ export default function Article4Page() {
               </a>
               <a 
                 href="/app/scanner"
-                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+                className="p-6 border border-cyan-200 bg-cyan-50/50 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
               >
                 <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Quét đơn thuốc AI</h3>
                 <p className="text-slate-600 text-sm">Số hóa đơn thuốc giấy một cách tự động và chính xác.</p>
+              </a>
+              <a 
+                href="/app/meal-plan"
+                className="p-6 border border-slate-200 rounded-xl hover:border-cyan-400 hover:shadow-md transition-all group"
+              >
+                <h3 className="font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors">Lập kế hoạch ăn uống thông minh</h3>
+                <p className="text-slate-600 text-sm">Nhận gợi ý thực đơn cá nhân hóa theo tình trạng sức khỏe.</p>
               </a>
             </div>
           </div>
