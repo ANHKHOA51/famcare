@@ -3,6 +3,7 @@ import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
+import { Link } from 'react-router-dom';
 
 interface TocItem {
   id: string;
