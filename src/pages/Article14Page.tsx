@@ -1,10 +1,69 @@
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+const tocItems: TocItem[] = [
+  { id: "thuc-trang", text: "Thực trạng quản lý hồ sơ y tế thủ công", level: 2 },
+  { id: "xu-huong", text: "Xu hướng hồ sơ y tế điện tử năm 2026", level: 3 },
+  { id: "ai-doc-chu", text: "AI giải quyết vấn đề đọc \"chữ bác sĩ\"", level: 2 },
+  { id: "tinh-huong", text: "Những tình huống AI trở thành \"cứu cánh\"", level: 2 },
+  { id: "so-sanh", text: "So sánh lưu trữ thủ công vs AI Scanner", level: 2 },
+  { id: "giai-phap", text: "FamCare: Giải pháp quản lý toàn diện", level: 2 },
+  { id: "ket-bai", text: "Kết bài", level: 2 },
+];
+
+const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
+  <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
+    <span className="font-display text-5xl font-black text-cyan-200/60 leading-none -mt-1 shrink-0">
+      {number}
+    </span>
+    <h2 className="font-display text-2xl sm:text-[1.7rem] font-bold text-slate-900 leading-snug border-b-2 border-cyan-500 pb-2">
+      {title}
+    </h2>
+  </div>
+);
+
 export default function Article14Page() {
+  const [activeId, setActiveId] = useState("");
+
+  useEffect(() => {
+    fetch('/api/articles/tai-sao-nen-dung-ai-scanner-quan-ly-ho-so-y-te/view', { method: 'POST' })
+      .catch(err => console.error("Failed to track view:", err));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        if (visible.length > 0) {
+          setActiveId(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
+    );
+
+    tocItems.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -57,85 +116,132 @@ export default function Article14Page() {
               Giải pháp quét đơn thuốc thông minh và số hóa hồ sơ bệnh án cùng FamCare giúp bạn quản lý sức khỏe hiệu quả.
             </p>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-800 via-cyan-500 to-blue-700 opacity-90"></div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-16 py-12 sm:py-16 text-slate-800">
-          <div className="prose prose-sm sm:prose max-w-none">
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Thực trạng quản lý hồ sơ y tế thủ công</h2>
-            <p className="text-justify mb-6">
-              Việc lưu trữ hồ sơ sức khỏe theo cách truyền thống từ lâu đã trở thành một gánh nặng âm thầm đối với các hộ gia đình Việt. Đơn thuốc, kết quả xét nghiệm thường được cất giữ rời rạc, dẫn đến tình trạng hư hỏng vật lý như ẩm mốc hoặc mờ mực.
-            </p>
+        <main className="px-4 sm:px-8 lg:px-16 py-10 max-w-[860px] mx-auto text-[1.125rem] text-slate-800 leading-[1.85] font-light">
 
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Xu hướng hồ sơ y tế điện tử năm 2026</h3>
-            <p className="text-justify mb-6">
-              Năm 2026 đánh dấu sự bùng nổ của mô hình "Chăm sóc sức khỏe tại gia". Quét đơn thuốc AI chính là cầu nối quan trọng giúp người dân thực hiện chuyển đổi số từ dữ liệu giấy sang dữ liệu số. Việc sử dụng ứng dụng công nghệ thông tin trong quản lý y tế lúc này không còn là lựa chọn xa xỉ, mà là công cụ để bạn kết nối trực tiếp với các dịch vụ Telemedicine.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">AI giải quyết vấn đề đọc "chữ bác sĩ"</h2>
-            <p className="text-justify mb-6">
-              Một trong những nỗi lo lớn nhất khi quản lý hồ sơ bệnh án giấy là tình trạng chữ viết tay khó đọc. Công nghệ nhận diện và đọc chính xác đơn thuốc viết tay đã giải quyết triệt để bài toán này. Bằng cách sử dụng các thuật toán trí tuệ nhân tạo, Quét đơn thuốc AI có khả năng hỗ trợ nhận diện chữ viết tay và trích xuất thông tin nhanh chóng, chính xác hơn nhiều so với nhập liệu thủ công.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Những tình huống AI trở thành "cứu cánh"</h2>
-            <ul className="list-disc pl-6 mb-6 space-y-3">
-              <li><strong>Tìm đơn thuốc cũ khi tái khám:</strong> Thay vì mang theo một xấp hồ sơ cồng kềnh, bạn chỉ cần mở app và tìm kiếm theo ngày hoặc tên bệnh.</li>
-              <li><strong>Quản lý thuốc cho người già:</strong> Với các đơn thuốc viết tay dài, quét đơn thuốc bằng AI giúp chuyển đổi thành danh sách số rõ ràng.</li>
-              <li><strong>Lưu lịch sử bệnh của trẻ nhỏ:</strong> Mọi đợt ốm của con được lưu hồ sơ y tế online vĩnh viễn.</li>
-              <li><strong>Chia sẻ hồ sơ cho bác sĩ:</strong> Gửi một bản quét sạch sẽ qua ứng dụng giúp bác sĩ đưa ra chẩn đoán chính xác hơn.</li>
+          {/* Table of Contents */}
+          <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
+            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              Mục lục bài viết
+            </h3>
+            <ul className="space-y-2">
+              {tocItems.map((item) => (
+                <li key={item.id} style={{ marginLeft: item.level === 3 ? '16px' : '0' }}>
+                  <button
+                    onClick={() => scrollTo(item.id)}
+                    className={`text-left hover:text-cyan-600 transition-colors ${
+                      activeId === item.id ? 'text-cyan-600 font-semibold' : 'text-slate-600'
+                    }`}
+                  >
+                    {item.text}
+                  </button>
+                </li>
+              ))}
             </ul>
+          </nav>
 
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">So sánh lưu trữ thủ công vs AI Scanner</h2>
-            
-            <div className="overflow-x-auto mb-6">
-              <table className="w-full border-collapse border border-slate-300 text-sm">
-                <thead className="bg-slate-100">
-                  <tr>
-                    <th className="border border-slate-300 p-2">Tiêu chí</th>
-                    <th className="border border-slate-300 p-2">Lưu trữ thủ công</th>
-                    <th className="border border-slate-300 p-2">Quét đơn thuốc AI</th>
-                  </tr>
-                </thead>
-                <tbody className="text-xs">
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Độ bền</strong></td>
-                    <td className="border border-slate-300 p-2">Dễ rách, ẩm mốc, mờ mực</td>
-                    <td className="border border-slate-300 p-2">Lưu trữ vĩnh viễn trên đám mây</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Độ chính xác</strong></td>
-                    <td className="border border-slate-300 p-2">Dễ sai sót khi tự đọc</td>
-                    <td className="border border-slate-300 p-2">Giảm tối đa sai sót</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Tính nhắc nhở</strong></td>
-                    <td className="border border-slate-300 p-2">Người dùng tự ghi nhớ</td>
-                    <td className="border border-slate-300 p-2">Tự động nhắc lịch uống thuốc</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Tính di động</strong></td>
-                    <td className="border border-slate-300 p-2">Cồng kềnh, khó mang theo</td>
-                    <td className="border border-slate-300 p-2">Luôn sẵn sàng trên điện thoại</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          {/* Section 1 */}
+          <SectionHeading number="01" id="thuc-trang" title="Thực trạng quản lý hồ sơ y tế thủ công" />
 
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">FamCare: Giải pháp quản lý hồ sơ y tế toàn diện</h2>
-            <ul className="list-disc pl-6 mb-6 space-y-2">
-              <li>Quét đơn thuốc thông minh tích hợp AI Scanner</li>
-              <li>Lưu hồ sơ y tế online tập trung cho từng thành viên</li>
-              <li>Tương tác thông minh với cảnh báo tương tác thuốc và thực phẩm</li>
-            </ul>
+          <p className="text-justify mb-6">
+            Việc lưu trữ hồ sơ sức khỏe theo cách truyền thống từ lâu đã trở thành một gánh nặng âm thầm đối với các hộ gia đình Việt. Đơn thuốc, kết quả xét nghiệm thường được cất giữ rời rạc, dẫn đến tình trạng hư hỏng vật lý như ẩm mốc hoặc mờ mực.
+          </p>
 
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Kết bài</h2>
-            <p className="mb-6">
-              Việc chuyển từ lưu trữ thủ công sang sử dụng Quét đơn thuốc AI không chỉ là xu hướng, mà là hành động thiết thực để bảo vệ sức khỏe và sự an tâm của những người thân yêu. Hệ thống quản lý hồ sơ y tế minh bạch chính là nền tảng của cuộc sống chất lượng năm 2026.
+          <h3 id="xu-huong" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Xu hướng hồ sơ y tế điện tử năm 2026
+          </h3>
+          <p className="text-justify mb-6">
+            Năm 2026 đánh dấu sự bùng nổ của mô hình "Chăm sóc sức khỏe tại gia". Quét đơn thuốc AI chính là cầu nối quan trọng giúp người dân thực hiện chuyển đổi số từ dữ liệu giấy sang dữ liệu số. Việc sử dụng ứng dụng công nghệ thông tin trong quản lý y tế lúc này không còn là lựa chọn xa xỉ, mà là công cụ để bạn kết nối trực tiếp với các dịch vụ Telemedicine.
+          </p>
+
+          {/* Section 2 */}
+          <SectionHeading number="02" id="ai-doc-chu" title="AI giải quyết vấn đề đọc &quot;chữ bác sĩ&quot;" />
+
+          <p className="text-justify mb-6">
+            Một trong những nỗi lo lớn nhất khi quản lý hồ sơ bệnh án giấy là tình trạng chữ viết tay khó đọc. Công nghệ nhận diện và đọc chính xác đơn thuốc viết tay đã giải quyết triệt để bài toán này. Bằng cách sử dụng các thuật toán trí tuệ nhân tạo, Quét đơn thuốc AI có khả năng hỗ trợ nhận diện chữ viết tay và trích xuất thông tin nhanh chóng, chính xác hơn nhiều so với nhập liệu thủ công.
+          </p>
+
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="tinh-huong" title="Những tình huống AI trở thành &quot;cứu cánh&quot;" />
+
+          <ul className="list-disc pl-6 mb-6 space-y-3">
+            <li><strong>Tìm đơn thuốc cũ khi tái khám:</strong> Thay vì mang theo một xấp hồ sơ cồng kềnh, bạn chỉ cần mở app và tìm kiếm theo ngày hoặc tên bệnh.</li>
+            <li><strong>Quản lý thuốc cho người già:</strong> Với các đơn thuốc viết tay dài, quét đơn thuốc bằng AI giúp chuyển đổi thành danh sách số rõ ràng.</li>
+            <li><strong>Lưu lịch sử bệnh của trẻ nhỏ:</strong> Mọi đợt ốm của con được lưu hồ sơ y tế online vĩnh viễn.</li>
+            <li><strong>Chia sẻ hồ sơ cho bác sĩ:</strong> Gửi một bản quét sạch sẽ qua ứng dụng giúp bác sĩ đưa ra chẩn đoán chính xác hơn.</li>
+          </ul>
+
+          {/* Section 4 */}
+          <SectionHeading number="04" id="so-sanh" title="So sánh lưu trữ thủ công vs AI Scanner" />
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full border-collapse border border-slate-300 text-sm">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="border border-slate-300 p-2">Tiêu chí</th>
+                  <th className="border border-slate-300 p-2">Lưu trữ thủ công</th>
+                  <th className="border border-slate-300 p-2">Quét đơn thuốc AI</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs">
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Độ bền</strong></td>
+                  <td className="border border-slate-300 p-2">Dễ rách, ẩm mốc, mờ mực</td>
+                  <td className="border border-slate-300 p-2">Lưu trữ vĩnh viễn trên đám mây</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Độ chính xác</strong></td>
+                  <td className="border border-slate-300 p-2">Dễ sai sót khi tự đọc</td>
+                  <td className="border border-slate-300 p-2">Giảm tối đa sai sót</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Tính nhắc nhở</strong></td>
+                  <td className="border border-slate-300 p-2">Người dùng tự ghi nhớ</td>
+                  <td className="border border-slate-300 p-2">Tự động nhắc lịch uống thuốc</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Tính di động</strong></td>
+                  <td className="border border-slate-300 p-2">Cồng kềnh, khó mang theo</td>
+                  <td className="border border-slate-300 p-2">Luôn sẵn sàng trên điện thoại</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Section 5 */}
+          <SectionHeading number="05" id="giai-phap" title="FamCare: Giải pháp quản lý hồ sơ y tế toàn diện" />
+
+          <ul className="list-disc pl-6 mb-6 space-y-2">
+            <li>Quét đơn thuốc thông minh tích hợp AI Scanner</li>
+            <li>Lưu hồ sơ y tế online tập trung cho từng thành viên</li>
+            <li>Tương tác thông minh với cảnh báo tương tác thuốc và thực phẩm</li>
+          </ul>
+
+          {/* Section 6 */}
+          <SectionHeading number="06" id="ket-bai" title="Kết bài" />
+
+          <p className="text-justify mb-6">
+            Việc chuyển từ lưu trữ thủ công sang sử dụng Quét đơn thuốc AI không chỉ là xu hướng, mà là hành động thiết thực để bảo vệ sức khỏe và sự an tâm của những người thân yêu. Hệ thống quản lý hồ sơ y tế minh bạch chính là nền tảng của cuộc sống chất lượng năm 2026.
+          </p>
+
+          <div className="mt-12 pt-8 border-t border-slate-200">
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em>Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong></em>
             </p>
-
-            <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-8 rounded-2xl my-8 border border-cyan-200">
-              <p className="font-semibold text-slate-900 mb-3">Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp.</p>
-              <p className="text-xs text-slate-600 mt-4">FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa</p>
-              <p className="text-xs text-slate-600">Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a> | Email: famcare.support@gmail.com</p>
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp.</strong></em>
+            </p>
+            <div className="border-t border-slate-200 pt-3">
+              <p className="text-xs text-slate-600 font-semibold">
+                FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa
+              </p>
+              <p className="text-xs text-slate-500 mt-2">
+                Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a><br />
+                Email: famcare.support@gmail.com
+              </p>
             </div>
           </div>
 

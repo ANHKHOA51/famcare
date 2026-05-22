@@ -1,10 +1,71 @@
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+const tocItems: TocItem[] = [
+  { id: "tai-sao-quan-trong", text: "Tại sao việc nhận diện thực phẩm nên tránh lại quan trọng?", level: 2 },
+  { id: "danh-muc", text: "Danh mục thực phẩm nên tránh", level: 2 },
+  { id: "tinh-bot", text: "Tinh bột tinh chế", level: 3 },
+  { id: "trai-cay", text: "Trái cây người tiểu đường không nên ăn", level: 3 },
+  { id: "che-do-an", text: "Xây dựng chế độ ăn theo từng buổi", level: 2 },
+  { id: "an-sang", text: "Người tiểu đường nên ăn sáng bằng gì?", level: 3 },
+  { id: "nguoi-gia", text: "Người già bị tiểu đường nên ăn gì?", level: 3 },
+  { id: "giai-phap", text: "Giải pháp FamCare", level: 2 },
+  { id: "ket-bai", text: "Kết bài", level: 2 },
+];
+
+const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
+  <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
+    <span className="font-display text-5xl font-black text-cyan-200/60 leading-none -mt-1 shrink-0">
+      {number}
+    </span>
+    <h2 className="font-display text-2xl sm:text-[1.7rem] font-bold text-slate-900 leading-snug border-b-2 border-cyan-500 pb-2">
+      {title}
+    </h2>
+  </div>
+);
+
 export default function Article13Page() {
+  const [activeId, setActiveId] = useState("");
+
+  useEffect(() => {
+    fetch('/api/articles/thuc-pham-nguoi-benh-tieu-duong-nen-tranh-va-che-do-an/view', { method: 'POST' })
+      .catch(err => console.error("Failed to track view:", err));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        if (visible.length > 0) {
+          setActiveId(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
+    );
+
+    tocItems.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -57,87 +118,137 @@ export default function Article13Page() {
               Danh mục chi tiết về những món ăn cần tránh và cách thiết kế thực đơn chuẩn y khoa cho người bệnh tiểu đường.
             </p>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-800 via-cyan-500 to-blue-700 opacity-90"></div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-16 py-12 sm:py-16 text-slate-800">
-          <div className="prose prose-sm sm:prose max-w-none">
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Tại sao việc nhận diện thực phẩm nên tránh lại quan trọng?</h2>
-            <p className="text-justify mb-6">
-              Kiểm soát chỉ số đường huyết không đồng nghĩa với việc nhịn ăn cực đoan, mà là thấu hiểu chỉ số đường huyết (GI) và tải lượng đường (GL) của thực phẩm. Các loại thực phẩm người bệnh tiểu đường nên tránh thường là những món có chỉ số GI cao, khiến đường huyết tăng vọt ngay sau khi ăn.
+        <main className="px-4 sm:px-8 lg:px-16 py-10 max-w-[860px] mx-auto text-[1.125rem] text-slate-800 leading-[1.85] font-light">
+
+          {/* Table of Contents */}
+          <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
+            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              Mục lục bài viết
+            </h3>
+            <ul className="space-y-2">
+              {tocItems.map((item) => (
+                <li key={item.id} style={{ marginLeft: item.level === 3 ? '16px' : '0' }}>
+                  <button
+                    onClick={() => scrollTo(item.id)}
+                    className={`text-left hover:text-cyan-600 transition-colors ${
+                      activeId === item.id ? 'text-cyan-600 font-semibold' : 'text-slate-600'
+                    }`}
+                  >
+                    {item.text}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Section 1 */}
+          <SectionHeading number="01" id="tai-sao-quan-trong" title="Tại sao việc nhận diện thực phẩm nên tránh lại quan trọng?" />
+
+          <p className="text-justify mb-6">
+            Kiểm soát chỉ số đường huyết không đồng nghĩa với việc nhịn ăn cực đoan, mà là thấu hiểu chỉ số đường huyết (GI) và tải lượng đường (GL) của thực phẩm. Các loại thực phẩm người bệnh tiểu đường nên tránh thường là những món có chỉ số GI cao, khiến đường huyết tăng vọt ngay sau khi ăn.
+          </p>
+
+          {/* Section 2 */}
+          <SectionHeading number="02" id="danh-muc" title="Danh mục thực phẩm người bệnh tiểu đường nên tránh" />
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full border-collapse border border-slate-300 text-sm">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="border border-slate-300 p-2">Nhóm thực phẩm</th>
+                  <th className="border border-slate-300 p-2">Ví dụ cụ thể</th>
+                  <th className="border border-slate-300 p-2">Giải pháp thay thế</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs">
+                <tr>
+                  <td className="border border-slate-300 p-2 font-semibold">Đồ uống ngọt</td>
+                  <td className="border border-slate-300 p-2">Trà sữa, nước ngọt, nước ép đóng chai</td>
+                  <td className="border border-slate-300 p-2">Nước lọc, trà thảo mộc, nước ép xanh</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2 font-semibold">Tinh bột trắng</td>
+                  <td className="border border-slate-300 p-2">Bánh mì trắng, cơm trắng, bún</td>
+                  <td className="border border-slate-300 p-2">Gạo lứt, yến mạch, khoai lang</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2 font-semibold">Trái cây ngọt</td>
+                  <td className="border border-slate-300 p-2">Sầu riêng, mít, nhãn, vải chín</td>
+                  <td className="border border-slate-300 p-2">Táo xanh, bưởi, ổi, thanh long</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2 font-semibold">Chất béo xấu</td>
+                  <td className="border border-slate-300 p-2">Đồ chiên rán, mỡ động vật</td>
+                  <td className="border border-slate-300 p-2">Cá béo, hạt hạnh nhân, dầu oliu</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="tinh-bot" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Tinh bột tinh chế: Thay thế cơm trắng bằng gì?
+          </h3>
+          <p className="text-justify mb-6">
+            Người bệnh tiểu đường nên ăn gì thay cơm để vừa đủ năng lượng vừa không làm tăng đường huyết? Hãy thay thế gạo trắng bằng gạo lứt, diêm mạch hoặc yến mạch. Những thực phẩm này giàu chất xơ, tạo cảm giác no lâu và giúp giải phóng năng lượng từ từ vào máu.
+          </p>
+
+          <h3 id="trai-cay" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Trái cây người bệnh tiểu đường không nên ăn
+          </h3>
+          <p className="text-justify mb-6">
+            Mặc dù chứa nhiều vitamin, nhưng danh mục trái cây người bệnh tiểu đường không nên ăn bao gồm các loại quả có hàm lượng đường fructose quá cao hoặc quả quá chín. Sầu riêng, mít, nhãn, vải là những ví dụ điển hình. Thay vì uống nước ép, người bệnh nên ăn trái cây nguyên miếng để tận dụng lượng xơ.
+          </p>
+
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="che-do-an" title="Xây dựng chế độ ăn cho người tiểu đường theo từng buổi" />
+
+          <h3 id="an-sang" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Người tiểu đường nên ăn sáng bằng gì?
+          </h3>
+          <p className="text-justify mb-4">
+            Buổi sáng cần hạn chế tối đa tinh bột nhanh. Gợi ý: Trứng luộc kèm salad ức gà hoặc một bát yến mạch nhỏ không đường.
+          </p>
+
+          <h3 id="nguoi-gia" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Người già bị tiểu đường nên ăn gì?
+          </h3>
+          <p className="text-justify mb-6">
+            Với người cao tuổi, hệ tiêu hóa thường kém hơn, thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.
+          </p>
+
+          {/* Section 4 */}
+          <SectionHeading number="04" id="giai-phap" title="Giải pháp FamCare" />
+
+          <p className="text-justify mb-6">
+            Tính năng Thực đơn dinh dưỡng AI của FamCare sẽ cá nhân hóa thực đơn của bạn, cảnh báo thông minh các loại trái cây người bệnh tiểu đường không nên ăn và đưa ra các lựa chọn thay thế giàu chất xơ.
+          </p>
+
+          {/* Section 5 */}
+          <SectionHeading number="05" id="ket-bai" title="Kết bài" />
+
+          <p className="text-justify mb-6">
+            Thấu hiểu danh mục thực phẩm người bệnh tiểu đường nên tránh là bước đi tiên quyết để ngăn ngừa biến chứng. Hãy để FamCare đồng hành cùng bạn trong việc thiết kế thực đơn khoa học.
+          </p>
+
+          <div className="mt-12 pt-8 border-t border-slate-200">
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em>Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong></em>
             </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Danh mục thực phẩm người bệnh tiểu đường nên tránh</h2>
-            
-            <div className="overflow-x-auto mb-6">
-              <table className="w-full border-collapse border border-slate-300 text-sm">
-                <thead className="bg-slate-100">
-                  <tr>
-                    <th className="border border-slate-300 p-2">Nhóm thực phẩm</th>
-                    <th className="border border-slate-300 p-2">Ví dụ cụ thể</th>
-                    <th className="border border-slate-300 p-2">Giải pháp thay thế</th>
-                  </tr>
-                </thead>
-                <tbody className="text-xs">
-                  <tr>
-                    <td className="border border-slate-300 p-2 font-semibold">Đồ uống ngọt</td>
-                    <td className="border border-slate-300 p-2">Trà sữa, nước ngọt, nước ép đóng chai</td>
-                    <td className="border border-slate-300 p-2">Nước lọc, trà thảo mộc, nước ép xanh</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2 font-semibold">Tinh bột trắng</td>
-                    <td className="border border-slate-300 p-2">Bánh mì trắng, cơm trắng, bún</td>
-                    <td className="border border-slate-300 p-2">Gạo lứt, yến mạch, khoai lang</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2 font-semibold">Trái cây ngọt</td>
-                    <td className="border border-slate-300 p-2">Sầu riêng, mít, nhãn, vải chín</td>
-                    <td className="border border-slate-300 p-2">Táo xanh, bưởi, ổi, thanh long</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2 font-semibold">Chất béo xấu</td>
-                    <td className="border border-slate-300 p-2">Đồ chiên rán, mỡ động vật</td>
-                    <td className="border border-slate-300 p-2">Cá béo, hạt hạnh nhân, dầu oliu</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Tinh bột tinh chế: Thay thế cơm trắng bằng gì?</h3>
-            <p className="text-justify mb-6">
-              Người bệnh tiểu đường nên ăn gì thay cơm để vừa đủ năng lượng vừa không làm tăng đường huyết? Hãy thay thế gạo trắng bằng gạo lứt, diêm mạch hoặc yến mạch. Những thực phẩm này giàu chất xơ, tạo cảm giác no lâu và giúp giải phóng năng lượng từ từ vào máu.
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ.</strong></em>
             </p>
-
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Trái cây người bệnh tiểu đường không nên ăn</h3>
-            <p className="text-justify mb-6">
-              Mặc dù chứa nhiều vitamin, nhưng danh mục trái cây người bệnh tiểu đường không nên ăn bao gồm các loại quả có hàm lượng đường fructose quá cao hoặc quả quá chín. Sầu riêng, mít, nhãn, vải là những ví dụ điển hình. Thay vì uống nước ép, người bệnh nên ăn trái cây nguyên miếng để tận dụng lượng xơ.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Xây dựng chế độ ăn cho người tiểu đường theo từng buổi</h2>
-            
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Người tiểu đường nên ăn sáng bằng gì?</h3>
-            <p className="mb-4">
-              Buổi sáng cần hạn chế tối đa tinh bột nhanh. Gợi ý: Trứng luộc kèm salad ức gà hoặc một bát yến mạch nhỏ không đường.
-            </p>
-
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Người già bị tiểu đường nên ăn gì?</h3>
-            <p className="mb-6">
-              Với người cao tuổi, hệ tiêu hóa thường kém hơn, thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Giải pháp FamCare</h2>
-            <p className="text-justify mb-6">
-              Tính năng Thực đơn dinh dưỡng AI của FamCare sẽ cá nhân hóa thực đơn của bạn, cảnh báo thông minh các loại trái cây người bệnh tiểu đường không nên ăn và đưa ra các lựa chọn thay thế giàu chất xơ.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Kết bài</h2>
-            <p className="mb-6">
-              Thấu hiểu danh mục thực phẩm người bệnh tiểu đường nên tránh là bước đi tiên quyết để ngăn ngừa biến chứng. Hãy để FamCare đồng hành cùng bạn trong việc thiết kế thực đơn khoa học.
-            </p>
-
-            <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-8 rounded-2xl my-8 border border-cyan-200">
-              <p className="font-semibold text-slate-900 mb-3">Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ.</p>
-              <p className="text-xs text-slate-600 mt-4">FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa</p>
-              <p className="text-xs text-slate-600">Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a> | Email: famcare.support@gmail.com</p>
+            <div className="border-t border-slate-200 pt-3">
+              <p className="text-xs text-slate-600 font-semibold">
+                FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa
+              </p>
+              <p className="text-xs text-slate-500 mt-2">
+                Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a><br />
+                Email: famcare.support@gmail.com
+              </p>
             </div>
           </div>
 

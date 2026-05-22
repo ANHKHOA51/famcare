@@ -1,10 +1,69 @@
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+const tocItems: TocItem[] = [
+  { id: "tai-sao", text: "Tại sao cần thấu hiểu học hàm học vị?", level: 2 },
+  { id: "phan-biet", text: "Phân biệt hai nhánh đào tạo y khoa", level: 3 },
+  { id: "noi-tru", text: "Ý nghĩa của Bác Sĩ Nội Trú (BSNT)", level: 2 },
+  { id: "hoc-ham", text: "Học hàm cao cấp: GS và PGS", level: 2 },
+  { id: "lua-chon", text: "Lựa chọn bác sĩ chuẩn xác cho gia đình", level: 2 },
+  { id: "ket-noi", text: "Kết nối chuyên gia thông minh cùng FamCare", level: 2 },
+  { id: "ket-bai", text: "Kết bài", level: 2 },
+];
+
+const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
+  <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
+    <span className="font-display text-5xl font-black text-cyan-200/60 leading-none -mt-1 shrink-0">
+      {number}
+    </span>
+    <h2 className="font-display text-2xl sm:text-[1.7rem] font-bold text-slate-900 leading-snug border-b-2 border-cyan-500 pb-2">
+      {title}
+    </h2>
+  </div>
+);
+
 export default function Article17Page() {
+  const [activeId, setActiveId] = useState("");
+
+  useEffect(() => {
+    fetch('/api/articles/bi-quyet-chon-bac-si-gioi-doc-hieu-hoc-ham-hoc-vi/view', { method: 'POST' })
+      .catch(err => console.error("Failed to track view:", err));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        if (visible.length > 0) {
+          setActiveId(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
+    );
+
+    tocItems.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -57,53 +116,101 @@ export default function Article17Page() {
               Cách đọc hiểu học hàm học vị y khoa chuẩn xác để chọn bác sĩ phù hợp cho gia đình.
             </p>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-800 via-cyan-500 to-blue-700 opacity-90"></div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-16 py-12 sm:py-16 text-slate-800">
-          <div className="prose prose-sm sm:prose max-w-none">
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Tại sao cần thấu hiểu học hàm học vị?</h2>
-            <p className="text-justify mb-6">
-              Khi đi khám, người bệnh thường gặp các cụm từ như GS, PGS, TS, ThS, BSCKII nhưng chưa thực sự hiểu rõ ý nghĩa y khoa của chúng. Hiểu rõ các ký hiệu này chính là chìa khóa để đưa ra quyết định điều trị chính xác và an toàn.
-            </p>
+        <main className="px-4 sm:px-8 lg:px-16 py-10 max-w-[860px] mx-auto text-[1.125rem] text-slate-800 leading-[1.85] font-light">
 
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Phân biệt hai nhánh đào tạo y khoa</h3>
-            <p className="mb-4"><strong>Nhánh Học thuật (Thạc sĩ - ThS, Tiến sĩ - TS):</strong> Những bác sĩ tập trung vào công tác nghiên cứu và giảng dạy tại các trường đại học.</p>
-            <p className="mb-6"><strong>Nhánh Lâm sàng (BSCKI, BSCKII):</strong> Hệ thống đào tạo đặc thù tập trung 100% vào kỹ năng thực hành, chẩn đoán và phẫu thuật trực tiếp trên bệnh nhân.</p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Ý nghĩa của Bác Sĩ Nội Trú (BSNT)</h2>
-            <p className="text-justify mb-6">
-              Được mệnh danh là "chứng chỉ vàng" của ngành y. Chỉ những sinh viên y khoa tốt nghiệp loại giỏi và xuất sắc mới được thi nội trú. Họ phải học tập, làm việc liên tục tại bệnh viện 24/7 trong suốt 3 năm, vì thế thường có chuyên môn lâm sàng cực kỳ vững chắc.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Học hàm cao cấp: Giáo Sư (GS) và Phó Giáo Sư (PGS)</h2>
-            <p className="text-justify mb-6">
-              Khi các Tiến sĩ hoặc bác sĩ chuyên khoa 2 có nhiều đóng góp lớn cho khoa học, nhiều công trình nghiên cứu được quốc tế công nhận và tham gia giảng dạy lâu năm, họ sẽ được nhà nước phong học hàm Giáo Sư hoặc Phó Giáo Sư. Việc tìm đến các GS, PGS là vô cùng cần thiết khi bạn gặp phải các căn bệnh hiếm gặp hoặc ca bệnh hiểm nghèo.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Lựa chọn bác sĩ chuẩn xác cho gia đình</h2>
-            <p className="text-justify mb-6">
-              Không có một người bác sĩ giỏi nhất cho mọi căn bệnh, chỉ có người bác sĩ phù hợp nhất với tình trạng hiện tại của người bệnh. Một khi đã xác định được nhóm danh hiệu cần tìm, bước tiếp theo là đánh giá thâm niên công tác. Số năm kinh nghiệm làm việc tại các bệnh viện tuyến đầu luôn là một bảo chứng vững chắc cho năng lực phản xạ lâm sàng của bác sĩ.
-            </p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Kết nối chuyên gia thông minh cùng FamCare</h2>
-            <p className="text-justify mb-6">
-              Việc tự mình tra cứu hồ sơ và xác thực thông tin học hàm học vị của hàng trăm bác sĩ là một thách thức lớn. Trong kỷ nguyên y tế số 2026, FamCare ra đời như một giải pháp kết nối thông minh.
-            </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2">
-              <li>Dễ dàng tìm danh sách bác sĩ uy tín được phân loại minh bạch theo học vị, thâm niên và chuyên khoa</li>
-              <li>Đặt lịch tư vấn từ xa (Telemedicine) một cách nhanh chóng</li>
-              <li>Lưu trữ toàn bộ lịch sử bệnh án số hóa qua AI để liên thông với bác sĩ</li>
+          {/* Table of Contents */}
+          <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
+            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              Mục lục bài viết
+            </h3>
+            <ul className="space-y-2">
+              {tocItems.map((item) => (
+                <li key={item.id} style={{ marginLeft: item.level === 3 ? '16px' : '0' }}>
+                  <button
+                    onClick={() => scrollTo(item.id)}
+                    className={`text-left hover:text-cyan-600 transition-colors ${
+                      activeId === item.id ? 'text-cyan-600 font-semibold' : 'text-slate-600'
+                    }`}
+                  >
+                    {item.text}
+                  </button>
+                </li>
+              ))}
             </ul>
+          </nav>
 
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Kết bài</h2>
-            <p className="mb-6">
-              Việc chủ động trang bị bộ tiêu chí lựa chọn bác sĩ dựa trên cách đọc hiểu học hàm học vị là bước đi chiến lược để bảo vệ sức khỏe bền vững cho cả gia đình. Hãy là một người bệnh thông thái, biết cách chọn bác sĩ phù hợp.
+          {/* Section 1 */}
+          <SectionHeading number="01" id="tai-sao" title="Tại sao cần thấu hiểu học hàm học vị?" />
+
+          <p className="text-justify mb-6">
+            Khi đi khám, người bệnh thường gặp các cụm từ như GS, PGS, TS, ThS, BSCKII nhưng chưa thực sự hiểu rõ ý nghĩa y khoa của chúng. Hiểu rõ các ký hiệu này chính là chìa khóa để đưa ra quyết định điều trị chính xác và an toàn.
+          </p>
+
+          <h3 id="phan-biet" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Phân biệt hai nhánh đào tạo y khoa
+          </h3>
+          <p className="text-justify mb-4"><strong>Nhánh Học thuật (Thạc sĩ - ThS, Tiến sĩ - TS):</strong> Những bác sĩ tập trung vào công tác nghiên cứu và giảng dạy tại các trường đại học.</p>
+          <p className="text-justify mb-6"><strong>Nhánh Lâm sàng (BSCKI, BSCKII):</strong> Hệ thống đào tạo đặc thù tập trung 100% vào kỹ năng thực hành, chẩn đoán và phẫu thuật trực tiếp trên bệnh nhân.</p>
+
+          {/* Section 2 */}
+          <SectionHeading number="02" id="noi-tru" title="Ý nghĩa của Bác Sĩ Nội Trú (BSNT)" />
+
+          <p className="text-justify mb-6">
+            Được mệnh danh là "chứng chỉ vàng" của ngành y. Chỉ những sinh viên y khoa tốt nghiệp loại giỏi và xuất sắc mới được thi nội trú. Họ phải học tập, làm việc liên tục tại bệnh viện 24/7 trong suốt 3 năm, vì thế thường có chuyên môn lâm sàng cực kỳ vững chắc.
+          </p>
+
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="hoc-ham" title="Học hàm cao cấp: Giáo Sư (GS) và Phó Giáo Sư (PGS)" />
+
+          <p className="text-justify mb-6">
+            Khi các Tiến sĩ hoặc bác sĩ chuyên khoa 2 có nhiều đóng góp lớn cho khoa học, nhiều công trình nghiên cứu được quốc tế công nhận và tham gia giảng dạy lâu năm, họ sẽ được nhà nước phong học hàm Giáo Sư hoặc Phó Giáo Sư. Việc tìm đến các GS, PGS là vô cùng cần thiết khi bạn gặp phải các căn bệnh hiếm gặp hoặc ca bệnh hiểm nghèo.
+          </p>
+
+          {/* Section 4 */}
+          <SectionHeading number="04" id="lua-chon" title="Lựa chọn bác sĩ chuẩn xác cho gia đình" />
+
+          <p className="text-justify mb-6">
+            Không có một người bác sĩ giỏi nhất cho mọi căn bệnh, chỉ có người bác sĩ phù hợp nhất với tình trạng hiện tại của người bệnh. Một khi đã xác định được nhóm danh hiệu cần tìm, bước tiếp theo là đánh giá thâm niên công tác. Số năm kinh nghiệm làm việc tại các bệnh viện tuyến đầu luôn là một bảo chứng vững chắc cho năng lực phản xạ lâm sàng của bác sĩ.
+          </p>
+
+          {/* Section 5 */}
+          <SectionHeading number="05" id="ket-noi" title="Kết nối chuyên gia thông minh cùng FamCare" />
+
+          <p className="text-justify mb-6">
+            Việc tự mình tra cứu hồ sơ và xác thực thông tin học hàm học vị của hàng trăm bác sĩ là một thách thức lớn. Trong kỷ nguyên y tế số 2026, FamCare ra đời như một giải pháp kết nối thông minh.
+          </p>
+          <ul className="list-disc pl-6 mb-6 space-y-2">
+            <li>Dễ dàng tìm danh sách bác sĩ uy tín được phân loại minh bạch theo học vị, thâm niên và chuyên khoa</li>
+            <li>Đặt lịch tư vấn từ xa (Telemedicine) một cách nhanh chóng</li>
+            <li>Lưu trữ toàn bộ lịch sử bệnh án số hóa qua AI để liên thông với bác sĩ</li>
+          </ul>
+
+          {/* Section 6 */}
+          <SectionHeading number="06" id="ket-bai" title="Kết bài" />
+
+          <p className="text-justify mb-6">
+            Việc chủ động trang bị bộ tiêu chí lựa chọn bác sĩ dựa trên cách đọc hiểu học hàm học vị là bước đi chiến lược để bảo vệ sức khỏe bền vững cho cả gia đình. Hãy là một người bệnh thông thái, biết cách chọn bác sĩ phù hợp.
+          </p>
+
+          <div className="mt-12 pt-8 border-t border-slate-200">
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em>Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong></em>
             </p>
-
-            <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-8 rounded-2xl my-8 border border-cyan-200">
-              <p className="font-semibold text-slate-900 mb-3">Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp.</p>
-              <p className="text-xs text-slate-600 mt-4">FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa</p>
-              <p className="text-xs text-slate-600">Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a> | Email: famcare.support@gmail.com</p>
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp.</strong></em>
+            </p>
+            <div className="border-t border-slate-200 pt-3">
+              <p className="text-xs text-slate-600 font-semibold">
+                FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa
+              </p>
+              <p className="text-xs text-slate-500 mt-2">
+                Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a><br />
+                Email: famcare.support@gmail.com
+              </p>
             </div>
           </div>
 

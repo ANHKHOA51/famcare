@@ -1,10 +1,67 @@
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+const tocItems: TocItem[] = [
+  { id: "nguyen-tac", text: "Nguyên tắc cốt lõi xây dựng thực đơn", level: 2 },
+  { id: "khau-phan", text: "Lưu ý quan trọng với khẩu phần ăn", level: 3 },
+  { id: "meo-ai", text: "Mẹo lên thực đơn 7 ngày bằng AI", level: 2 },
+  { id: "he-sinh-thai", text: "FamCare - Hệ sinh thái đồng hành", level: 2 },
+  { id: "ket-bai", text: "Kết bài", level: 2 },
+];
+
+const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
+  <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
+    <span className="font-display text-5xl font-black text-cyan-200/60 leading-none -mt-1 shrink-0">
+      {number}
+    </span>
+    <h2 className="font-display text-2xl sm:text-[1.7rem] font-bold text-slate-900 leading-snug border-b-2 border-cyan-500 pb-2">
+      {title}
+    </h2>
+  </div>
+);
+
 export default function Article18Page() {
+  const [activeId, setActiveId] = useState("");
+
+  useEffect(() => {
+    fetch('/api/articles/thuc-don-cho-nguoi-tieu-duong-len-thuc-don-bang-ai/view', { method: 'POST' })
+      .catch(err => console.error("Failed to track view:", err));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        if (visible.length > 0) {
+          setActiveId(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
+    );
+
+    tocItems.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -57,101 +114,145 @@ export default function Article18Page() {
               Cách lên thực đơn bằng AI cá nhân hóa, vừa ngon miệng vừa giúp kiểm soát đường huyết hiệu quả.
             </p>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-800 via-cyan-500 to-blue-700 opacity-90"></div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 sm:px-8 lg:px-16 py-12 sm:py-16 text-slate-800">
-          <div className="prose prose-sm sm:prose max-w-none">
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Nguyên tắc cốt lõi xây dựng thực đơn cho người tiểu đường</h2>
-            <p className="text-justify mb-6">
-              Bản chất của việc điều trị đái tháo đường không nằm ở việc cắt bỏ hoàn toàn các nhóm chất, mà là kiểm soát tốc độ tăng đường huyết sau ăn và duy trì năng lượng ổn định. Khi thiết kế một thực đơn cho người tiểu đường, mục tiêu tối thượng là đảm bảo chỉ số đường huyết (GI) thấp, tải lượng đường (GL) an toàn, đồng thời vẫn phải xây dựng thực đơn khoa học và đủ chất.
-            </p>
+        <main className="px-4 sm:px-8 lg:px-16 py-10 max-w-[860px] mx-auto text-[1.125rem] text-slate-800 leading-[1.85] font-light">
 
-            <h3 className="text-xl font-bold text-slate-800 mt-8 mb-3">Lưu ý quan trọng với khẩu phần ăn theo từng buổi</h3>
-            <p className="mb-4"><strong>Bữa sáng:</strong> Nên giàu đạm và chất xơ để ổn định đường huyết cho cả ngày dài. Gợi ý: Trứng luộc kèm salad ức gà hoặc bát yến mạch nhỏ không đường.</p>
-            <p className="mb-4"><strong>Người lớn tuổi:</strong> Thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.</p>
-            <p className="mb-6"><strong>Bữa tối:</strong> Nên là bữa ăn nhẹ nhàng để tránh áp lực cho hệ tiêu hóa. Các món canh rau thanh đạm, cá hấp, đậu phụ luộc là sự lựa chọn hoàn hảo.</p>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Mẹo lên thực đơn 7 ngày bằng AI</h2>
-            <p className="text-justify mb-6">
-              Sử dụng mẹo lên thực đơn ăn uống cả tuần bằng AI giúp bạn biến những quy tắc y khoa khô khan thành các món ăn ngon miệng, hợp khẩu vị bản địa. Bạn hoàn toàn có thể yêu cầu AI thiết kế một thực đơn 7 ngày với các nguyên liệu thuần Việt có sẵn trong tủ lạnh.
-            </p>
-
-            <div className="overflow-x-auto mb-6">
-              <table className="w-full border-collapse border border-slate-300 text-xs">
-                <thead className="bg-slate-100">
-                  <tr>
-                    <th className="border border-slate-300 p-2">Ngày</th>
-                    <th className="border border-slate-300 p-2">Bữa sáng</th>
-                    <th className="border border-slate-300 p-2">Bữa trưa</th>
-                    <th className="border border-slate-300 p-2">Bữa tối</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Thứ Hai</strong></td>
-                    <td className="border border-slate-300 p-2">2 quả trứng luộc + Salad bơ</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Ức gà + Canh cải xanh</td>
-                    <td className="border border-slate-300 p-2">Cá hồi hấp + Đậu bắp luộc</td>
-                  </tr>
-                  <tr className="bg-slate-50">
-                    <td className="border border-slate-300 p-2"><strong>Thứ Ba</strong></td>
-                    <td className="border border-slate-300 p-2">Cháo yến mạch nấu thịt băm</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Thịt lợn nạc + Bí đao</td>
-                    <td className="border border-slate-300 p-2">Đậu phụ sốt cà + Canh rau ngót</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Thứ Tư</strong></td>
-                    <td className="border border-slate-300 p-2">Khoai lang luộc + Sữa hạt</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Gà kho gừng + Bông cải</td>
-                    <td className="border border-slate-300 p-2">Tôm nõn xào măng tây + Canh bí đỏ</td>
-                  </tr>
-                  <tr className="bg-slate-50">
-                    <td className="border border-slate-300 p-2"><strong>Thứ Năm</strong></td>
-                    <td className="border border-slate-300 p-2">Phở lứt bò (nhiều rau)</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Cá thu sốt cà + Cải cúc</td>
-                    <td className="border border-slate-300 p-2">Thịt bò xào bông + Nấm hấp</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Thứ Sáu</strong></td>
-                    <td className="border border-slate-300 p-2">Salad ức gà + Hạt chia</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Mực hấp gừng + Rau muống</td>
-                    <td className="border border-slate-300 p-2">Trứng đúc thịt nạc + Canh mướp đắng</td>
-                  </tr>
-                  <tr className="bg-slate-50">
-                    <td className="border border-slate-300 p-2"><strong>Thứ Bảy</strong></td>
-                    <td className="border border-slate-300 p-2">Bánh mì nguyên cám + Phô mai</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Thịt bò áp chảo + Canh bầu</td>
-                    <td className="border border-slate-300 p-2">Cá quả nấu ngót (không đường) + Cải</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-slate-300 p-2"><strong>Chủ Nhật</strong></td>
-                    <td className="border border-slate-300 p-2">Súp bắp cải nấu gà xé</td>
-                    <td className="border border-slate-300 p-2">1 bát cơm lứt + Tôm rim nhạt + Súp lơ</td>
-                    <td className="border border-slate-300 p-2">Thịt viên hấp nấm hương + Canh dền</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">FamCare - Hệ sinh thái đồng hành</h2>
-            <p className="text-justify mb-6">
-              Để biến công nghệ dinh dưỡng cá nhân hóa AI thành trợ thủ đắc lực, FamCare đã tích hợp tính năng thiết lập thực đơn thông minh ngay trên ứng dụng di động.
-            </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2">
-              <li><strong>Lên thực đơn bằng AI cá nhân hóa:</strong> Ứng dụng tự động thiết kế thực đơn 7 ngày, liên tục thay đổi dựa trên sở thích nhưng vẫn đảm bảo chỉ số an toàn</li>
-              <li><strong>Cảnh báo tương tác thực phẩm:</strong> Hệ thống nhận diện các mon ăn nguy cơ làm tăng đường huyết</li>
-              <li><strong>Đồng bộ hóa hồ sơ gia đình:</strong> Mọi nhật ký ăn uống được đồng bộ tức thì, giúp con cái theo dõi sức khỏe cha mẹ từ xa</li>
+          {/* Table of Contents */}
+          <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
+            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              Mục lục bài viết
+            </h3>
+            <ul className="space-y-2">
+              {tocItems.map((item) => (
+                <li key={item.id} style={{ marginLeft: item.level === 3 ? '16px' : '0' }}>
+                  <button
+                    onClick={() => scrollTo(item.id)}
+                    className={`text-left hover:text-cyan-600 transition-colors ${
+                      activeId === item.id ? 'text-cyan-600 font-semibold' : 'text-slate-600'
+                    }`}
+                  >
+                    {item.text}
+                  </button>
+                </li>
+              ))}
             </ul>
+          </nav>
 
-            <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">Kết bài</h2>
-            <p className="mb-6">
-              Việc xây dựng một thực đơn cho người tiểu đường khoa học không còn là cuộc chiến cân não khi có sự hỗ trợ của công nghệ hiện đại. Bằng cách áp dụng giải pháp lên thực đơn bằng AI, bạn hoàn toàn có thể làm chủ chỉ số sức khỏe và tận hưởng cuộc sống một cách trọn vẹn nhất.
+          {/* Section 1 */}
+          <SectionHeading number="01" id="nguyen-tac" title="Nguyên tắc cốt lõi xây dựng thực đơn cho người tiểu đường" />
+
+          <p className="text-justify mb-6">
+            Bản chất của việc điều trị đái tháo đường không nằm ở việc cắt bỏ hoàn toàn các nhóm chất, mà là kiểm soát tốc độ tăng đường huyết sau ăn và duy trì năng lượng ổn định. Khi thiết kế một thực đơn cho người tiểu đường, mục tiêu tối thượng là đảm bảo chỉ số đường huyết (GI) thấp, tải lượng đường (GL) an toàn, đồng thời vẫn phải xây dựng thực đơn khoa học và đủ chất.
+          </p>
+
+          <h3 id="khau-phan" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Lưu ý quan trọng với khẩu phần ăn theo từng buổi
+          </h3>
+          <p className="text-justify mb-4"><strong>Bữa sáng:</strong> Nên giàu đạm và chất xơ để ổn định đường huyết cho cả ngày dài. Gợi ý: Trứng luộc kèm salad ức gà hoặc bát yến mạch nhỏ không đường.</p>
+          <p className="text-justify mb-4"><strong>Người lớn tuổi:</strong> Thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.</p>
+          <p className="text-justify mb-6"><strong>Bữa tối:</strong> Nên là bữa ăn nhẹ nhàng để tránh áp lực cho hệ tiêu hóa. Các món canh rau thanh đạm, cá hấp, đậu phụ luộc là sự lựa chọn hoàn hảo.</p>
+
+          {/* Section 2 */}
+          <SectionHeading number="02" id="meo-ai" title="Mẹo lên thực đơn 7 ngày bằng AI" />
+
+          <p className="text-justify mb-6">
+            Sử dụng mẹo lên thực đơn ăn uống cả tuần bằng AI giúp bạn biến những quy tắc y khoa khô khan thành các món ăn ngon miệng, hợp khẩu vị bản địa. Bạn hoàn toàn có thể yêu cầu AI thiết kế một thực đơn 7 ngày với các nguyên liệu thuần Việt có sẵn trong tủ lạnh.
+          </p>
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full border-collapse border border-slate-300 text-xs">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="border border-slate-300 p-2">Ngày</th>
+                  <th className="border border-slate-300 p-2">Bữa sáng</th>
+                  <th className="border border-slate-300 p-2">Bữa trưa</th>
+                  <th className="border border-slate-300 p-2">Bữa tối</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Thứ Hai</strong></td>
+                  <td className="border border-slate-300 p-2">2 quả trứng luộc + Salad bơ</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Ức gà + Canh cải xanh</td>
+                  <td className="border border-slate-300 p-2">Cá hồi hấp + Đậu bắp luộc</td>
+                </tr>
+                <tr className="bg-slate-50">
+                  <td className="border border-slate-300 p-2"><strong>Thứ Ba</strong></td>
+                  <td className="border border-slate-300 p-2">Cháo yến mạch nấu thịt băm</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Thịt lợn nạc + Bí đao</td>
+                  <td className="border border-slate-300 p-2">Đậu phụ sốt cà + Canh rau ngót</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Thứ Tư</strong></td>
+                  <td className="border border-slate-300 p-2">Khoai lang luộc + Sữa hạt</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Gà kho gừng + Bông cải</td>
+                  <td className="border border-slate-300 p-2">Tôm nõn xào măng tây + Canh bí đỏ</td>
+                </tr>
+                <tr className="bg-slate-50">
+                  <td className="border border-slate-300 p-2"><strong>Thứ Năm</strong></td>
+                  <td className="border border-slate-300 p-2">Phở lứt bò (nhiều rau)</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Cá thu sốt cà + Cải cúc</td>
+                  <td className="border border-slate-300 p-2">Thịt bò xào bông + Nấm hấp</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Thứ Sáu</strong></td>
+                  <td className="border border-slate-300 p-2">Salad ức gà + Hạt chia</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Mực hấp gừng + Rau muống</td>
+                  <td className="border border-slate-300 p-2">Trứng đúc thịt nạc + Canh mướp đắng</td>
+                </tr>
+                <tr className="bg-slate-50">
+                  <td className="border border-slate-300 p-2"><strong>Thứ Bảy</strong></td>
+                  <td className="border border-slate-300 p-2">Bánh mì nguyên cám + Phô mai</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Thịt bò áp chảo + Canh bầu</td>
+                  <td className="border border-slate-300 p-2">Cá quả nấu ngót (không đường) + Cải</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2"><strong>Chủ Nhật</strong></td>
+                  <td className="border border-slate-300 p-2">Súp bắp cải nấu gà xé</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Tôm rim nhạt + Súp lơ</td>
+                  <td className="border border-slate-300 p-2">Thịt viên hấp nấm hương + Canh dền</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="he-sinh-thai" title="FamCare - Hệ sinh thái đồng hành" />
+
+          <p className="text-justify mb-6">
+            Để biến công nghệ dinh dưỡng cá nhân hóa AI thành trợ thủ đắc lực, FamCare đã tích hợp tính năng thiết lập thực đơn thông minh ngay trên ứng dụng di động.
+          </p>
+          <ul className="list-disc pl-6 mb-6 space-y-2">
+            <li><strong>Lên thực đơn bằng AI cá nhân hóa:</strong> Ứng dụng tự động thiết kế thực đơn 7 ngày, liên tục thay đổi dựa trên sở thích nhưng vẫn đảm bảo chỉ số an toàn</li>
+            <li><strong>Cảnh báo tương tác thực phẩm:</strong> Hệ thống nhận diện các mon ăn nguy cơ làm tăng đường huyết</li>
+            <li><strong>Đồng bộ hóa hồ sơ gia đình:</strong> Mọi nhật ký ăn uống được đồng bộ tức thì, giúp con cái theo dõi sức khỏe cha mẹ từ xa</li>
+          </ul>
+
+          {/* Section 4 */}
+          <SectionHeading number="04" id="ket-bai" title="Kết bài" />
+
+          <p className="text-justify mb-6">
+            Việc xây dựng một thực đơn cho người tiểu đường khoa học không còn là cuộc chiến cân não khi có sự hỗ trợ của công nghệ hiện đại. Bằng cách áp dụng giải pháp lên thực đơn bằng AI, bạn hoàn toàn có thể làm chủ chỉ số sức khỏe và tận hưởng cuộc sống một cách trọn vẹn nhất.
+          </p>
+
+          <div className="mt-12 pt-8 border-t border-slate-200">
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em>Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong></em>
             </p>
-
-            <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-8 rounded-2xl my-8 border border-cyan-200">
-              <p className="font-semibold text-slate-900 mb-3">Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ.</p>
-              <p className="text-xs text-slate-600 mt-4">FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa</p>
-              <p className="text-xs text-slate-600">Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a> | Email: famcare.support@gmail.com</p>
+            <p className="text-xs text-slate-500 text-justify mb-3">
+              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ.</strong></em>
+            </p>
+            <div className="border-t border-slate-200 pt-3">
+              <p className="text-xs text-slate-600 font-semibold">
+                FamCare – Nền tảng y tế thông minh – Chăm sóc gia đình từ xa
+              </p>
+              <p className="text-xs text-slate-500 mt-2">
+                Website: <a href="https://famcare.site/" className="text-cyan-600 hover:text-cyan-700">https://famcare.site/</a><br />
+                Email: famcare.support@gmail.com
+              </p>
             </div>
           </div>
 
