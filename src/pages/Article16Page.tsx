@@ -164,9 +164,6 @@ export default function Article16Page() {
               </a>
             </div>
           </div>
-              </a>
-            </div>
-          </div>
         </main>
 
         <PublicFooter />
