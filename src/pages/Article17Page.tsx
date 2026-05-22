@@ -126,13 +126,15 @@ export default function Article17Page() {
             <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
               Mục lục bài viết
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
-                <li key={item.id} style={{ marginLeft: item.level === 3 ? '16px' : '0' }}>
+                <li key={item.id}>
                   <button
                     onClick={() => scrollTo(item.id)}
-                    className={`text-left hover:text-cyan-600 transition-colors ${
-                      activeId === item.id ? 'text-cyan-600 font-semibold' : 'text-slate-600'
+                    className={`text-left w-full transition-colors rounded-md px-2.5 py-1 hover:bg-cyan-50/80 ${
+                      item.level === 3 ? 'pl-5 text-slate-500 text-[13px]' : 'font-semibold text-slate-700'
+                    } ${
+                      activeId === item.id ? 'bg-cyan-50 text-cyan-700 font-bold shadow-sm ring-1 ring-cyan-500/20' : ''
                     }`}
                   >
                     {item.text}
