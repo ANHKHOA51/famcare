@@ -22,6 +22,14 @@ import Article7Page from "./pages/Article7Page.tsx";
 import Article8Page from "./pages/Article8Page.tsx";
 import Article9Page from "./pages/Article9Page.tsx";
 import Article10Page from "./pages/Article10Page.tsx";
+import Article11Page from "./pages/Article11Page.tsx";
+import Article12Page from "./pages/Article12Page.tsx";
+import Article13Page from "./pages/Article13Page.tsx";
+import Article14Page from "./pages/Article14Page.tsx";
+import Article15Page from "./pages/Article15Page.tsx";
+import Article16Page from "./pages/Article16Page.tsx";
+import Article17Page from "./pages/Article17Page.tsx";
+import Article18Page from "./pages/Article18Page.tsx";
 
 // App pages (protected, rendered inside AppLayout via <Outlet />)
 import DashboardPage from "./pages/DashboardPage.tsx";
@@ -81,6 +89,14 @@ const App = () => (
             <Route path="/resources/mat-giay-kham-suc-khoe-va-ho-so-y-te" element={<Article8Page />} />
             <Route path="/resources/quan-ly-tu-thuoc-gia-dinh-an-toan" element={<Article9Page />} />
             <Route path="/resources/co-nen-uong-thuoc-bang-nuoc-tra" element={<Article10Page />} />
+            <Route path="/resources/quen-ten-thuoc-cu-ai-famcare" element={<Article11Page />} />
+            <Route path="/resources/theo-doi-chi-so-bmi-dung-cach" element={<Article12Page />} />
+            <Route path="/resources/thuc-pham-nguoi-benh-tieu-duong-nen-tranh-va-che-do-an" element={<Article13Page />} />
+            <Route path="/resources/quet-don-thuoc-ai-so-hoa-ho-so" element={<Article14Page />} />
+            <Route path="/resources/dat-lich-kham-truc-tuyen-online" element={<Article15Page />} />
+            <Route path="/resources/len-thuc-don-dinh-duong-can-bang" element={<Article16Page />} />
+            <Route path="/resources/cach-chon-bac-si-gioi-uy-tin" element={<Article17Page />} />
+            <Route path="/resources/thuc-don-tieu-duong-7-ngay-kh-hoc" element={<Article18Page />} />
 
             {/* ── Protected App Routes (nested under AppLayout) ── */}
             {/* AppLayout renders <Outlet /> for each child page.       */}
