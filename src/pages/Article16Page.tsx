@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { List } from "lucide-react";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
@@ -22,6 +23,20 @@ const tocItems: TocItem[] = [
   { id: "tro-ly-ai", text: "Trợ lý dinh dưỡng AI của FamCare", level: 2 },
   { id: "ket-luan", text: "Kết luận", level: 2 },
 ];
+
+const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
+  <figure className="my-10 flex flex-col items-center">
+    <img
+      src={src}
+      alt={alt}
+      className="w-full max-w-3xl rounded-xl shadow-md border border-slate-200/60 object-cover"
+      loading="lazy"
+    />
+    <figcaption className="mt-3 text-sm text-slate-500 font-body italic text-center px-4">
+      {alt}
+    </figcaption>
+  </figure>
+);
 
 const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
   <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
@@ -125,9 +140,10 @@ export default function Article16Page() {
 
           {/* Table of Contents */}
           <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              Mục lục bài viết
-            </h3>
+            <div className="flex items-center gap-2 mb-4">
+              <List size={16} className="text-cyan-600" />
+              <span className="font-bold text-slate-900 uppercase tracking-widest text-xs">Mục lục nhanh</span>
+            </div>
             <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
                 <li key={item.id}>
@@ -152,6 +168,7 @@ export default function Article16Page() {
           <p className="text-justify mb-6">
             Hiểu một cách khoa học, đây là phương pháp thiết kế chế độ ăn uống dựa trên các đặc điểm sinh học, thể trạng và lối sống đặc thù của riêng một cá nhân. Thay vì ép buộc cơ thể thích nghi với một thực đơn đại trà, dinh dưỡng cá nhân hóa sẽ đi sâu vào phân tích các chỉ số nền tảng của riêng bạn.
           </p>
+          <ArticleImage src="/bai-16/hinh1.jpg" alt="Mỗi người cần một chế độ ăn khác nhau phù hợp với từng thể trạng" />
 
           <h3 id="chi-so" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Các chỉ số được phân tích
@@ -176,6 +193,7 @@ export default function Article16Page() {
           <p className="text-justify mb-6">
             Ưu tiên các loại tinh bột phức hợp (gạo lứt, yến mạch, khoai lang) để duy trì năng lượng ổn định và tạo cảm giác no lâu. Lưu ý: Ngay cả khi ăn cùng lượng tinh bột giống nhau, chỉ số glucose của mỗi người tăng giảm hoàn toàn khác nhau do DNA quyết định.
           </p>
+          <ArticleImage src="/bai-16/hinh2.jpg" alt="Tinh bột giúp duy trì hoạt động sống của cơ thể và não bộ" />
 
           <h3 id="chat-dam" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Nhóm chất đạm - Xây dựng cơ bắp
@@ -183,6 +201,7 @@ export default function Article16Page() {
           <p className="text-justify mb-6">
             Protein đóng vai trò cốt lõi trong xây dựng cơ bắp. Kết hợp hài hòa giữa đạm động vật (cá, ức gà, trứng) và đạm thực vật (đậu, hạt) để phù hợp với cơ địa của riêng bạn.
           </p>
+          <ArticleImage src="/bai-16/hinh3.jpg" alt="Chất đạm giúp phát triển và hình thành cơ bắp" />
 
           <h3 id="chat-beo" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Nhóm chất béo tốt - Bảo vệ tim mạch
@@ -190,6 +209,7 @@ export default function Article16Page() {
           <p className="text-justify mb-6">
             Chất béo lành mạnh (từ dầu ô liu, bơ, cá béo, hạt) là dung môi bắt buộc để hấp thu vitamin thiết yếu và bảo vệ hệ tim mạch. Hàm lượng triglyceride có sự biến thiên lớn giữa các cá nhân tùy vào microbiome đường ruột.
           </p>
+          <ArticleImage src="/bai-16/hinh4.jpg" alt="Không nên loại bỏ hoàn toàn chất béo trong các bữa ăn dinh dưỡng" />
 
           {/* Section 3 */}
           <div className="clear-both"></div>
@@ -201,6 +221,7 @@ export default function Article16Page() {
           <p className="text-justify mb-6">
             Nhiều người "cuồng đạm" nhưng lạm dụng các loại thịt đỏ chứa nhiều cholesterol là nguyên nhân hàng đầu gây bệnh tim mạch. Một thực đơn khoa học đòi hỏi sự cân bằng tinh tế.
           </p>
+          <ArticleImage src="/bai-16/hinh5.jpg" alt="Chế độ ăn quá nhiều đạm làm tăng nguy cơ mắc bệnh tim" />
 
           <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3">
             Lầm tưởng ăn kiêng khắt khe sẽ giảm cân
@@ -222,6 +243,7 @@ export default function Article16Page() {
           <p className="text-justify mb-6">
             Không còn những thực đơn mang tính "đại trà", Trợ lý AI của FamCare phân tích sâu sắc tình trạng sức khỏe thực tế của bạn, từ các chỉ số xét nghiệm đến các bệnh lý cụ thể, để thiết kế một kế hoạch ăn uống an toàn, khoa học và hỗ trợ điều trị.
           </p>
+          <ArticleImage src="/bai-16/hinh6.jpg" alt="Trợ lý dinh dưỡng AI của FamCare hỗ trợ lên thực đơn theo nhu cầu" />
 
           {/* Section 5 */}
           <SectionHeading number="05" id="ket-luan" title="Kết luận" />

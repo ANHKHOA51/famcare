@@ -478,7 +478,7 @@ export default function ResourcesPage() {
                 <Link to="/resources/thuc-pham-nguoi-benh-tieu-duong-nen-tranh-va-che-do-an" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src="/bai-13/hinh1.jpg" 
+                      src="/bai-13/hinh1.jpeg" 
                       alt="Thực phẩm người tiểu đường" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />

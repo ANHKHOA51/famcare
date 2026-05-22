@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { List } from "lucide-react";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
@@ -21,6 +22,20 @@ const tocItems: TocItem[] = [
   { id: "do-chinh-xac", text: "Làm thế nào để đo BMI chính xác?", level: 2 },
   { id: "ket-luan", text: "Kết luận", level: 2 },
 ];
+
+const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
+  <figure className="my-10 flex flex-col items-center">
+    <img
+      src={src}
+      alt={alt}
+      className="w-full max-w-3xl rounded-xl shadow-md border border-slate-200/60 object-cover"
+      loading="lazy"
+    />
+    <figcaption className="mt-3 text-sm text-slate-500 font-body italic text-center px-4">
+      {alt}
+    </figcaption>
+  </figure>
+);
 
 const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
   <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
@@ -124,9 +139,10 @@ export default function Article12Page() {
 
           {/* Table of Contents */}
           <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              Mục lục bài viết
-            </h3>
+            <div className="flex items-center gap-2 mb-4">
+              <List size={16} className="text-cyan-600" />
+              <span className="font-bold text-slate-900 uppercase tracking-widest text-xs">Mục lục nhanh</span>
+            </div>
             <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
                 <li key={item.id}>
@@ -151,6 +167,7 @@ export default function Article12Page() {
           <p className="text-justify mb-6">
             Chỉ số BMI (Body Mass Index) hay còn gọi là chỉ số khối cơ thể, là công cụ phổ biến dùng để đánh giá tình trạng sức khỏe thông qua số cân nặng và chiều cao. BMI được dùng phổ biến nhất do có cách tính đơn giản giúp phát hiện người gầy ốm, suy dinh dưỡng hay thừa cân, béo phì.
           </p>
+          <ArticleImage src="/bai-12/hinh1.jpg" alt="Chỉ số BMI giúp đánh giá tình trạng cơ thể" />
 
           <h3 id="cong-thuc" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-10 mb-4 scroll-mt-28">
             Công thức tính BMI
@@ -159,6 +176,7 @@ export default function Article12Page() {
           <p className="text-justify mb-6">
             Ví dụ: Nếu bạn nặng 60kg và cao 1m65, chỉ số BMI của bạn sẽ là: 60 / (1.65 × 1.65) = 22.03
           </p>
+          <ArticleImage src="/bai-12/hinh2.png" alt="Công thức tính BMI" />
 
           {/* Section 2 */}
           <SectionHeading number="02" id="y-nghia" title="Ý nghĩa của chỉ số BMI đối với sức khỏe" />
@@ -210,13 +228,19 @@ export default function Article12Page() {
           <p className="text-justify mb-6">
             Đối với người trưởng thành khỏe mạnh, cần đo BMI mỗi 2–4 tuần để theo dõi xu hướng. Mẹo nhỏ: Hãy thực hiện phép đo vào buổi sáng ngay khi vừa ngủ dậy, sau khi đã đi vệ sinh và chưa ăn sáng để có số cân nặng chính xác nhất.
           </p>
+          <ArticleImage src="/bai-12/hinh3.jpg" alt="Đo cân nặng vào buổi sáng giúp kết quả BMI chính xác hơn" />
 
           <h3 id="tre-em" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Trẻ em và người lớn tuổi có đo BMI được không?
           </h3>
           <p className="text-justify mb-6">
-            Trẻ em và thanh thiếu niên từ 5-19 tuổi có bộ theo dõi riêng theo WHO Growth Reference 2007. Đối với người cao tuổi, theo Viện Y tế Quốc gia Hoa Kỳ, chỉ số BMI nên duy trì trong khoảng 25-27 là tốt nhất.
+            Trẻ em và thanh thiếu niên từ 5-19 tuổi có bộ theo dõi riêng theo WHO Growth Reference 2007.
           </p>
+          <ArticleImage src="/bai-12/hinh4.jpg" alt="Trẻ em có thang đo BMI khác nhau ở từng độ tuổi" />
+          <p className="text-justify mb-6">
+            Đối với người cao tuổi, theo Viện Y tế Quốc gia Hoa Kỳ, chỉ số BMI nên duy trì trong khoảng 25-27 là tốt nhất.
+          </p>
+          <ArticleImage src="/bai-12/hinh5.jpg" alt="Người lớn tuổi thường có chỉ số BMI cao hơn mức thông thường" />
 
           {/* Section 4 */}
           <div className="clear-both"></div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { List } from "lucide-react";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
@@ -18,6 +19,20 @@ const tocItems: TocItem[] = [
   { id: "he-sinh-thai", text: "FamCare - Hệ sinh thái đồng hành", level: 2 },
   { id: "ket-bai", text: "Kết bài", level: 2 },
 ];
+
+const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
+  <figure className="my-10 flex flex-col items-center">
+    <img
+      src={src}
+      alt={alt}
+      className="w-full max-w-3xl rounded-xl shadow-md border border-slate-200/60 object-cover"
+      loading="lazy"
+    />
+    <figcaption className="mt-3 text-sm text-slate-500 font-body italic text-center px-4">
+      {alt}
+    </figcaption>
+  </figure>
+);
 
 const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
   <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
@@ -121,9 +136,10 @@ export default function Article18Page() {
 
           {/* Table of Contents */}
           <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              Mục lục bài viết
-            </h3>
+            <div className="flex items-center gap-2 mb-4">
+              <List size={16} className="text-cyan-600" />
+              <span className="font-bold text-slate-900 uppercase tracking-widest text-xs">Mục lục nhanh</span>
+            </div>
             <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
                 <li key={item.id}>
@@ -148,13 +164,16 @@ export default function Article18Page() {
           <p className="text-justify mb-6">
             Bản chất của việc điều trị đái tháo đường không nằm ở việc cắt bỏ hoàn toàn các nhóm chất, mà là kiểm soát tốc độ tăng đường huyết sau ăn và duy trì năng lượng ổn định. Khi thiết kế một thực đơn cho người tiểu đường, mục tiêu tối thượng là đảm bảo chỉ số đường huyết (GI) thấp, tải lượng đường (GL) an toàn, đồng thời vẫn phải xây dựng thực đơn khoa học và đủ chất.
           </p>
+          <ArticleImage src="/bai-18/hinh1.png" alt="Thiết kế thực đơn cho người tiểu đường bằng AI giúp kiểm soát đường huyết tối ưu." />
 
           <h3 id="khau-phan" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Lưu ý quan trọng với khẩu phần ăn theo từng buổi
           </h3>
           <p className="text-justify mb-4"><strong>Bữa sáng:</strong> Nên giàu đạm và chất xơ để ổn định đường huyết cho cả ngày dài. Gợi ý: Trứng luộc kèm salad ức gà hoặc bát yến mạch nhỏ không đường.</p>
           <p className="text-justify mb-4"><strong>Người lớn tuổi:</strong> Thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.</p>
+          <ArticleImage src="/bai-18/hinh3.png" alt="Người cao tuổi bị tiểu đường cần có chế độ ăn hợp lý" />
           <p className="text-justify mb-6"><strong>Bữa tối:</strong> Nên là bữa ăn nhẹ nhàng để tránh áp lực cho hệ tiêu hóa. Các món canh rau thanh đạm, cá hấp, đậu phụ luộc là sự lựa chọn hoàn hảo.</p>
+          <ArticleImage src="/bai-18/hinh2.jpg" alt="Cắt giảm khẩu phần một cách cực đoan có thể ảnh hưởng xấu đến sức khỏe" />
 
           {/* Section 2 */}
           <SectionHeading number="02" id="meo-ai" title="Mẹo lên thực đơn 7 ngày bằng AI" />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { List } from "lucide-react";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
@@ -22,6 +23,20 @@ const tocItems: TocItem[] = [
   { id: "giai-phap", text: "Giải pháp FamCare", level: 2 },
   { id: "ket-bai", text: "Kết bài", level: 2 },
 ];
+
+const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
+  <figure className="my-10 flex flex-col items-center">
+    <img
+      src={src}
+      alt={alt}
+      className="w-full max-w-3xl rounded-xl shadow-md border border-slate-200/60 object-cover"
+      loading="lazy"
+    />
+    <figcaption className="mt-3 text-sm text-slate-500 font-body italic text-center px-4">
+      {alt}
+    </figcaption>
+  </figure>
+);
 
 const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
   <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
@@ -125,9 +140,10 @@ export default function Article13Page() {
 
           {/* Table of Contents */}
           <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              Mục lục bài viết
-            </h3>
+            <div className="flex items-center gap-2 mb-4">
+              <List size={16} className="text-cyan-600" />
+              <span className="font-bold text-slate-900 uppercase tracking-widest text-xs">Mục lục nhanh</span>
+            </div>
             <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
                 <li key={item.id}>
@@ -152,9 +168,11 @@ export default function Article13Page() {
           <p className="text-justify mb-6">
             Kiểm soát chỉ số đường huyết không đồng nghĩa với việc nhịn ăn cực đoan, mà là thấu hiểu chỉ số đường huyết (GI) và tải lượng đường (GL) của thực phẩm. Các loại thực phẩm người bệnh tiểu đường nên tránh thường là những món có chỉ số GI cao, khiến đường huyết tăng vọt ngay sau khi ăn.
           </p>
+          <ArticleImage src="/bai-13/hinh1.jpeg" alt="Hiểu rõ thực phẩm người bệnh tiểu đường nên tránh giúp kiểm soát chỉ số đường huyết ổn định" />
 
           {/* Section 2 */}
           <SectionHeading number="02" id="danh-muc" title="Danh mục thực phẩm người bệnh tiểu đường nên tránh" />
+          <ArticleImage src="/bai-13/hinh2.jpg" alt="Máy đo đường huyết liên tục" />
 
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse border border-slate-300 text-sm">
@@ -203,6 +221,7 @@ export default function Article13Page() {
           <p className="text-justify mb-6">
             Mặc dù chứa nhiều vitamin, nhưng danh mục trái cây người bệnh tiểu đường không nên ăn bao gồm các loại quả có hàm lượng đường fructose quá cao hoặc quả quá chín. Sầu riêng, mít, nhãn, vải là những ví dụ điển hình. Thay vì uống nước ép, người bệnh nên ăn trái cây nguyên miếng để tận dụng lượng xơ.
           </p>
+          <ArticleImage src="/bai-13/hinh3.jpg" alt="Một số loại trái cây không phù hợp cho người tiểu đường (Hình minh họa)" />
 
           {/* Section 3 */}
           <div className="clear-both"></div>
@@ -228,6 +247,7 @@ export default function Article13Page() {
           <p className="text-justify mb-6">
             Tính năng Thực đơn dinh dưỡng AI của FamCare sẽ cá nhân hóa thực đơn của bạn, cảnh báo thông minh các loại trái cây người bệnh tiểu đường không nên ăn và đưa ra các lựa chọn thay thế giàu chất xơ.
           </p>
+          <ArticleImage src="/bai-13/hinh4.png" alt="Cần có một thực đơn dinh dưỡng hợp lý cho người tiểu đường" />
 
           {/* Section 5 */}
           <SectionHeading number="05" id="ket-bai" title="Kết bài" />

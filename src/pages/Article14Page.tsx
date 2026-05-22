@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { List } from "lucide-react";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
@@ -20,6 +21,20 @@ const tocItems: TocItem[] = [
   { id: "giai-phap", text: "FamCare: Giải pháp quản lý toàn diện", level: 2 },
   { id: "ket-bai", text: "Kết bài", level: 2 },
 ];
+
+const ArticleImage = ({ src, alt }: { src: string; alt: string }) => (
+  <figure className="my-10 flex flex-col items-center">
+    <img
+      src={src}
+      alt={alt}
+      className="w-full max-w-3xl rounded-xl shadow-md border border-slate-200/60 object-cover"
+      loading="lazy"
+    />
+    <figcaption className="mt-3 text-sm text-slate-500 font-body italic text-center px-4">
+      {alt}
+    </figcaption>
+  </figure>
+);
 
 const SectionHeading = ({ number, title, id }: { number: string, title: string, id: string }) => (
   <div id={id} className="flex items-start gap-4 mt-16 mb-6 scroll-mt-28">
@@ -123,9 +138,10 @@ export default function Article14Page() {
 
           {/* Table of Contents */}
           <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              Mục lục bài viết
-            </h3>
+            <div className="flex items-center gap-2 mb-4">
+              <List size={16} className="text-cyan-600" />
+              <span className="font-bold text-slate-900 uppercase tracking-widest text-xs">Mục lục nhanh</span>
+            </div>
             <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
                 <li key={item.id}>
@@ -150,6 +166,7 @@ export default function Article14Page() {
           <p className="text-justify mb-6">
             Việc lưu trữ hồ sơ sức khỏe theo cách truyền thống từ lâu đã trở thành một gánh nặng âm thầm đối với các hộ gia đình Việt. Đơn thuốc, kết quả xét nghiệm thường được cất giữ rời rạc, dẫn đến tình trạng hư hỏng vật lý như ẩm mốc hoặc mờ mực.
           </p>
+          <ArticleImage src="/bai-14/hinh1.jpg" alt="Quét đơn thuốc thông minh bằng AI giúp việc quản lý hồ sơ y tế trở nên đơn giản hơn" />
 
           <h3 id="xu-huong" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Xu hướng hồ sơ y tế điện tử năm 2026
@@ -157,6 +174,7 @@ export default function Article14Page() {
           <p className="text-justify mb-6">
             Năm 2026 đánh dấu sự bùng nổ của mô hình "Chăm sóc sức khỏe tại gia". Quét đơn thuốc AI chính là cầu nối quan trọng giúp người dân thực hiện chuyển đổi số từ dữ liệu giấy sang dữ liệu số. Việc sử dụng ứng dụng công nghệ thông tin trong quản lý y tế lúc này không còn là lựa chọn xa xỉ, mà là công cụ để bạn kết nối trực tiếp với các dịch vụ Telemedicine.
           </p>
+          <ArticleImage src="/bai-14/hinh2.jpg" alt="Thất lạc đơn thuốc giấy có thể gây ra hoảng loạn và làm giảm hiệu quả điều trị" />
 
           {/* Section 2 */}
           <SectionHeading number="02" id="ai-doc-chu" title="AI giải quyết vấn đề đọc &quot;chữ bác sĩ&quot;" />
@@ -175,6 +193,7 @@ export default function Article14Page() {
             <li><strong>Lưu lịch sử bệnh của trẻ nhỏ:</strong> Mọi đợt ốm của con được lưu hồ sơ y tế online vĩnh viễn.</li>
             <li><strong>Chia sẻ hồ sơ cho bác sĩ:</strong> Gửi một bản quét sạch sẽ qua ứng dụng giúp bác sĩ đưa ra chẩn đoán chính xác hơn.</li>
           </ul>
+          <ArticleImage src="/bai-14/hinh3.jpg" alt="Nhiều người gặp khó khăn với đơn thuốc giấy tại bệnh viện (Hình minh họa)" />
 
           {/* Section 4 */}
           <SectionHeading number="04" id="so-sanh" title="So sánh lưu trữ thủ công vs AI Scanner" />

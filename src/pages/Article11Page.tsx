@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PublicNavbar from "@/components/PublicNavbar";
 import PublicFooter from "@/components/PublicFooter";
 import { Link } from "react-router-dom";
+import { List } from "lucide-react";
 import { Helmet } from 'react-helmet-async';
 import SocialShareButtons from '@/components/SocialShareButtons';
 
@@ -137,9 +138,10 @@ export default function Article11Page() {
 
           {/* Table of Contents */}
           <nav className="bg-white/60 backdrop-blur rounded-xl p-6 mb-14 border border-cyan-100 shadow-sm float-none md:float-right md:ml-8 md:mb-8 md:w-64 font-sans text-sm">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              Mục lục bài viết
-            </h3>
+            <div className="flex items-center gap-2 mb-4">
+              <List size={16} className="text-cyan-600" />
+              <span className="font-bold text-slate-900 uppercase tracking-widest text-xs">Mục lục nhanh</span>
+            </div>
             <ul className="space-y-1.5 text-left">
               {tocItems.map((item) => (
                 <li key={item.id}>
@@ -165,9 +167,12 @@ export default function Article11Page() {
             Việc quên tên loại thuốc từng sử dụng tiềm ẩn nhiều hệ lụy nghiêm trọng, trực tiếp đe dọa đến hiệu quả điều trị và an toàn tính mạng của người bệnh. Rủi ro phổ biến nhất chính là việc mua nhầm thuốc dựa trên những mô tả cảm tính về màu sắc hay bao bì, khiến người bệnh dễ dùng sai hoạt chất hoặc vô tình nạp vào cơ thể các thành phần từng gây dị ứng.
           </p>
 
+          <ArticleImage src="/bai-11/hinh1.jpg" alt="Quên thuốc cũ tiềm ẩn nhiều hệ lụy nghiêm trọng" />
+
           <h3 id="nhom-nguoi" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-10 mb-4 scroll-mt-28">
             Những nhóm người dễ quên tên thuốc nhất
           </h3>
+          <ArticleImage src="/bai-11/hinh2.jpg" alt="Người lớn tuổi là một trong những đối tượng hay quên tên thuốc nhất" />
           <ul className="list-disc pl-6 mb-6 space-y-2">
             <li>Người lớn tuổi phải sử dụng nhiều loại thuốc mỗi ngày</li>
             <li>Người điều trị bệnh mãn tính như huyết áp, tiểu đường, tim mạch</li>
@@ -195,6 +200,8 @@ export default function Article11Page() {
           <p className="text-justify mb-6">
             Công cụ này không chỉ giúp bạn lưu trữ thông tin dược phẩm một cách khoa học mà còn cho phép truy vấn lại tên thuốc theo triệu chứng, giúp bạn hoàn toàn làm chủ hành trình chăm sóc sức khỏe.
           </p>
+
+          <ArticleImage src="/bai-11/hinh3.png" alt="Sử dụng tủ thuốc AI để quản lý sức khỏe tốt hơn" />
 
           <div className="bg-emerald-50/80 border border-emerald-200 border-l-4 border-l-emerald-600 p-6 rounded-r-xl my-10 relative overflow-hidden">
             <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-700 mb-2">
