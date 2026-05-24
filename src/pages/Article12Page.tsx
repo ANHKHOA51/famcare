@@ -161,22 +161,35 @@ export default function Article12Page() {
             </ul>
           </nav>
 
+          {/* Intro */}
+          <p className="text-justify mb-6">
+            Chỉ số BMI (Body Mass Index) là công cụ phổ biến dùng để đánh giá tình trạng sức khỏe thông qua số cân nặng và chiều cao. Tuy nhiên, liệu bạn đã biết cách đọc chỉ số này sao cho đúng với cơ địa người Việt, hay bao lâu thì nên kiểm tra lại một lần? Cùng FamCare khám phá cách đọc chỉ số BMI chuẩn xác, tần suất đo định kỳ và những lưu ý quan trọng để duy trì vóc dáng cân đối ngay trong bài viết này!
+          </p>
+
           {/* Section 1 */}
           <SectionHeading number="01" id="bmi-la-gi" title="Chỉ số BMI là gì?" />
 
           <p className="text-justify mb-6">
-            Chỉ số BMI (Body Mass Index) hay còn gọi là chỉ số khối cơ thể, là công cụ phổ biến dùng để đánh giá tình trạng sức khỏe thông qua số cân nặng và chiều cao. BMI được dùng phổ biến nhất do có cách tính đơn giản giúp phát hiện người gầy ốm, suy dinh dưỡng hay thừa cân, béo phì.
+            Chỉ số BMI (Body Mass Index) hay còn gọi là <strong>chỉ số khối cơ thể</strong>, bắt đầu được đề xuất bởi nhà khoa học người Bỉ Adolphe Quetelet vào năm 1832. Ban đầu, nó được gọi là Quetelet Index, nhưng sau này do tính phổ biến và sự ứng dụng rộng rãi trong việc đo lường thể trạng sức khỏe nên được gọi với tên Body Mass Index (BMI) và sử dụng rộng rãi cho đến nay.
           </p>
           <ArticleImage src="/bai-12/hinh1.jpg" alt="Chỉ số BMI giúp đánh giá tình trạng cơ thể" />
+
+          <p className="text-justify mb-6">
+            Chỉ số BMI được dùng phổ biến nhất do có cách tính đơn giản nhất giúp cho chúng ta dễ dàng và nhanh chóng phát hiện người <strong>gầy ốm, suy dinh dưỡng hay thừa cân, béo phì</strong> với các mức độ nặng nhẹ khác nhau trên lâm sàng và trong cộng đồng. Ngoài ra, BMI còn <strong>cảnh báo sớm nguy cơ mắc các bệnh lý nguy hiểm</strong> như bệnh tim, cao huyết áp, tiểu đường loại 2, sỏi mật, viêm khớp, ngưng thở khi ngủ và một số bệnh ung thư.
+          </p>
+
+          <p className="text-justify mb-6">
+            Trong trường hợp biết được chỉ số BMI của mình ở ngoài mức tiêu chuẩn, bạn có thể <strong>lên kế hoạch giảm cân</strong> hoặc bổ sung dinh dưỡng phù hợp.
+          </p>
 
           <h3 id="cong-thuc" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-10 mb-4 scroll-mt-28">
             Công thức tính BMI
           </h3>
           <p className="mb-4 font-semibold">BMI = Cân nặng (kg) / Chiều cao (m)²</p>
+          <ArticleImage src="/bai-12/hinh2.png" alt="Công thức tính BMI" />
           <p className="text-justify mb-6">
             Ví dụ: Nếu bạn nặng 60kg và cao 1m65, chỉ số BMI của bạn sẽ là: 60 / (1.65 × 1.65) = 22.03
           </p>
-          <ArticleImage src="/bai-12/hinh2.png" alt="Công thức tính BMI" />
 
           {/* Section 2 */}
           <SectionHeading number="02" id="y-nghia" title="Ý nghĩa của chỉ số BMI đối với sức khỏe" />
@@ -219,6 +232,17 @@ export default function Article12Page() {
             </table>
           </div>
 
+          <p className="text-justify mb-6">
+            Có 4 yếu tố chính ảnh hưởng đến chỉ số BMI là khối mỡ, khối cơ, khối xương và chiều cao. Thông thường, khối mỡ, khối cơ và khối xương tạo thành trọng lượng và xương tạo nên chiều cao của cơ thể. Khối xương và chiều cao thường ổn định, khó thay đổi, khối mỡ là yếu tố dễ biến đổi nhất, khối cơ thường thay đổi chậm hơn.
+          </p>
+
+          <div className="bg-amber-50/80 border border-amber-200 border-l-4 border-l-amber-600 p-6 rounded-r-xl my-10">
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-amber-700 mb-2">⚠️ Lưu ý quan trọng</div>
+            <p className="text-justify text-[0.95rem] text-amber-900 m-0 leading-relaxed font-sans">
+              Cần lưu ý phân biệt BMI tăng do tăng cơ và tăng mỡ. Ở những người thường xuyên vận động, năng lượng sẽ tích trữ trong các cơ, làm tăng khối lượng cơ – <strong>không được nhầm lẫn</strong> với béo phì. <strong>Ăn uống lành mạnh và tập thể dục thường xuyên</strong> quan trọng hơn là gầy. Các nghiên cứu đã phát hiện ra rằng những người giữ dáng thông qua tập thể dục thường có cuộc sống lâu hơn so với những người không tập luyện thể thao thường xuyên.
+            </p>
+          </div>
+
           {/* Section 3 */}
           <SectionHeading number="03" id="cau-hoi" title="Câu hỏi thường gặp khi đo BMI tại nhà" />
 
@@ -226,38 +250,78 @@ export default function Article12Page() {
             Bao lâu thì cần đo BMI một lần?
           </h3>
           <p className="text-justify mb-6">
-            Đối với người trưởng thành khỏe mạnh, cần đo BMI mỗi 2–4 tuần để theo dõi xu hướng. Mẹo nhỏ: Hãy thực hiện phép đo vào buổi sáng ngay khi vừa ngủ dậy, sau khi đã đi vệ sinh và chưa ăn sáng để có số cân nặng chính xác nhất.
+            👉 Đối với người <strong>trưởng thành khỏe mạnh</strong>, cần đo BMI mỗi <strong>2–4 tuần</strong> để theo dõi xu hướng, cũng có một số nơi khuyến cáo cần đo BMI mỗi 3-6 tháng. Tuy nhiên, cần <strong>tránh việc đo BMI quá thường xuyên</strong> để tránh tạo sức ép tâm lý lên bản thân.
           </p>
           <ArticleImage src="/bai-12/hinh3.jpg" alt="Đo cân nặng vào buổi sáng giúp kết quả BMI chính xác hơn" />
 
+          <div className="bg-emerald-50/80 border border-emerald-200 border-l-4 border-l-emerald-600 p-6 rounded-r-xl my-10">
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-700 mb-2">🚨 Mẹo nhỏ từ FamCare</div>
+            <p className="text-justify text-[0.95rem] text-emerald-900 m-0 leading-relaxed font-sans">
+              Hãy thực hiện phép đo vào buổi sáng ngay khi vừa ngủ dậy, sau khi đã đi vệ sinh và chưa ăn sáng để có số cân nặng chính xác nhất.
+            </p>
+          </div>
+
+          <p className="text-justify mb-6">
+            👉 Đối với <strong>người tập luyện thể hình hoặc vận động viên</strong>, việc đo BMI có thể <strong>không quá chính xác</strong> do tỉ lệ khối cơ, khối mỡ của nhóm này thường theo một mục tiêu tập luyện. Trong trường hợp này, các chỉ số được khuyến nghị là tỉ lệ mỡ cơ thể (body fat percentage), chu vi vòng eo, hoặc sử dụng phương pháp DEXA.
+          </p>
+
           <h3 id="tre-em" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Trẻ em và người lớn tuổi có đo BMI được không?
+            Trẻ em thì có đo BMI được không?
           </h3>
           <p className="text-justify mb-6">
-            Trẻ em và thanh thiếu niên từ 5-19 tuổi có bộ theo dõi riêng theo WHO Growth Reference 2007.
+            Câu trả lời là <strong>được</strong> tuy nhiên BMI áp dụng cho trẻ em và thanh thiếu niên có thang đo khác.
           </p>
           <ArticleImage src="/bai-12/hinh4.jpg" alt="Trẻ em có thang đo BMI khác nhau ở từng độ tuổi" />
           <p className="text-justify mb-6">
-            Đối với người cao tuổi, theo Viện Y tế Quốc gia Hoa Kỳ, chỉ số BMI nên duy trì trong khoảng 25-27 là tốt nhất.
+            👦 <strong>Trẻ em từ 0 – 5 tuổi</strong> có bộ chỉ số theo dõi riêng theo WHO Child Growth Standards (2006). 👦 <strong>Trẻ em và thanh thiếu niên từ 5-19 tuổi</strong> có bộ theo dõi riêng theo WHO Growth Reference 2007. Ba mẹ có thể sử dụng WHO AnthroPlus – phần mềm miễn phí cung cấp bởi WHO để tính toán và in biểu đồ tăng trưởng.
+          </p>
+
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3">
+            Người mang thai đo BMI được không?
+          </h3>
+          <p className="text-justify mb-6">
+            <strong>Không nên dùng BMI để đánh giá phụ nữ mang thai</strong> vì trong thai kỳ sẽ có các thay đổi về thể trạng và cân nặng, BMI không phù hợp trong giai đoạn này. Trong giai đoạn thai kỳ, các xét nghiệm và đánh giá chi tiết nên theo hướng dẫn của bác sĩ chuyên khoa.
+          </p>
+
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3">
+            Người lớn tuổi đo BMI được không?
+          </h3>
+          <p className="text-justify mb-6">
+            Đã có nhiều nghiên cứu được đặt ra để xác định mối tương quan của chỉ số BMI với tình trạng sức khỏe của người cao tuổi. Có nhiều yếu tố tác động khiến <strong>chỉ số BMI người cao tuổi cao hơn thông thường</strong> như bệnh lý tim mạch, cao huyết áp, đái tháo đường.
           </p>
           <ArticleImage src="/bai-12/hinh5.jpg" alt="Người lớn tuổi thường có chỉ số BMI cao hơn mức thông thường" />
+          <p className="text-justify mb-6">
+            Theo Viện Y tế Quốc gia Hoa Kỳ, chỉ số BMI người cao tuổi nên duy trì trong khoảng <strong>25-27</strong> là tốt nhất. Tuy nhiên chỉ số <strong>BMI lý tưởng không giống nhau đối với mọi người</strong> mà cần linh hoạt điều chỉnh tùy vào tình trạng sức khỏe và thể chất của người bệnh.
+          </p>
 
           {/* Section 4 */}
           <div className="clear-both"></div>
           <SectionHeading number="04" id="do-chinh-xac" title="Làm thế nào để đo BMI chính xác?" />
 
+          <p className="text-justify mb-6">
+            Để kết quả phản ánh đúng nhất, việc đo và cập nhật chỉ số đúng cách là rất quan trọng. Dưới đây là một vài lưu ý giúp bạn đo BMI chính xác và theo dõi sức khỏe hiệu quả hơn:
+          </p>
           <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li><strong>Chọn công cụ đáng tin cậy:</strong> Ưu tiên nền tảng có giải thích rõ công thức tính và phân loại BMI theo cả chuẩn quốc tế lẫn châu Á</li>
-            <li><strong>Cập nhật số liệu chính xác:</strong> Nhập chiều cao và cân nặng mới nhất, hạn chế ước lượng</li>
-            <li><strong>Lưu lại kết quả:</strong> Ghi chú ngày đo, chỉ số BMI để dễ theo dõi sự thay đổi theo thời gian</li>
-            <li><strong>Sử dụng FamCare:</strong> Theo dõi và quản lý các chỉ số sức khỏe của cả gia đình một cách thuận tiện</li>
+            <li><strong>Chọn công cụ đáng tin cậy:</strong> Ưu tiên các nền tảng có giải thích rõ công thức tính và phân loại BMI theo cả chuẩn quốc tế lẫn châu Á. Bạn có thể <strong>sử dụng FamCare</strong> để theo dõi và quản lý các chỉ số sức khỏe thuận tiện hơn.</li>
+            <li><strong>Cập nhật số liệu chính xác:</strong> Nhập chiều cao và cân nặng mới nhất, hạn chế ước lượng để kết quả phản ánh đúng tình trạng cơ thể.</li>
+            <li><strong>Lưu lại kết quả:</strong> Ghi chú ngày đo, chỉ số BMI và vòng eo để dễ theo dõi sự thay đổi theo thời gian.</li>
           </ul>
+
+          <div className="bg-amber-50/80 border border-amber-200 border-l-4 border-l-amber-600 p-6 rounded-r-xl my-10">
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-amber-700 mb-2">⚠️ Lưu ý</div>
+            <p className="text-justify text-[0.95rem] text-amber-900 m-0 leading-relaxed font-sans">
+              BMI chỉ mang tính tham khảo và hỗ trợ theo dõi sức khỏe. Nếu có bất kỳ dấu hiệu bất thường hoặc lo ngại nào, bạn nên tham khảo ý kiến chuyên gia y tế. Nhớ rằng "đo chỉ số BMI" chỉ là hỗ trợ; mọi nghi ngờ về sức khỏe nên trao đổi trực tiếp với chuyên gia.
+            </p>
+          </div>
 
           {/* Section 5 */}
           <SectionHeading number="05" id="ket-luan" title="Kết luận" />
 
           <p className="text-justify mb-6">
-            Chỉ số BMI là "điểm khởi đầu" hoàn hảo để bạn thấu hiểu cơ thể mình. Tuy nhiên, hãy nhớ rằng sức khỏe là sự kết hợp của nhiều yếu tố từ dinh dưỡng, vận động đến tinh thần. Sử dụng công cụ theo dõi sức khỏe của FamCare để quản lý chỉ số BMI cho cả gia đình một cách khoa học và dễ dàng nhất.
+            Chỉ số BMI là "điểm khởi đầu" hoàn hảo để bạn thấu hiểu cơ thể mình. Tuy nhiên, hãy nhớ rằng sức khỏe là sự kết hợp của nhiều yếu tố từ dinh dưỡng, vận động đến tinh thần.
+          </p>
+          <p className="text-justify mb-6">
+            Đừng để những con số làm bạn lo lắng, hãy để chúng trở thành động lực để sống lành mạnh hơn. Sử dụng ngay công cụ theo dõi sức khỏe của FamCare để quản lý chỉ số BMI cho cả gia đình một cách khoa học và dễ dàng nhất!
           </p>
 
           <div className="mt-12 pt-8 border-t border-slate-200">

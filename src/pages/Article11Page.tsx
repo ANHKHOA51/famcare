@@ -160,55 +160,111 @@ export default function Article11Page() {
             </ul>
           </nav>
 
+          {/* Intro */}
+          <p className="text-justify mb-6">
+            Quên tên thuốc cũ là tình huống thường xuất hiện trong cuộc sống, đặc biệt đối với những người từng điều trị bệnh theo đợt hay người phải sử dụng nhiều loại thuốc điều trị trong ngày. Việc quên tên thuốc không chỉ đem lại bất tiện trong cuộc sống mà còn tăng rủi ro cho sức khỏe khi người bệnh bị gián đoạn trị liệu, giảm hiệu quả điều trị. Trong bài viết này, hãy để FamCare hướng dẫn cách bạn xử lý và phòng tránh trường hợp này nhé!
+          </p>
+
           {/* Section 1 */}
           <SectionHeading number="01" id="rui-ro" title="Rủi ro của việc quên tên thuốc cũ" />
 
           <p className="text-justify mb-6">
-            Việc quên tên loại thuốc từng sử dụng tiềm ẩn nhiều hệ lụy nghiêm trọng, trực tiếp đe dọa đến hiệu quả điều trị và an toàn tính mạng của người bệnh. Rủi ro phổ biến nhất chính là việc mua nhầm thuốc dựa trên những mô tả cảm tính về màu sắc hay bao bì, khiến người bệnh dễ dùng sai hoạt chất hoặc vô tình nạp vào cơ thể các thành phần từng gây dị ứng.
+            Việc quên tên loại thuốc từng sử dụng tiềm ẩn nhiều hệ lụy nghiêm trọng, trực tiếp đe dọa đến hiệu quả điều trị và an toàn tính mạng của người bệnh. Rủi ro phổ biến nhất chính là việc <strong>mua nhầm thuốc</strong> dựa trên những <strong>mô tả cảm tính về màu sắc hay bao bì</strong>, khiến người bệnh dễ <strong>dùng sai hoạt chất hoặc vô tình nạp vào cơ thể các thành phần từng gây dị ứng</strong>, dẫn đến các triệu chứng từ nổi mẩn đỏ, khó thở cho đến sốc phản vệ nguy hiểm.
           </p>
 
           <ArticleImage src="/bai-11/hinh1.jpg" alt="Quên thuốc cũ tiềm ẩn nhiều hệ lụy nghiêm trọng" />
 
+          <p className="text-justify mb-6">
+            Đặc biệt đối với <strong>người cao tuổi hoặc người có bệnh nền</strong>, việc không nhớ rõ tên thuốc cũ có thể gây ra những tương tác thuốc bất lợi khi dùng chung với các loại thuốc hiện tại, làm gia tăng độc tính lên gan, thận và hệ tim mạch. Tình trạng này không chỉ gây gián đoạn liệu trình, khiến bệnh tình kéo dài do dùng sai liều lượng, mà còn tạo ra gánh nặng về chi phí và thời gian khi người bệnh buộc phải thực hiện lại các xét nghiệm hoặc thăm khám từ đầu để xác định lại phác đồ.
+          </p>
+
+          <p className="text-justify mb-6">
+            Không chỉ vậy, việc quên tên thuốc còn khiến quá trình điều trị bị gián đoạn. Người bệnh có thể dùng <strong>sai liều lượng, bỏ lỡ thời gian uống thuốc</strong> hoặc phải bắt đầu lại từ đầu do không xác định được loại thuốc phù hợp. Điều này làm kéo dài thời gian hồi phục, gia tăng chi phí khám chữa bệnh và tạo áp lực tâm lý không nhỏ cho cả bệnh nhân lẫn người thân.
+          </p>
+
+          <p className="text-justify mb-6">
+            Hơn nữa, việc không lưu lại thông tin thuốc hoặc quên tên thuốc cũ còn khiến người dùng gặp <strong>khó khăn trong việc theo dõi lịch sử điều trị</strong> của bản thân. Người bệnh có thể không nhớ mình từng mắc bệnh gì, đã sử dụng loại thuốc nào, liều lượng ra sao hoặc thuốc nào từng mang lại hiệu quả tốt nhất. Điều này không chỉ làm gián đoạn quá trình chăm sóc sức khỏe cá nhân mà còn gây khó khăn cho bác sĩ trong những lần tái khám.
+          </p>
+
+          <p className="text-justify mb-6">
+            Khi không có đầy đủ lịch sử dùng thuốc, bác sĩ sẽ khó có cái nhìn toàn diện về tình trạng sức khỏe, <strong>nguy cơ dị ứng, các bệnh lý đã điều trị hoặc những loại thuốc bệnh nhân đang sử dụng</strong>. Từ đó, việc đưa ra chẩn đoán và phác đồ điều trị phù hợp cũng có thể mất nhiều thời gian hơn và tiềm ẩn nguy cơ sai sót không mong muốn.
+          </p>
+
           <h3 id="nhom-nguoi" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-10 mb-4 scroll-mt-28">
             Những nhóm người dễ quên tên thuốc nhất
           </h3>
+
+          <p className="text-justify mb-6">
+            Trong thực tế, bất kỳ ai cũng có thể rơi vào tình trạng quên tên thuốc cũ. Tuy nhiên, thực tế cho thấy một số <strong>nhóm đối tượng có nguy cơ nhầm lẫn cao hơn hẳn</strong>.
+          </p>
+
           <ArticleImage src="/bai-11/hinh2.jpg" alt="Người lớn tuổi là một trong những đối tượng hay quên tên thuốc nhất" />
+
+          <p className="text-justify mb-4">
+            Việc nhận diện các nhóm này sẽ giúp người thân chủ động hơn trong việc giám sát và hỗ trợ điều trị:
+          </p>
+
           <ul className="list-disc pl-6 mb-6 space-y-2">
             <li>Người lớn tuổi phải sử dụng nhiều loại thuốc mỗi ngày</li>
             <li>Người điều trị bệnh mãn tính như huyết áp, tiểu đường, tim mạch</li>
             <li>Người từng điều trị bệnh theo đợt nhưng lâu ngày không tái sử dụng thuốc</li>
-            <li>Phụ huynh chăm sóc sức khỏe cho cả gia đình</li>
-            <li>Người có thói quat giữ thuốc nhưng không lưu lại toa hoặc hướng dẫn</li>
+            <li>Phụ huynh chăm sóc sức khỏe cho cả gia đình nên khó nhớ toàn bộ tên thuốc của từng thành viên</li>
+            <li>Người có thói quen giữ thuốc nhưng không lưu lại toa hoặc hướng dẫn sử dụng</li>
           </ul>
+
+          <p className="text-justify mb-6">
+            Đặc biệt, trong thời đại hiện nay, nhiều người có xu hướng tự mua lại thuốc theo trí nhớ thay vì tái khám hoặc kiểm tra thông tin cũ. Điều này tuy tiện lợi trước mắt nhưng lại tiềm ẩn rất nhiều nguy cơ nếu dùng sai thuốc hoặc thay đổi tình trạng sức khỏe theo thời gian.
+          </p>
 
           {/* Section 2 */}
           <SectionHeading number="02" id="cach-truy-van" title="Cách truy vấn tên thuốc cũ nhanh nhất" />
 
+          <p className="text-justify mb-6">
+            Khi rơi vào tình trạng quên tên thuốc cũ, bạn có thể áp dụng 3 cách sau:
+          </p>
+
           <h3 id="xem-benh-an" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             1. Xem lại bệnh án hoặc đơn thuốc cũ
           </h3>
-          <p className="text-justify mb-6">Kiểm tra lại các túi hồ sơ y tế, ảnh chụp trong điện thoại hoặc tin nhắn với bác sĩ. Đây là nguồn thông tin chính xác nhất.</p>
+          <p className="text-justify mb-6">
+            Kiểm tra lại các túi hồ sơ y tế, ảnh chụp trong điện thoại hoặc tin nhắn với bác sĩ. Hoặc bạn có thể xem lại cách xử lý cho tình huống <Link to="/resources/mat-giay-kham-suc-khoe-va-ho-so-y-te" className="text-cyan-600 hover:text-cyan-700 underline">mất đơn thuốc</Link>. Đây là nguồn thông tin chính xác nhất về các loại dược phẩm bạn từng sử dụng.
+          </p>
 
           <h3 id="lien-he-duoc-si" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            2. Liên hệ với dược sĩ tại nhà thuốc cũ
+            2. Liên hệ với dược sĩ tại nhà thuốc cũ bạn từng mua
           </h3>
-          <p className="text-justify mb-6">Nếu bạn thường xuyên mua thuốc tại một cửa hàng cố định, các dược sĩ có thể lưu lịch sử đơn thuốc của bạn trên hệ thống quản lý.</p>
+          <p className="text-justify mb-6">
+            Nếu bạn thường xuyên mua thuốc tại một cửa hàng cố định, các dược sĩ có thể lưu lịch sử đơn thuốc của bạn trên hệ thống quản lý. Đừng ngần ngại nhờ họ tra cứu lại giúp nhé.
+          </p>
 
           <h3 id="su-dung-ai" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             3. Sử dụng AI FamCare để truy vấn theo triệu chứng
           </h3>
           <p className="text-justify mb-6">
-            Công cụ này không chỉ giúp bạn lưu trữ thông tin dược phẩm một cách khoa học mà còn cho phép truy vấn lại tên thuốc theo triệu chứng, giúp bạn hoàn toàn làm chủ hành trình chăm sóc sức khỏe.
+            Thấu hiểu những khó khăn trong việc lưu trữ và ghi nhớ tên thuốc, giải pháp y tế số FamCare đã ra đời, tích hợp công nghệ AI hiện đại để quét đơn thuốc và quản lý "Tủ thuốc gia đình" thông minh. Công cụ này không chỉ giúp bạn lưu trữ thông tin dược phẩm một cách khoa học mà còn cho phép truy vấn lại tên thuốc theo triệu chứng, giúp bạn hoàn toàn làm chủ hành trình chăm sóc sức khỏe và loại bỏ nỗi lo quên tên thuốc trong tương lai.
           </p>
 
           <ArticleImage src="/bai-11/hinh3.png" alt="Sử dụng tủ thuốc AI để quản lý sức khỏe tốt hơn" />
 
+          <p className="text-justify text-sm mb-4">
+            Xem cách sử dụng Tủ thuốc AI tại đây: <Link to="/resources/he-sinh-thai-famcare" className="text-cyan-600 hover:text-cyan-700 underline">Hệ sinh thái FamCare</Link>
+          </p>
+
           <div className="bg-emerald-50/80 border border-emerald-200 border-l-4 border-l-emerald-600 p-6 rounded-r-xl my-10 relative overflow-hidden">
             <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-700 mb-2">
-              Mẹo từ FamCare
+              Truy xuất theo từ khóa cảm quan
             </div>
             <p className="text-justify text-[0.95rem] text-emerald-900 m-0 leading-relaxed font-sans">
-              Với Tủ thuốc AI, bạn chỉ cần nhập từ khóa như "đau dạ dày", "ho khan" hay "dị ứng", hệ thống sẽ tự động lọc và hiển thị danh mục các loại dược phẩm tương ứng.
+              Bạn chỉ cần nhập các từ khóa như "đau dạ dày", "ho khan" hay "dị ứng", hệ thống sẽ tự động lọc và hiển thị danh mục các loại dược phẩm tương ứng mà bạn hoặc người thân đã từng lưu trữ trong hồ sơ trước đó.
+            </p>
+          </div>
+
+          <div className="bg-cyan-50/80 border border-cyan-200 border-l-4 border-l-cyan-600 p-6 rounded-r-xl my-10 relative overflow-hidden">
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-cyan-700 mb-2">
+              Tối ưu hóa hiệu quả điều trị
+            </div>
+            <p className="text-justify text-[0.95rem] text-cyan-900 m-0 leading-relaxed font-sans">
+              Bằng cách đối soát dữ liệu y tế, FamCare giúp bạn tìm lại chính xác loại thuốc mang lại phản hồi tốt nhất cho cơ địa của gia đình, tránh việc sử dụng sai thuốc hoặc lãng phí ngân sách cho những loại không hiệu quả.
             </p>
           </div>
 
@@ -217,7 +273,10 @@ export default function Article11Page() {
           <SectionHeading number="03" id="ket-luan" title="Kết luận" />
 
           <p className="text-justify mb-6">
-            Quên tên thuốc cũ tưởng chừng chỉ là một bất tiện nhỏ nhưng thực tế có thể gây ra rất nhiều hệ lụy cho sức khỏe. Việc chủ động lưu trữ lịch sử dùng thuốc không chỉ giúp bạn tiết kiệm thời gian, chi phí mà còn góp phần đảm bảo an toàn cho bản thân và gia đình.
+            Quên tên thuốc cũ tưởng chừng chỉ là một bất tiện nhỏ nhưng thực tế có thể gây ra rất nhiều hệ lụy cho sức khỏe và quá trình điều trị. Việc chủ động lưu trữ lịch sử dùng thuốc không chỉ giúp bạn tiết kiệm thời gian, chi phí mà còn góp phần đảm bảo an toàn cho bản thân và gia đình.
+          </p>
+          <p className="text-justify mb-6">
+            Để FamCare giúp bạn quản lý sức khỏe hiệu quả và thông minh hơn với <a href="/app/cabinet" className="text-cyan-600 hover:text-cyan-700 underline">Tủ thuốc AI</a> và <a href="/app/scanner" className="text-cyan-600 hover:text-cyan-700 underline">Quét đơn thuốc AI</a>.
           </p>
 
           <div className="mt-12 pt-8 border-t border-slate-200">

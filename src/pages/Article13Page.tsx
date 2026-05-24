@@ -162,98 +162,141 @@ export default function Article13Page() {
             </ul>
           </nav>
 
+          {/* Intro */}
+          <p className="text-justify mb-6">
+            Xây dựng một chế độ dinh dưỡng lành mạnh chính là "chìa khóa vàng" để chung sống hòa bình với căn bệnh đái tháo đường. Tuy nhiên, giữa vô vàn thông tin trái chiều, việc xác định chính xác các loại <strong>thực phẩm người bệnh tiểu đường nên tránh</strong> thường khiến người bệnh và thân nhân bối rối.
+          </p>
+          <p className="text-justify mb-6">
+            Trong bối cảnh y khoa năm 2026, khi các xu hướng như theo dõi đường huyết liên tục (CGM) và dinh dưỡng cá nhân hóa lên ngôi, việc hiểu rõ bản chất thực phẩm là điều bắt buộc. Bài viết này <strong>FamCare</strong> sẽ cung cấp danh mục chi tiết về những món ăn "đại kỵ" và cách thiết kế thực đơn chuẩn y khoa.
+          </p>
+
           {/* Section 1 */}
           <SectionHeading number="01" id="tai-sao-quan-trong" title="Tại sao việc nhận diện thực phẩm nên tránh lại quan trọng?" />
 
           <p className="text-justify mb-6">
-            Kiểm soát chỉ số đường huyết không đồng nghĩa với việc nhịn ăn cực đoan, mà là thấu hiểu chỉ số đường huyết (GI) và tải lượng đường (GL) của thực phẩm. Các loại thực phẩm người bệnh tiểu đường nên tránh thường là những món có chỉ số GI cao, khiến đường huyết tăng vọt ngay sau khi ăn.
+            Kiểm soát chỉ số đường huyết không đồng nghĩa với việc nhịn ăn cực đoan, mà là thấu hiểu chỉ số đường huyết (GI) và tải lượng đường (GL) của thực phẩm. Các loại thực phẩm người bệnh tiểu đường nên tránh thường là những món có chỉ số GI cao, khiến đường huyết tăng vọt ngay sau khi ăn, gây áp lực nặng nề lên tuyến tụy và mạch máu.
+          </p>
+          <p className="text-justify mb-6">
+            Ngày nay, với sự hỗ trợ của công nghệ theo dõi đường huyết liên tục (CGM), chúng ta biết rằng mỗi cá nhân có một mức đáp ứng đường huyết khác nhau. Tuy nhiên, nhóm tinh bột tinh chế và đường bổ sung vẫn là "kẻ thù" hàng đầu gây ra các biến chứng về tim mạch và thận. Việc chủ động nhận diện các nhóm thực phẩm này giúp bạn tránh được những đợt tăng đường huyết đột ngột, từ đó duy trì sức khỏe bền vững.
           </p>
           <ArticleImage src="/bai-13/hinh1.jpeg" alt="Hiểu rõ thực phẩm người bệnh tiểu đường nên tránh giúp kiểm soát chỉ số đường huyết ổn định" />
 
           {/* Section 2 */}
           <SectionHeading number="02" id="danh-muc" title="Danh mục thực phẩm người bệnh tiểu đường nên tránh" />
-          <ArticleImage src="/bai-13/hinh2.jpg" alt="Máy đo đường huyết liên tục" />
-
+          <p className="text-justify mb-6">
+            Dưới đây là bảng tổng hợp các nhóm thực phẩm dễ làm mất kiểm soát đường huyết nhất mà người bệnh cần lưu tâm:
+          </p>
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3">
+            Bảng tác động của thực phẩm đối với đường huyết
+          </h3>
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse border border-slate-300 text-sm">
               <thead className="bg-slate-100">
                 <tr>
-                  <th className="border border-slate-300 p-2">Nhóm thực phẩm</th>
-                  <th className="border border-slate-300 p-2">Ví dụ cụ thể</th>
-                  <th className="border border-slate-300 p-2">Giải pháp thay thế</th>
+                  <th className="border border-slate-300 p-3 text-left">Nhóm thực phẩm</th>
+                  <th className="border border-slate-300 p-3 text-left">Ví dụ cụ thể</th>
+                  <th className="border border-slate-300 p-3 text-left">Tác động y khoa</th>
+                  <th className="border border-slate-300 p-3 text-left">Giải pháp thay thế (Low GI)</th>
                 </tr>
               </thead>
-              <tbody className="text-xs">
+              <tbody>
                 <tr>
-                  <td className="border border-slate-300 p-2 font-semibold">Đồ uống ngọt</td>
-                  <td className="border border-slate-300 p-2">Trà sữa, nước ngọt, nước ép đóng chai</td>
-                  <td className="border border-slate-300 p-2">Nước lọc, trà thảo mộc, nước ép xanh</td>
+                  <td className="border border-slate-300 p-3 font-semibold">Đồ uống ngọt</td>
+                  <td className="border border-slate-300 p-3">Trà sữa, nước ngọt, nước ép đóng chai</td>
+                  <td className="border border-slate-300 p-3">Tăng đường huyết nhanh, gây tích mỡ gan</td>
+                  <td className="border border-slate-300 p-3">Nước lọc, trà thảo mộc, nước ép xanh nguyên xơ</td>
+                </tr>
+                <tr className="bg-slate-50/50">
+                  <td className="border border-slate-300 p-3 font-semibold">Tinh bột trắng</td>
+                  <td className="border border-slate-300 p-3">Bánh mì trắng, cơm trắng, bún, phở</td>
+                  <td className="border border-slate-300 p-3">Chỉ số GI cao, gây nhanh đói và kháng Insulin</td>
+                  <td className="border border-slate-300 p-3">Gạo lứt, yến mạch, khoai lang luộc</td>
                 </tr>
                 <tr>
-                  <td className="border border-slate-300 p-2 font-semibold">Tinh bột trắng</td>
-                  <td className="border border-slate-300 p-2">Bánh mì trắng, cơm trắng, bún</td>
-                  <td className="border border-slate-300 p-2">Gạo lứt, yến mạch, khoai lang</td>
+                  <td className="border border-slate-300 p-3 font-semibold">Trái cây ngọt</td>
+                  <td className="border border-slate-300 p-3">Sầu riêng, mít, nhãn, vải chín</td>
+                  <td className="border border-slate-300 p-3">Chứa nhiều Fructose, tăng tải lượng đường</td>
+                  <td className="border border-slate-300 p-3">Táo xanh, bưởi, ổi, thanh long</td>
                 </tr>
-                <tr>
-                  <td className="border border-slate-300 p-2 font-semibold">Trái cây ngọt</td>
-                  <td className="border border-slate-300 p-2">Sầu riêng, mít, nhãn, vải chín</td>
-                  <td className="border border-slate-300 p-2">Táo xanh, bưởi, ổi, thanh long</td>
-                </tr>
-                <tr>
-                  <td className="border border-slate-300 p-2 font-semibold">Chất béo xấu</td>
-                  <td className="border border-slate-300 p-2">Đồ chiên rán, mỡ động vật</td>
-                  <td className="border border-slate-300 p-2">Cá béo, hạt hạnh nhân, dầu oliu</td>
+                <tr className="bg-slate-50/50">
+                  <td className="border border-slate-300 p-3 font-semibold">Chất béo xấu</td>
+                  <td className="border border-slate-300 p-3">Đồ chiên rán, mỡ động vật, nội tạng</td>
+                  <td className="border border-slate-300 p-3">Gây xơ vữa mạch máu, tăng biến chứng tim mạch</td>
+                  <td className="border border-slate-300 p-3">Cá béo, hạt hạnh nhân, dầu oliu</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
+          <ArticleImage src="/bai-13/hinh2.jpg" alt="Máy đo đường huyết liên tục" />
+
           <h3 id="tinh-bot" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Tinh bột tinh chế: Thay thế cơm trắng bằng gì?
+            2.1 Tinh bột tinh chế: Bệnh tiểu đường nên ăn gì thay cơm?
           </h3>
           <p className="text-justify mb-6">
-            Người bệnh tiểu đường nên ăn gì thay cơm để vừa đủ năng lượng vừa không làm tăng đường huyết? Hãy thay thế gạo trắng bằng gạo lứt, diêm mạch hoặc yến mạch. Những thực phẩm này giàu chất xơ, tạo cảm giác no lâu và giúp giải phóng năng lượng từ từ vào máu.
+            Tinh bột là thành phần khó kiểm soát nhất trong bữa ăn của người Việt. Vậy người bệnh tiểu đường nên ăn gì thay cơm để vừa đủ năng lượng vừa không làm tăng đường huyết?
+          </p>
+          <p className="text-justify mb-6">
+            Xu hướng dinh dưỡng 2026 ưu tiên các loại tinh bột phức hợp. Bạn có thể thay thế gạo trắng bằng gạo lứt, diêm mạch (Quinoa) hoặc yến mạch. Những thực phẩm này giàu chất xơ, tạo cảm giác no lâu và giúp giải phóng năng lượng từ từ vào máu. Khi chế biến món ăn dành cho người tiểu đường, hãy ưu tiên phương pháp hấp hoặc luộc thay vì chiên xào để bảo toàn giá trị dinh dưỡng.
           </p>
 
           <h3 id="trai-cay" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Trái cây người bệnh tiểu đường không nên ăn
+            2.2 Trái cây người bệnh tiểu đường không nên ăn
           </h3>
           <p className="text-justify mb-6">
-            Mặc dù chứa nhiều vitamin, nhưng danh mục trái cây người bệnh tiểu đường không nên ăn bao gồm các loại quả có hàm lượng đường fructose quá cao hoặc quả quá chín. Sầu riêng, mít, nhãn, vải là những ví dụ điển hình. Thay vì uống nước ép, người bệnh nên ăn trái cây nguyên miếng để tận dụng lượng xơ.
+            Mặc dù chứa nhiều vitamin, nhưng danh mục trái cây người bệnh tiểu đường không nên ăn bao gồm các loại quả có hàm lượng đường fructose quá cao hoặc quả quá chín. Sầu riêng, mít, nhãn, vải là những ví dụ điển hình. Thay vì uống nước ép (đã bị loại bỏ chất xơ), người bệnh nên ăn trái cây nguyên miếng để tận dụng lượng xơ giúp làm chậm quá trình hấp thụ đường.
           </p>
           <ArticleImage src="/bai-13/hinh3.jpg" alt="Một số loại trái cây không phù hợp cho người tiểu đường (Hình minh họa)" />
 
           {/* Section 3 */}
           <div className="clear-both"></div>
-          <SectionHeading number="03" id="che-do-an" title="Xây dựng chế độ ăn cho người tiểu đường theo từng buổi" />
+          <SectionHeading number="03" id="che-do-an" title="Xây dựng chế độ ăn cho người tiểu đường theo đối tượng đặc thù" />
+
+          <p className="text-justify mb-6">
+            Một <strong>chế độ ăn cho người tiểu đường</strong> chuẩn xác cần được cá nhân hóa dựa trên độ tuổi và mức độ vận động.
+          </p>
 
           <h3 id="an-sang" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Người tiểu đường nên ăn sáng bằng gì?
+            Người bị tiểu đường nên ăn gì vào bữa sáng?
           </h3>
-          <p className="text-justify mb-4">
-            Buổi sáng cần hạn chế tối đa tinh bột nhanh. Gợi ý: Trứng luộc kèm salad ức gà hoặc một bát yến mạch nhỏ không đường.
+          <p className="text-justify mb-6">
+            Một bữa sáng lý tưởng nên giàu đạm và chất xơ để ổn định đường huyết cho cả ngày dài. Gợi ý: Trứng luộc kèm salad ức gà hoặc một bát yến mạch nhỏ không đường.
           </p>
 
           <h3 id="nguoi-gia" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
             Người già bị tiểu đường nên ăn gì?
           </h3>
           <p className="text-justify mb-6">
-            Với người cao tuổi, hệ tiêu hóa thường kém hơn, thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.
+            Với người cao tuổi, hệ tiêu hóa thường kém hơn, thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm để bổ sung vi chất mà không gây áp lực cho thận.
           </p>
-
-          {/* Section 4 */}
-          <SectionHeading number="04" id="giai-phap" title="Giải pháp FamCare" />
-
           <p className="text-justify mb-6">
-            Tính năng Thực đơn dinh dưỡng AI của FamCare sẽ cá nhân hóa thực đơn của bạn, cảnh báo thông minh các loại trái cây người bệnh tiểu đường không nên ăn và đưa ra các lựa chọn thay thế giàu chất xơ.
+            Việc nắm vững <strong>tiểu đường nên ăn gì và kiêng ăn gì</strong> không chỉ giúp ổn định chỉ số mà còn cải thiện tâm trạng, giúp người bệnh không cảm thấy bị "cô lập" trong chính bữa ăn của mình.
           </p>
           <ArticleImage src="/bai-13/hinh4.png" alt="Cần có một thực đơn dinh dưỡng hợp lý cho người tiểu đường" />
+
+          {/* Section 4 */}
+          <SectionHeading number="04" id="giai-phap" title="FamCare: Trợ lý thiết kế thực đơn AI và cá nhân hóa dinh dưỡng 2026" />
+
+          <p className="text-justify mb-6">
+            Việc ghi nhớ danh sách <strong>thực phẩm người bệnh tiểu đường nên tránh</strong> hay tính toán calo mỗi ngày là một áp lực rất lớn. Trong bối cảnh y tế số năm 2026, <strong>FamCare</strong> mang đến giải pháp <strong>Thực đơn dinh dưỡng AI</strong> vượt trội, giúp bạn thảnh thơi quản lý dinh dưỡng.
+          </p>
+          <p className="text-justify mb-4">
+            Thay vì chỉ đưa ra những lời khuyên chung chung, tính năng <strong>Thực đơn dinh dưỡng AI</strong> của FamCare sẽ:
+          </p>
+          <ul className="list-disc pl-6 mb-6 space-y-2 text-justify">
+            <li><strong>Cá nhân hóa thực đơn:</strong> Đề xuất các món ăn dành cho người tiểu đường dựa trên sở thích và chỉ số đường huyết thực tế của bạn.</li>
+            <li><strong>Cảnh báo thông minh:</strong> Hệ thống nhận diện các loại trái cây người bệnh tiểu đường không nên ăn và đưa ra các lựa chọn thay thế giàu chất xơ, giúp bạn tiểu đường ăn gì tốt cho sức khỏe mà vẫn ngon miệng.</li>
+            <li><strong>Đồng bộ hồ sơ gia đình:</strong> Giúp người thân dễ dàng theo dõi và chuẩn bị bữa ăn chuẩn y khoa cho người bệnh, biến cuộc chiến với tiểu đường trở thành hành trình sống khỏe chủ động.</li>
+          </ul>
 
           {/* Section 5 */}
           <SectionHeading number="05" id="ket-bai" title="Kết bài" />
 
           <p className="text-justify mb-6">
-            Thấu hiểu danh mục thực phẩm người bệnh tiểu đường nên tránh là bước đi tiên quyết để ngăn ngừa biến chứng. Hãy để FamCare đồng hành cùng bạn trong việc thiết kế thực đơn khoa học.
+            Tóm lại, thấu hiểu danh mục thực phẩm người bệnh tiểu đường nên tránh là bước đi tiên quyết để ngăn ngừa biến chứng. Bằng cách áp dụng một chế độ ăn cho người tiểu đường khoa học và tận dụng công nghệ AI từ FamCare, bạn hoàn toàn có thể kiểm soát tốt sức khỏe của mình.
+          </p>
+          <p className="text-justify mb-6">
+            Hãy để FamCare đồng hành cùng bạn trong việc thiết kế thực đơn và quản lý y tế thông minh. Khám phá ngay các tính năng Thực đơn dinh dưỡng AI của chúng tôi để bắt đầu hành trình sống khỏe, thảnh thơi bên những người thân yêu ngay tại: <a href="https://famcare.site/app/meal-plan" className="text-cyan-600 hover:text-cyan-700 underline">https://famcare.site/app/meal-plan</a>
           </p>
 
           <div className="mt-12 pt-8 border-t border-slate-200">

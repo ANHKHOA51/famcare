@@ -51,7 +51,7 @@ export default function Article17Page() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    fetch('/api/articles/bi-quyet-chon-bac-si-gioi-doc-hieu-hoc-ham-hoc-vi/view', { method: 'POST' })
+    fetch('/api/articles/cach-chon-bac-si-gioi-uy-tin/view', { method: 'POST' })
       .catch(err => console.error("Failed to track view:", err));
 
     const observer = new IntersectionObserver(
@@ -160,61 +160,92 @@ export default function Article17Page() {
             </ul>
           </nav>
 
+          {/* Intro */}
+          <p className="text-justify mb-6 font-semibold italic text-slate-700">
+            Khi đối mặt với các vấn đề sức khỏe, việc tìm kiếm và chọn bác sĩ có năng lực phù hợp luôn là trăn trở hàng đầu của mọi gia đình. Tuy nhiên, trước hàng loạt thông tin về học hàm học vị như GS, PGS, TS, ThS, BSCKII, nhiều người bệnh thường rơi vào trạng thái mơ hồ, không biết đâu mới là chuyên gia tối ưu cho tình trạng của mình. Hiểu rõ các ký hiệu y khoa này chính là chìa khóa để đưa ra quyết định điều trị chính xác, an toàn. Hãy cùng FamCare giải mã hệ thống danh hiệu ngành y và bỏ túi các tiêu chí lựa chọn bác sĩ chuẩn chuyên môn ngay hôm nay!
+          </p>
+
           {/* Section 1 */}
-          <SectionHeading number="01" id="tai-sao" title="Tại sao cần thấu hiểu học hàm học vị?" />
+          <SectionHeading number="01" id="tai-sao" title="Tại sao cần thấu hiểu học hàm học vị khi tiến hành chọn bác sĩ điều trị?" />
 
           <p className="text-justify mb-6">
-            Khi đi khám, người bệnh thường gặp các cụm từ như GS, PGS, TS, ThS, BSCKII nhưng chưa thực sự hiểu rõ ý nghĩa y khoa của chúng. Hiểu rõ các ký hiệu này chính là chìa khóa để đưa ra quyết định điều trị chính xác và an toàn.
+            Một số lượng lớn người bệnh tại Việt Nam hiện nay khi đi khám thường có thói quen tìm kiếm các cụm từ như "top bác sĩ giỏi" một cách cảm tính mà chưa thực sự hiểu rõ năng lực cốt lõi của người điều trị. Việc chỉ nhìn vào số lượng danh hiệu đứng trước tên bác sĩ mà không phân biệt được ý nghĩa y khoa của chúng dễ dẫn đến hai sai lầm phổ biến: Hoặc là chọn quá tầm, hoặc là chọn sai chuyên khoa sâu khiến bệnh tình kéo dài dai dẳng.
           </p>
+          <p className="text-justify mb-6">
+            Trong ngành y, học hàm học vị không đơn thuần là những tấm bằng khen trang trí, mà là thước đo chuẩn xác phản ánh con đường phát triển chuyên môn của một bác sĩ uy tín. Học vị phân định rõ ràng giữa một chuyên gia thuần nghiên cứu lý thuyết, giảng dạy và một chuyên gia thực hành lâm sàng trực tiếp trên người bệnh. Việc trang bị cho mình tư duy thấu cảm và kiến thức nền tảng về hệ thống cấp bậc này là bước đi đầu tiên trong bộ tiêu chí lựa chọn bác sĩ chuẩn xác, bảo vệ gia đình khỏi những rủi ro y khoa không đáng có.
+          </p>
+
+          <div className="bg-amber-50/80 border border-amber-200 border-l-4 border-l-amber-600 p-6 rounded-r-xl my-10">
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-amber-700 mb-2">⚠️ Disclaimer</div>
+            <p className="text-justify text-[0.95rem] text-amber-900 m-0 leading-relaxed font-sans">
+              Mọi danh hiệu y khoa đều quý giá, tuy nhiên mức độ phù hợp của bác sĩ phụ thuộc hoàn toàn vào giai đoạn bệnh và thể trạng lâm sàng của từng cá nhân. Hãy luôn kết hợp việc đọc hồ sơ bác sĩ với việc theo dõi sát sao phản ứng điều trị thực tế.
+            </p>
+          </div>
+
           <ArticleImage src="/bai-17/hinh1.jpg" alt="Việc thấu hiểu học hàm học vị giúp người bệnh chủ động chọn bác sĩ giỏi và phù hợp với phác đồ điều trị." />
 
           <h3 id="phan-biet" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Phân biệt hai nhánh đào tạo y khoa
+            Phân biệt hệ thống học vị y khoa: Nghiên cứu và Lâm sàng thực hành
           </h3>
-          <p className="text-justify mb-4"><strong>Nhánh Học thuật (Thạc sĩ - ThS, Tiến sĩ - TS):</strong> Những bác sĩ tập trung vào công tác nghiên cứu và giảng dạy tại các trường đại học.</p>
-          <p className="text-justify mb-6"><strong>Nhánh Lâm sàng (BSCKI, BSCKII):</strong> Hệ thống đào tạo đặc thù tập trung 100% vào kỹ năng thực hành, chẩn đoán và phẫu thuật trực tiếp trên bệnh nhân.</p>
+          <p className="text-justify mb-6">
+            Để biết làm thế nào để chọn bác sĩ chuyên khoa đúng, trước hết người bệnh cần phân biệt được hai nhánh đào tạo lớn của hệ thống học vị y khoa: Nhánh Học thuật (Nghiên cứu/Giảng dạy) và Nhánh Lâm sàng (Điều trị thực hành).
+          </p>
+          <ul className="list-disc pl-6 mb-6 space-y-2 text-justify">
+            <li><strong>Nhánh Học thuật (Thạc sĩ - ThS, Tiến sĩ - TS):</strong> Đây là những bác sĩ tập trung sâu vào công tác nghiên cứu khoa học, tìm ra các phương pháp điều trị mới hoặc tham gia giảng dạy tại các trường đại học y danh tiếng. Một Tiến sĩ y khoa (TS) sở hữu tư duy hệ thống và kiến thức lý thuyết cực kỳ sâu rộng.</li>
+            <li><strong>Nhánh Lâm sàng (Bác sĩ Chuyên khoa 1 - BSCKI, Bác sĩ Chuyên khoa 2 - BSCKII):</strong> Đây là hệ thống đào tạo đặc thù của ngành y, tập trung 100% vào kỹ năng thực hành, chẩn đoán và phẫu thuật trực tiếp trên bệnh nhân tại bệnh viện.</li>
+          </ul>
+          <p className="text-justify mb-6">
+            Vậy cụ thể bác sĩ và bác sĩ chuyên khoa 1 khác nhau như thế nào? Một bác sĩ thông thường (BS) sau khi tốt nghiệp đại học 6 năm cần trải qua quá trình thực hành và học nâng cao dài hạn về một chuyên ngành cụ thể (như Nội, Ngoại, Sản, Nhi) mới được cấp bằng BSCKI. Do đó, nếu bạn cần một chuyên gia có "bàn tay vàng" trong phẫu thuật hoặc xử lý các ca bệnh lâm sàng phức tạp, các bác sĩ có học vị BSCKI hoặc BSCKII chính là những sự lựa chọn hàng đầu.
+          </p>
           <ArticleImage src="/bai-17/hinh2.jpg" alt="Mọi tấm bằng y khoa đều quý giá" />
 
           {/* Section 2 */}
-          <SectionHeading number="02" id="noi-tru" title="Ý nghĩa của Bác Sĩ Nội Trú (BSNT)" />
+          <SectionHeading number="02" id="noi-tru" title="Ý nghĩa của Bác sĩ nội trú và các Học hàm cao cấp (Giáo sư, Phó giáo sư)" />
 
           <p className="text-justify mb-6">
-            Được mệnh danh là "chứng chỉ vàng" của ngành y. Chỉ những sinh viên y khoa tốt nghiệp loại giỏi và xuất sắc mới được thi nội trú. Họ phải học tập, làm việc liên tục tại bệnh viện 24/7 trong suốt 3 năm, vì thế thường có chuyên môn lâm sàng cực kỳ vững chắc.
+            Một khái niệm khác thường xuất hiện trong hồ sơ của các bác sĩ uy tín là danh hiệu bác sĩ nội trú (BSNT). Đây được mệnh danh là "chứng chỉ vàng" của ngành y. Chỉ những sinh viên y khoa tốt nghiệp loại giỏi và xuất sắc mới được thi nội trú, và họ phải học tập, làm việc liên tục tại bệnh viện 24/7 trong suốt 3 năm. Một bác sĩ nội trú thường có chuyên môn lâm sàng cực kỳ vững chắc và nhạy bén với các tình huống cấp cứu.
           </p>
           <ArticleImage src="/bai-17/hinh3.jpg" alt="Các bác sĩ nội trú tại bệnh viện" />
 
           {/* Section 3 */}
           <div className="clear-both"></div>
-          <SectionHeading number="03" id="hoc-ham" title="Học hàm cao cấp: Giáo Sư (GS) và Phó Giáo Sư (PGS)" />
+          <SectionHeading number="03" id="hoc-ham" title="Học hàm cao cấp: Giáo sư (GS) và Phó giáo sư (PGS)" />
 
           <p className="text-justify mb-6">
-            Khi các Tiến sĩ hoặc bác sĩ chuyên khoa 2 có nhiều đóng góp lớn cho khoa học, nhiều công trình nghiên cứu được quốc tế công nhận và tham gia giảng dạy lâu năm, họ sẽ được nhà nước phong học hàm Giáo Sư hoặc Phó Giáo Sư. Việc tìm đến các GS, PGS là vô cùng cần thiết khi bạn gặp phải các căn bệnh hiếm gặp hoặc ca bệnh hiểm nghèo.
+            Khi các tiến sĩ (TS) hoặc bác sĩ chuyên khoa 2 (BSCKII) có nhiều đóng góp lớn cho khoa học, có nhiều công trình nghiên cứu được quốc tế công nhận và tham gia giảng dạy lâu năm, họ sẽ được nhà nước phong học hàm Giáo sư (GS) hoặc Phó giáo sư (PGS). Việc tìm đến các GS, PGS hay các chuyên gia thuộc danh sách top bác sĩ giỏi là vô cùng cần thiết khi bạn gặp phải các căn bệnh hiếm gặp, các ca bệnh hiểm nghèo cần hội chẩn liên chuyên khoa để tìm ra phác đồ đột phá.
           </p>
 
           {/* Section 4 */}
-          <SectionHeading number="04" id="lua-chon" title="Lựa chọn bác sĩ chuẩn xác cho gia đình" />
+          <SectionHeading number="04" id="lua-chon" title="Lựa chọn bác sĩ chuẩn xác cho gia đình bạn" />
 
           <p className="text-justify mb-6">
-            Không có một người bác sĩ giỏi nhất cho mọi căn bệnh, chỉ có người bác sĩ phù hợp nhất với tình trạng hiện tại của người bệnh. Một khi đã xác định được nhóm danh hiệu cần tìm, bước tiếp theo là đánh giá thâm niên công tác. Số năm kinh nghiệm làm việc tại các bệnh viện tuyến đầu luôn là một bảo chứng vững chắc cho năng lực phản xạ lâm sàng của bác sĩ.
+            Hiểu rõ lý thuyết là một chuyện, nhưng ứng dụng vào thực tế để chọn bác sĩ lại cần một bộ lọc có cấu trúc rõ ràng. Không có một người bác sĩ giỏi nhất cho mọi căn bệnh, chỉ có người bác sĩ phù hợp nhất với tình trạng hiện tại của người bệnh.
+          </p>
+          <p className="text-justify mb-6">
+            Khi đã xác định được nhóm danh hiệu cần tìm, bước tiếp theo để biết làm thế nào để chọn bác sĩ chuyên khoa đúng là đánh giá thâm niên công tác. Số năm kinh nghiệm làm việc tại các bệnh viện tuyến đầu (như Chợ Rẫy, Đại học Y Dược, Bạch Mai) luôn là một bảo chứng vững chắc cho năng lực phản xạ lâm sàng của bác sĩ.
           </p>
 
           {/* Section 5 */}
-          <SectionHeading number="05" id="ket-noi" title="Kết nối chuyên gia thông minh cùng FamCare" />
+          <SectionHeading number="05" id="ket-noi" title="Kết nối chuyên gia và quản lý hồ sơ y tế thảnh thơi cùng FamCare" />
 
           <p className="text-justify mb-6">
-            Việc tự mình tra cứu hồ sơ và xác thực thông tin học hàm học vị của hàng trăm bác sĩ là một thách thức lớn. Trong kỷ nguyên y tế số 2026, FamCare ra đời như một giải pháp kết nối thông minh.
+            Việc tự mình tra cứu hồ sơ, xác thực thông tin học hàm học vị của hàng trăm bác sĩ giữa các chuyên khoa khác nhau là một thách thức lớn, dễ làm người bệnh quá tải. Trong kỷ nguyên y tế số 2026, FamCare ra đời như một giải pháp kết nối thông minh, giúp bạn xóa bỏ hoàn toàn rào cản này.
           </p>
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li>Dễ dàng tìm danh sách bác sĩ uy tín được phân loại minh bạch theo học vị, thâm niên và chuyên khoa</li>
-            <li>Đặt lịch tư vấn từ xa (Telemedicine) một cách nhanh chóng</li>
-            <li>Lưu trữ toàn bộ lịch sử bệnh án số hóa qua AI để liên thông với bác sĩ</li>
-          </ul>
+          <p className="text-justify mb-6">
+            Thông qua nền tảng của FamCare, người dùng không chỉ dễ dàng tìm thấy danh sách các bác sĩ uy tín được phân loại minh bạch theo học vị, thâm niên và chuyên khoa sâu, mà còn có thể đặt lịch tư vấn từ xa (Telemedicine) một cách nhanh chóng.
+          </p>
+          <p className="text-justify mb-6">
+            Đặc biệt, hệ thống Hồ sơ gia đình của FamCare cho phép bạn lưu trữ toàn bộ lịch sử bệnh án, đơn thuốc đã số hóa qua AI. Trước mỗi buổi khám, các dữ liệu này sẽ được liên thông trực tiếp đến bác sĩ mà bạn đã tin tưởng lựa chọn. Điều này giúp các bác sĩ chuyên khoa nắm bắt trọn vẹn tiến trình bệnh lý của bạn từ quá khứ đến hiện tại, loại bỏ tình trạng khai báo sai sót, từ đó đưa ra phác đồ điều trị cá nhân hóa chính xác và an toàn tuyệt đối cho người thân của bạn.
+          </p>
 
           {/* Section 6 */}
           <SectionHeading number="06" id="ket-bai" title="Kết bài" />
 
           <p className="text-justify mb-6">
-            Việc chủ động trang bị bộ tiêu chí lựa chọn bác sĩ dựa trên cách đọc hiểu học hàm học vị là bước đi chiến lược để bảo vệ sức khỏe bền vững cho cả gia đình. Hãy là một người bệnh thông thái, biết cách chọn bác sĩ phù hợp.
+            Tóm lại, việc chủ động trang bị bộ tiêu chí lựa chọn bác sĩ dựa trên cách đọc hiểu học hàm học vị và kinh nghiệm lâm sàng là bước đi chiến lược để bảo vệ sức khỏe bền vững cho cả gia đình. Hãy là một người bệnh thông thái, biết cách chọn bác sĩ phù hợp để tối ưu hóa thời gian và chi phí điều trị.
+          </p>
+          <p className="text-justify mb-6">
+            Đừng để hành trình đi tìm kiếm sự chữa lành trở thành nỗi lo toan, mệt mỏi. Hãy để ứng dụng thông minh của FamCare đồng hành cùng bạn, giúp việc kết nối với các chuyên gia đầu ngành và quản lý hồ sơ sức khỏe trở nên thảnh thơi, khoa học hơn bao giờ hết ngay tại: <a href="https://famcare.site/app/appointment" className="text-cyan-600 hover:text-cyan-700 underline">https://famcare.site/app/appointment</a>
           </p>
 
           <div className="mt-12 pt-8 border-t border-slate-200">
@@ -222,7 +253,7 @@ export default function Article17Page() {
               <em>Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong></em>
             </p>
             <p className="text-xs text-slate-500 text-justify mb-3">
-              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp.</strong></em>
+              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ về cách xử lý liều thuốc cụ thể của bạn.</strong></em>
             </p>
             <div className="border-t border-slate-200 pt-3">
               <p className="text-xs text-slate-600 font-semibold">

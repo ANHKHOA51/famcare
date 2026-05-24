@@ -49,7 +49,7 @@ export default function Article18Page() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    fetch('/api/articles/thuc-don-cho-nguoi-tieu-duong-len-thuc-don-bang-ai/view', { method: 'POST' })
+    fetch('/api/articles/thuc-don-tieu-duong-7-ngay-kh-hoc/view', { method: 'POST' })
       .catch(err => console.error("Failed to track view:", err));
 
     const observer = new IntersectionObserver(
@@ -158,82 +158,133 @@ export default function Article18Page() {
             </ul>
           </nav>
 
-          {/* Section 1 */}
-          <SectionHeading number="01" id="nguyen-tac" title="Nguyên tắc cốt lõi xây dựng thực đơn cho người tiểu đường" />
-
-          <p className="text-justify mb-6">
-            Bản chất của việc điều trị đái tháo đường không nằm ở việc cắt bỏ hoàn toàn các nhóm chất, mà là kiểm soát tốc độ tăng đường huyết sau ăn và duy trì năng lượng ổn định. Khi thiết kế một thực đơn cho người tiểu đường, mục tiêu tối thượng là đảm bảo chỉ số đường huyết (GI) thấp, tải lượng đường (GL) an toàn, đồng thời vẫn phải xây dựng thực đơn khoa học và đủ chất.
+          {/* Intro */}
+          <p className="text-justify mb-6 font-semibold italic text-slate-700">
+            Việc duy trì một thực đơn cho người tiểu đường chuẩn y khoa luôn là bài toán hóc búa đối với nhiều gia đình, khi ranh giới giữa kiêng khem nghiêm ngặt và thiếu hụt dinh dưỡng vô cùng mong manh. Thay vì phải đau đầu tính toán từng gram tinh bột hay mức calo thủ công, xu hướng lên thực đơn bằng AI năm 2026 đang mở ra một cuộc cách mạng trong việc chăm sóc sức khỏe chủ động. Giải pháp này giúp cá nhân hóa khẩu phần ăn, bám sát phác đồ điều trị và giải phóng áp lực tâm lý cho người bệnh. Hãy cùng FamCare trải nghiệm tính năng thiết kế bữa ăn thông minh, giúp bạn làm chủ chỉ số đường huyết và thảnh thơi tận hưởng cuộc sống khỏe mạnh bên người thân yêu ngay hôm nay!
           </p>
           <ArticleImage src="/bai-18/hinh1.png" alt="Thiết kế thực đơn cho người tiểu đường bằng AI giúp kiểm soát đường huyết tối ưu." />
 
-          <h3 id="khau-phan" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Lưu ý quan trọng với khẩu phần ăn theo từng buổi
-          </h3>
-          <p className="text-justify mb-4"><strong>Bữa sáng:</strong> Nên giàu đạm và chất xơ để ổn định đường huyết cho cả ngày dài. Gợi ý: Trứng luộc kèm salad ức gà hoặc bát yến mạch nhỏ không đường.</p>
-          <p className="text-justify mb-4"><strong>Người lớn tuổi:</strong> Thức ăn nên được chế biến mềm, ít muối. Ưu tiên các loại sữa hạt không đường hoặc canh rau củ thanh đạm.</p>
-          <ArticleImage src="/bai-18/hinh3.png" alt="Người cao tuổi bị tiểu đường cần có chế độ ăn hợp lý" />
-          <p className="text-justify mb-6"><strong>Bữa tối:</strong> Nên là bữa ăn nhẹ nhàng để tránh áp lực cho hệ tiêu hóa. Các món canh rau thanh đạm, cá hấp, đậu phụ luộc là sự lựa chọn hoàn hảo.</p>
-          <ArticleImage src="/bai-18/hinh2.jpg" alt="Cắt giảm khẩu phần một cách cực đoan có thể ảnh hưởng xấu đến sức khỏe" />
-
-          {/* Section 2 */}
-          <SectionHeading number="02" id="meo-ai" title="Mẹo lên thực đơn 7 ngày bằng AI" />
+          {/* Section 1 */}
+          <SectionHeading number="01" id="nguyen-tac" title="Nguyên tắc cốt lõi khi xây dựng thực đơn cho người tiểu đường chuẩn y khoa" />
 
           <p className="text-justify mb-6">
-            Sử dụng mẹo lên thực đơn ăn uống cả tuần bằng AI giúp bạn biến những quy tắc y khoa khô khan thành các món ăn ngon miệng, hợp khẩu vị bản địa. Bạn hoàn toàn có thể yêu cầu AI thiết kế một thực đơn 7 ngày với các nguyên liệu thuần Việt có sẵn trong tủ lạnh.
+            Bản chất của việc điều trị đái tháo đường không nằm ở việc cắt bỏ hoàn toàn các nhóm chất, mà là kiểm soát tốc độ tăng đường huyết sau ăn và duy trì năng lượng ổn định. Khi thiết kế một thực đơn cho người tiểu đường, mục tiêu tối thượng là đảm bảo chỉ số đường huyết (GI) thấp, tải lượng đường (GL) an toàn, đồng thời vẫn phải xây dựng thực đơn khoa học và đủ chất để cơ thể không bị suy nhược trong quá trình điều trị mạn tính.
+          </p>
+          <p className="text-justify mb-6">
+            Nhiều người bệnh do quá hoảng sợ trước các biến chứng đã tự ý cắt giảm khẩu phần ăn một cách cực đoan, dẫn đến tình trạng hạ đường huyết đột ngột xa bữa ăn – một biến cố y khoa nguy hiểm không kém gì việc tăng đường huyết. Để kiểm soát bệnh hiệu quả, chế độ ăn cần phải tuân thủ nghiêm ngặt theo đồng hồ sinh học và đặc điểm thể trạng của từng cá nhân.
+          </p>
+          <p className="text-justify mb-6">
+            Việc cân bằng này sẽ giúp người bệnh duy trì thể lực tốt nhất. Tuy nhiên, trước khi bắt tay vào thiết kế các bữa ăn cụ thể, bạn cần nắm rõ danh sách các loại thực phẩm có thể làm đường huyết tăng vọt ngay lập tức. Để không bỏ sót những cái tên "nguy hiểm" này, bạn có thể tham khảo ngay bài viết: <Link to="/resources/thuc-pham-nguoi-benh-tieu-duong-nen-tranh-va-che-do-an" className="text-cyan-600 hover:text-cyan-700 underline font-semibold">Thực phẩm người bệnh tiểu đường nên tránh để ổn định đường huyết</Link> mà FamCare đã tổng hợp chi tiết trước đó.
+          </p>
+
+          <div className="bg-amber-50/80 border border-amber-200 border-l-4 border-l-amber-600 p-6 rounded-r-xl my-10">
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-amber-700 mb-2">⚠️ Disclaimer</div>
+            <p className="text-justify text-[0.95rem] text-amber-900 m-0 leading-relaxed font-sans">
+              Mọi thông tin dinh dưỡng và gợi ý thực đơn trong bài viết mang tính chất tham khảo. Chế độ ăn cụ thể cần linh hoạt điều chỉnh dựa trên chỉ số xét nghiệm HbA1c, giai đoạn bệnh và phác đồ điều trị của bác sĩ chuyên khoa. Hãy tham vấn ý kiến chuyên gia y tế trước khi áp dụng.
+            </p>
+          </div>
+
+          <ArticleImage src="/bai-18/hinh2.jpg" alt="Cắt giảm khẩu phần một cách cực đoan có thể ảnh hưởng xấu đến sức khỏe" />
+
+          <h3 id="khau-phan" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28 border-b border-slate-100 pb-2">
+            1.1. Người bị tiểu đường thì cần chú ý gì trong khẩu phần ăn theo từng buổi?
+          </h3>
+          <p className="text-justify mb-6">
+            Để duy trì đường huyết ổn định suốt 24 giờ, người bệnh cần phân chia tỷ lệ các chất dinh dưỡng một cách khoa học vào từng thời điểm trong ngày. Vậy cụ thể người bị tiểu đường thì cần chú ý gì trong khẩu phần ăn? Hãy bắt đầu bằng việc thay đổi tư duy ăn uống theo từng bữa ăn nhỏ.
+          </p>
+          <ul className="list-disc pl-6 mb-6 space-y-2 text-justify">
+            <li><strong>Người tiểu đường nên ăn sáng bằng gì?</strong> Buổi sáng là thời điểm cơ thể dễ xảy ra hiện tượng "bình minh" (đường huyết tăng tự nhiên do hormone). Do đó, bữa sáng cần hạn chế tối đa tinh bột nhanh. Các bác sĩ khuyên người bệnh nên ăn sáng bằng các món giàu đạm và xơ như trứng ốp la kèm salad bơ, cháo yến mạch ức gà hoặc một ly sữa hạt không đường.</li>
+            <li><strong>Người tiểu đường nên ăn bao nhiêu cơm mỗi ngày?</strong> Đây là câu hỏi kinh điển. Không có một con số chung, nhưng trung bình người bệnh chỉ nên tiêu thụ khoảng 1/2 đến 1 bát cơm gạo lứt (hoặc tinh bột chậm tương đương) cho mỗi bữa chính. Việc kiểm soát lượng glucid giúp tuyến tụy không bị quá tải.</li>
+            <li><strong>Buổi tối người tiểu đường nên ăn gì?</strong> Bữa tối nên là bữa ăn nhẹ nhàng nhất để tránh áp lực cho hệ tiêu hóa và ngăn chặn tình trạng tăng đường huyết lúc nửa đêm. Các món canh rau thanh đạm, cá hấp hoặc đậu phụ luộc là sự lựa chọn hoàn hảo cho thực đơn cuối ngày.</li>
+          </ul>
+
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 border-b border-slate-100 pb-2">
+            1.2. Những loại đồ ăn cho người tiểu đường không nên bỏ qua và gợi ý cho người cao tuổi
+          </h3>
+          <p className="text-justify mb-6">
+            Bên cạnh các quy tắc kiêng khem, có những loại đồ ăn cho người tiểu đường không nên bỏ qua nhờ khả năng hỗ trợ bình ổn đường huyết tự nhiên. Nhóm thực phẩm giàu chất xơ hòa tan như đậu bắp, bông cải xanh, hạt chia, mướp đắng và các loại cá béo giàu Omega-3 (cá hồi, cá trích) cần được xuất hiện thường xuyên trong thực đơn để bảo vệ hệ tim mạch vốn rất nhạy cảm của người bệnh.
+          </p>
+          <p className="text-justify mb-6">
+            Khi xây dựng gợi ý thực đơn cho người già bị tiểu đường, độ phức tạp tăng lên gấp đôi do hệ tiêu hóa của người lớn tuổi đã suy giảm và thường mắc kèm các bệnh lý nền như cao huyết áp, mỡ máu. Lúc này, thực đơn ăn uống lý tưởng cho người bị tiểu đường ở độ tuổi xế chiều cần ưu tiên các món ăn được chế biến mềm, lỏng, dễ nuốt, cắt giảm tối đa gia vị muối nhưng vẫn phải đảm bảo cung cấp đủ đạm để tránh teo cơ. Việc đa dạng hóa các món ăn một cách thủ công cho đối tượng này là một thách thức cực lớn đối với người chăm sóc trong gia đình.
+          </p>
+          <ArticleImage src="/bai-18/hinh3.png" alt="Người cao tuổi bị tiểu đường cần có chế độ ăn hợp lý" />
+
+          {/* Section 2 */}
+          <SectionHeading number="02" id="meo-ai" title="Cách lên thực đơn bằng AI: Giải pháp đột phá từ FamCare" />
+
+          <p className="text-justify mb-6">
+            Sự xuất hiện của trí tuệ nhân tạo (AI) trong lĩnh vực dinh dưỡng năm 2026 đã giải quyết triệt để những bế tắc của phương pháp thiết lập thực đơn truyền thống. Thay vì phải lật từng trang sách nấu ăn hay tra cứu bảng chỉ số GI của từng loại rau củ, việc lên thực đơn bằng AI giúp bạn tối ưu hóa 100% thời gian và độ chính xác theo phác đồ điều trị.
+          </p>
+          <p className="text-justify mb-6">
+            Công nghệ dinh dưỡng cá nhân hóa AI hoạt động như một chuyên gia tiết chế bỏ túi. Bằng cách phân tích các chỉ số sinh học cụ thể của người bệnh bao gồm: chiều cao, cân nặng, độ tuổi, mức độ vận động hằng ngày và đặc biệt là chỉ số đường huyết cập nhật từ bệnh án, AI sẽ tự động tính toán tổng lượng calo và tỷ lệ phân bổ các chất macro (Carb - Protein - Fat) một cách hoàn hảo nhất.
+          </p>
+
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 border-b border-slate-100 pb-2">
+            2.1. Mẹo lên thực đơn ăn uống cả tuần bằng AI thảnh thơi và chuẩn vị
+          </h3>
+          <p className="text-justify mb-6">
+            Sử dụng mẹo lên thực đơn ăn uống cả tuần bằng AI giúp bạn biến những quy tắc y khoa khô khan thành các món ăn ngon miệng, hợp khẩu vị bản địa. Bạn hoàn toàn có thể yêu cầu AI thiết kế một thực đơn 7 ngày cho người tiểu đường dễ làm với các nguyên liệu thuần Việt có sẵn trong tủ lạnh của mình.
+          </p>
+
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 border-b border-slate-100 pb-2">
+            2.2. Trực quan hóa thực đơn 7 ngày cho người tiểu đường từ công nghệ AI
+          </h3>
+          <p className="text-justify mb-6">
+            Dưới đây là mô hình thực đơn 7 ngày cho người tiểu đường tiêu biểu được cá nhân hóa qua thuật toán AI của FamCare, đảm bảo tiêu chí ngon miệng, dễ chế biến và giúp kiểm soát bệnh hiệu quả:
           </p>
 
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse border border-slate-300 text-xs">
               <thead className="bg-slate-100">
                 <tr>
-                  <th className="border border-slate-300 p-2">Ngày</th>
-                  <th className="border border-slate-300 p-2">Bữa sáng</th>
-                  <th className="border border-slate-300 p-2">Bữa trưa</th>
-                  <th className="border border-slate-300 p-2">Bữa tối</th>
+                  <th className="border border-slate-300 p-2">Ngày trong tuần</th>
+                  <th className="border border-slate-300 p-2">Bữa sáng (Giàu đạm & xơ)</th>
+                  <th className="border border-slate-300 p-2">Bữa trưa (Tinh bột phức hợp)</th>
+                  <th className="border border-slate-300 p-2">Bữa tối (Thanh đạm, dễ tiêu)</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td className="border border-slate-300 p-2"><strong>Thứ Hai</strong></td>
-                  <td className="border border-slate-300 p-2">2 quả trứng luộc + Salad bơ</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Ức gà + Canh cải xanh</td>
-                  <td className="border border-slate-300 p-2">Cá hồi hấp + Đậu bắp luộc</td>
+                  <td className="border border-slate-300 p-2">2 quả trứng luộc + Salad xà lách bơ</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm gạo lứt + Ức gà áp chảo + Canh cải xanh</td>
+                  <td className="border border-slate-300 p-2">Cá hồi hấp xì dầu + Đậu bắp luộc</td>
                 </tr>
                 <tr className="bg-slate-50">
                   <td className="border border-slate-300 p-2"><strong>Thứ Ba</strong></td>
                   <td className="border border-slate-300 p-2">Cháo yến mạch nấu thịt băm</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Thịt lợn nạc + Bí đao</td>
-                  <td className="border border-slate-300 p-2">Đậu phụ sốt cà + Canh rau ngót</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm gạo lứt + Thịt lợn nạc luộc + Bí đao luộc</td>
+                  <td className="border border-slate-300 p-2">Đậu phụ sốt cà chua ít muối + Canh rau ngót</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2"><strong>Thứ Tư</strong></td>
-                  <td className="border border-slate-300 p-2">Khoai lang luộc + Sữa hạt</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Gà kho gừng + Bông cải</td>
-                  <td className="border border-slate-300 p-2">Tôm nõn xào măng tây + Canh bí đỏ</td>
+                  <td className="border border-slate-300 p-2">1 củ khoai lang luộc + 1 cốc sữa hạt không đường</td>
+                  <td className="border border-slate-300 p-2">Gà kho gừng (ít đường) + Bông cải xanh luộc</td>
+                  <td className="border border-slate-300 p-2">Tôm nõn xào măng tây (dầu oliu) + Canh bí đỏ</td>
                 </tr>
                 <tr className="bg-slate-50">
                   <td className="border border-slate-300 p-2"><strong>Thứ Năm</strong></td>
-                  <td className="border border-slate-300 p-2">Phở lứt bò (nhiều rau)</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Cá thu sốt cà + Cải cúc</td>
-                  <td className="border border-slate-300 p-2">Thịt bò xào bông + Nấm hấp</td>
+                  <td className="border border-slate-300 p-2">Phở lứt bò (nước dùng thanh, nhiều rau)</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm gạo lứt + Cá thu sốt cà + Canh cải cúc</td>
+                  <td className="border border-slate-300 p-2">Thịt bò xào bông thiên lý + Nấm hấp</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2"><strong>Thứ Sáu</strong></td>
-                  <td className="border border-slate-300 p-2">Salad ức gà + Hạt chia</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Mực hấp gừng + Rau muống</td>
+                  <td className="border border-slate-300 p-2">Salad ức gà xé phay + Hạt chia</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm gạo lứt + Mực hấp gừng + Rau muống luộc</td>
                   <td className="border border-slate-300 p-2">Trứng đúc thịt nạc + Canh mướp đắng</td>
                 </tr>
                 <tr className="bg-slate-50">
                   <td className="border border-slate-300 p-2"><strong>Thứ Bảy</strong></td>
-                  <td className="border border-slate-300 p-2">Bánh mì nguyên cám + Phô mai</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Thịt bò áp chảo + Canh bầu</td>
-                  <td className="border border-slate-300 p-2">Cá quả nấu ngót (không đường) + Cải</td>
+                  <td className="border border-slate-300 p-2">Bánh mì nguyên cám + 1 lát phô mai</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm gạo lứt + Thịt bò áp chảo + Canh bầu</td>
+                  <td className="border border-slate-300 p-2">Cá quả nấu ngót (không đường) + Rau cải luộc</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2"><strong>Chủ Nhật</strong></td>
-                  <td className="border border-slate-300 p-2">Súp bắp cải nấu gà xé</td>
-                  <td className="border border-slate-300 p-2">1 bát cơm lứt + Tôm rim nhạt + Súp lơ</td>
-                  <td className="border border-slate-300 p-2">Thịt viên hấp nấm hương + Canh dền</td>
+                  <td className="border border-slate-300 p-2">Súp bắp cải nấu thịt gà xé</td>
+                  <td className="border border-slate-300 p-2">1 bát cơm gạo lứt + Tôm rim nhạt + Súp lơ xào</td>
+                  <td className="border border-slate-300 p-2">Thịt viên hấp nấm hương + Canh rau dền</td>
                 </tr>
               </tbody>
             </table>
@@ -241,22 +292,25 @@ export default function Article18Page() {
 
           {/* Section 3 */}
           <div className="clear-both"></div>
-          <SectionHeading number="03" id="he-sinh-thai" title="FamCare - Hệ sinh thái đồng hành" />
+          <SectionHeading number="03" id="he-sinh-thai" title="FamCare – Hệ sinh thái đồng hành bảo vệ sức khỏe người tiểu đường" />
 
           <p className="text-justify mb-6">
-            Để biến công nghệ dinh dưỡng cá nhân hóa AI thành trợ thủ đắc lực, FamCare đã tích hợp tính năng thiết lập thực đơn thông minh ngay trên ứng dụng di động.
+            Để biến công nghệ dinh dưỡng cá nhân hóa AI thành trợ thủ đắc lực cho mọi nhà, FamCare đã tích hợp tính năng thiết lập thực đơn cho người tiểu đường thông minh ngay trên ứng dụng di động. Chúng tôi tin rằng, một chế độ ăn tốt không phải là một chế độ ăn khắc nghiệt, mà là một thực đơn mang lại sự hạnh phúc và thảnh thơi cho người bệnh.
           </p>
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li><strong>Lên thực đơn bằng AI cá nhân hóa:</strong> Ứng dụng tự động thiết kế thực đơn 7 ngày, liên tục thay đổi dựa trên sở thích nhưng vẫn đảm bảo chỉ số an toàn</li>
-            <li><strong>Cảnh báo tương tác thực phẩm:</strong> Hệ thống nhận diện các mon ăn nguy cơ làm tăng đường huyết</li>
-            <li><strong>Đồng bộ hóa hồ sơ gia đình:</strong> Mọi nhật ký ăn uống được đồng bộ tức thì, giúp con cái theo dõi sức khỏe cha mẹ từ xa</li>
+          <ul className="list-disc pl-6 mb-6 space-y-2 text-justify">
+            <li><strong>Lên thực đơn bằng AI cá nhân hóa:</strong> Ứng dụng tự động thiết kế thực đơn 7 ngày cho người tiểu đường dễ làm, liên tục thay đổi món ăn dựa trên sở thích ẩm thực và ngân sách của người dùng nhưng vẫn đảm bảo tuyệt đối các chỉ số an toàn về đường huyết.</li>
+            <li><strong>Cảnh báo tương tác thực phẩm:</strong> Hệ thống tự động nhận diện và đưa ra các cảnh báo trực quan về những món ăn có nguy cơ làm tăng đường huyết đột ngột, giúp người bệnh chủ động né tránh "bẫy dinh dưỡng".</li>
+            <li><strong>Đồng bộ hóa hồ sơ gia đình:</strong> Mọi nhật ký ăn uống và biểu đồ đường huyết sẽ được đồng bộ hóa tức thì, giúp con cái dễ dàng theo dõi, chăm sóc sức khỏe cho cha mẹ từ xa, tạo nên sợi dây gắn kết yêu thương bền chặt.</li>
           </ul>
 
           {/* Section 4 */}
           <SectionHeading number="04" id="ket-bai" title="Kết bài" />
 
           <p className="text-justify mb-6">
-            Việc xây dựng một thực đơn cho người tiểu đường khoa học không còn là cuộc chiến cân não khi có sự hỗ trợ của công nghệ hiện đại. Bằng cách áp dụng giải pháp lên thực đơn bằng AI, bạn hoàn toàn có thể làm chủ chỉ số sức khỏe và tận hưởng cuộc sống một cách trọn vẹn nhất.
+            Tóm lại, việc xây dựng một thực đơn cho người tiểu đường khoa học, chuẩn phác đồ không còn là một cuộc chiến cân não đầy căng thẳng khi có sự hỗ trợ của công nghệ hiện đại. Bằng việc áp dụng giải pháp lên thực đơn bằng AI và duy trì một chế độ ăn cho người tiểu đường hợp lý, bạn hoàn toàn có thể làm chủ chỉ số sức khỏe, ngăn ngừa biến chứng và tận hưởng cuộc sống một cách trọn vẹn nhất.
+          </p>
+          <p className="text-justify mb-6">
+            Hãy để những lo toan về việc "ngày mai ăn gì" lùi vào quá khứ và trải nghiệm FamCare ngay hôm nay tại: <a href="https://famcare.site/app/meal-plan" className="text-cyan-600 hover:text-cyan-700 underline font-semibold">https://famcare.site/app/meal-plan</a>
           </p>
 
           <div className="mt-12 pt-8 border-t border-slate-200">
@@ -264,7 +318,7 @@ export default function Article18Page() {
               <em>Bài viết và hình ảnh được thực hiện bởi <strong>FamCare</strong></em>
             </p>
             <p className="text-xs text-slate-500 text-justify mb-3">
-              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ.</strong></em>
+              <em><strong>Bài viết này mang tính thông tin chung và không thay thế cho lời khuyên y tế chuyên nghiệp. Hãy luôn tham khảo bác sĩ hoặc dược sĩ về cách xử lý liều thuốc cụ thể của bạn.</strong></em>
             </p>
             <div className="border-t border-slate-200 pt-3">
               <p className="text-xs text-slate-600 font-semibold">

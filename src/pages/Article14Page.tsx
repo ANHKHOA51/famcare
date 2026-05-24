@@ -51,7 +51,7 @@ export default function Article14Page() {
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    fetch('/api/articles/tai-sao-nen-dung-ai-scanner-quan-ly-ho-so-y-te/view', { method: 'POST' })
+    fetch('/api/articles/quet-don-thuoc-ai-so-hoa-ho-so/view', { method: 'POST' })
       .catch(err => console.error("Failed to track view:", err));
 
     const observer = new IntersectionObserver(
@@ -160,92 +160,124 @@ export default function Article14Page() {
             </ul>
           </nav>
 
+          {/* Intro */}
+          <p className="text-justify mb-6">
+            Bạn đã từng mất hàng chục phút lục tung ngăn kéo chỉ để tìm lại một tờ đơn thuốc cũ khi cần tái khám? Hoặc bối rối vì không thể đọc rõ chỉ dẫn trên toa thuốc đã bị mờ mực sau vài tháng lưu trữ? Đây là vấn đề rất phổ biến của nhiều gia đình vẫn đang <strong>quản lý hồ sơ y tế</strong> bằng giấy tờ truyền thống.
+          </p>
+          <p className="text-justify mb-6">
+            Trong xu hướng y tế số, công nghệ <strong>quét đơn thuốc thông minh</strong> đã ra đời như một giải pháp "cứu cánh" thực thụ. Hãy cùng <strong>FamCare</strong> tìm hiểu tại sao việc chuyển đổi sang <strong>Quét đơn thuốc AI</strong> không chỉ là chạy theo công nghệ, mà là cách để bạn bảo vệ sức khỏe gia đình một cách thảnh thơi, chính xác và an toàn hơn bao giờ hết.
+          </p>
+
           {/* Section 1 */}
-          <SectionHeading number="01" id="thuc-trang" title="Thực trạng quản lý hồ sơ y tế thủ công" />
+          <SectionHeading number="01" id="thuc-trang" title="Thực trạng quản lý hồ sơ y tế thủ công: Rào cản từ những xấp giấy tờ" />
 
           <p className="text-justify mb-6">
-            Việc lưu trữ hồ sơ sức khỏe theo cách truyền thống từ lâu đã trở thành một gánh nặng âm thầm đối với các hộ gia đình Việt. Đơn thuốc, kết quả xét nghiệm thường được cất giữ rời rạc, dẫn đến tình trạng hư hỏng vật lý như ẩm mốc hoặc mờ mực.
+            Việc <strong>lưu trữ hồ sơ</strong> sức khỏe theo cách truyền thống từ lâu đã trở thành một gánh nặng âm thầm đối với các hộ gia đình Việt. Đơn thuốc, kết quả xét nghiệm và phim chụp thường được cất giữ rời rạc, dẫn đến tình trạng hư hỏng vật lý như ẩm mốc hoặc mờ mực in nhiệt chỉ sau một thời gian ngắn.
+          </p>
+          <p className="text-justify mb-6">
+            Sự thiếu tính hệ thống trong <strong>quản lý hồ sơ y tế</strong> không chỉ gây khó khăn cho người nhà mà còn cản trở bác sĩ trong việc chẩn đoán dựa trên tiền sử bệnh lý. Khi bước vào kỷ nguyên số, các <strong>quy định thời hạn lưu trữ hồ sơ</strong> ngày càng được chú trọng, nhưng nếu chỉ dừng lại ở việc cất giữ giấy tờ tại nhà, dữ liệu này gần như "bị cô lập". Người dùng thường xuyên rơi vào cảnh hoảng loạn khi <strong>quản lý hồ sơ bệnh án</strong> bị thất lạc đúng lúc cần tái khám khẩn cấp, gây lãng phí thời gian và làm giảm hiệu quả điều trị.
           </p>
           <ArticleImage src="/bai-14/hinh1.jpg" alt="Quét đơn thuốc thông minh bằng AI giúp việc quản lý hồ sơ y tế trở nên đơn giản hơn" />
 
           <h3 id="xu-huong" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
-            Xu hướng hồ sơ y tế điện tử năm 2026
+            1.1 Xu hướng hồ sơ y tế điện tử và quản lý sức khỏe tại nhà năm 2026
           </h3>
           <p className="text-justify mb-6">
-            Năm 2026 đánh dấu sự bùng nổ của mô hình "Chăm sóc sức khỏe tại gia". Quét đơn thuốc AI chính là cầu nối quan trọng giúp người dân thực hiện chuyển đổi số từ dữ liệu giấy sang dữ liệu số. Việc sử dụng ứng dụng công nghệ thông tin trong quản lý y tế lúc này không còn là lựa chọn xa xỉ, mà là công cụ để bạn kết nối trực tiếp với các dịch vụ Telemedicine.
+            Năm 2026 đánh dấu sự bùng nổ của mô hình "Chăm sóc sức khỏe tại gia". Khi hệ thống hồ sơ bệnh án điện tử quốc gia được liên thông, việc cá nhân chủ động <strong>quản lý hồ sơ sức khỏe cá nhân</strong> trở thành một phần tất yếu của cuộc sống hiện đại.
+          </p>
+          <p className="text-justify mb-6">
+            <strong>Quét đơn thuốc AI</strong> chính là cầu nối quan trọng giúp người dân thực hiện <strong>chuyển đổi số trong quản lý hồ sơ bệnh án</strong> từ dữ liệu giấy sang dữ liệu số. Việc sử dụng <strong>ứng dụng công nghệ thông tin trong quản lý y tế</strong> lúc này không còn là một lựa chọn xa xỉ, mà là công cụ để bạn kết nối trực tiếp với các dịch vụ Telemedicine và bác sĩ gia đình một cách nhanh chóng, minh bạch nhất.
           </p>
           <ArticleImage src="/bai-14/hinh2.jpg" alt="Thất lạc đơn thuốc giấy có thể gây ra hoảng loạn và làm giảm hiệu quả điều trị" />
 
+          <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3">
+            1.2 AI có thể hỗ trợ như thế nào trong việc đọc "chữ bác sĩ"?
+          </h3>
+          <p className="text-justify mb-6">
+            Một trong những nỗi lo lớn nhất khi <strong>quản lý hồ sơ bệnh án</strong> giấy là tình trạng chữ viết tay khó đọc. Trước đây, việc số hóa thủ công đòi hỏi người dùng phải tự gõ lại từng tên thuốc, dẫn đến rủi ro sai sót về hàm lượng cực kỳ nguy hiểm.
+          </p>
+          <p className="text-justify mb-6">
+            Hiện nay, công nghệ <strong>nhận diện và đọc chính xác đơn thuốc viết tay</strong> đã giải quyết triệt để bài toán này. Bằng cách sử dụng các thuật toán trí tuệ nhân tạo, <strong>Quét đơn thuốc AI</strong> có khả năng hỗ trợ nhận diện chữ viết tay và trích xuất thông tin nhanh chóng, chính xác hơn nhiều so với nhập liệu thủ công. Điều này không chỉ giúp <strong>quản lý hồ sơ y tế</strong> hiệu quả mà còn đóng vai trò như một bộ lọc an toàn, giúp bạn hiểu rõ từng chỉ dẫn phức tạp của bác sĩ trước khi sử dụng thuốc.
+          </p>
+
           {/* Section 2 */}
-          <SectionHeading number="02" id="ai-doc-chu" title="AI giải quyết vấn đề đọc &quot;chữ bác sĩ&quot;" />
+          <SectionHeading number="02" id="ai-doc-chu" title="Những tình huống Quét đơn thuốc AI trở thành &quot;cứu cánh&quot; trong đời sống hằng ngày" />
 
           <p className="text-justify mb-6">
-            Một trong những nỗi lo lớn nhất khi quản lý hồ sơ bệnh án giấy là tình trạng chữ viết tay khó đọc. Công nghệ nhận diện và đọc chính xác đơn thuốc viết tay đã giải quyết triệt để bài toán này. Bằng cách sử dụng các thuật toán trí tuệ nhân tạo, Quét đơn thuốc AI có khả năng hỗ trợ nhận diện chữ viết tay và trích xuất thông tin nhanh chóng, chính xác hơn nhiều so với nhập liệu thủ công.
+            Việc sử dụng một <strong>app lưu đơn thuốc</strong> tích hợp AI không chỉ đơn thuần là lưu trữ ảnh, mà là tạo ra một quy trình chăm sóc sức khỏe thông minh trong các tình huống thực tế:
           </p>
 
           {/* Section 3 */}
           <div className="clear-both"></div>
-          <SectionHeading number="03" id="tinh-huong" title="Những tình huống AI trở thành &quot;cứu cánh&quot;" />
+          <SectionHeading number="03" id="tinh-huong" title="So sánh hiệu quả giữa lưu trữ thủ công và Quét đơn thuốc AI" />
+
+          <p className="text-justify mb-6">
+            Để thấy rõ tại sao bạn nên thực hiện <strong>chuyển đổi số trong quản lý hồ sơ bệnh án</strong> ngay hôm nay, hãy cùng xem bảng so sánh dưới đây:
+          </p>
 
           <ul className="list-disc pl-6 mb-6 space-y-3">
-            <li><strong>Tìm đơn thuốc cũ khi tái khám:</strong> Thay vì mang theo một xấp hồ sơ cồng kềnh, bạn chỉ cần mở app và tìm kiếm theo ngày hoặc tên bệnh.</li>
-            <li><strong>Quản lý thuốc cho người già:</strong> Với các đơn thuốc viết tay dài, quét đơn thuốc bằng AI giúp chuyển đổi thành danh sách số rõ ràng.</li>
-            <li><strong>Lưu lịch sử bệnh của trẻ nhỏ:</strong> Mọi đợt ốm của con được lưu hồ sơ y tế online vĩnh viễn.</li>
-            <li><strong>Chia sẻ hồ sơ cho bác sĩ:</strong> Gửi một bản quét sạch sẽ qua ứng dụng giúp bác sĩ đưa ra chẩn đoán chính xác hơn.</li>
+            <li><strong>Tìm đơn thuốc cũ khi tái khám:</strong> Thay vì mang theo một xấp hồ sơ cồng kềnh, bạn chỉ cần mở <a href="/app/cabinet" className="text-cyan-600 hover:text-cyan-700 underline">app quản lý hồ sơ bệnh án</a> và tìm kiếm theo ngày hoặc tên bệnh để hiện ra ngay lịch sử điều trị cho bác sĩ đối soát.</li>
+            <li><strong>Quản lý thuốc cho người già:</strong> Với các đơn thuốc viết tay dài, quét đơn thuốc bằng AI giúp chuyển đổi thành danh sách số rõ ràng, tự động nhắc lịch uống thuốc, giúp con cái an tâm dù không ở cạnh cha mẹ.</li>
+            <li><strong>Lưu lịch sử bệnh của trẻ nhỏ:</strong> Mọi đợt ốm, loại kháng sinh con từng dùng đều được <a href="/app/cabinet" className="text-cyan-600 hover:text-cyan-700 underline">lưu hồ sơ y tế online</a> vĩnh viễn, giúp theo dõi biểu đồ phát triển và tránh rủi ro dị ứng thuốc trong tương lai.</li>
+            <li><strong>Chia sẻ hồ sơ cho bác sĩ:</strong> Trong các buổi tư vấn sức khỏe từ xa, việc gửi một bản quét sạch sẽ, rõ ràng qua ứng dụng sẽ giúp bác sĩ đưa ra chẩn đoán chính xác hơn so với việc gửi ảnh chụp mờ nhòe.</li>
           </ul>
-          <ArticleImage src="/bai-14/hinh3.jpg" alt="Nhiều người gặp khó khăn với đơn thuốc giấy tại bệnh viện (Hình minh họa)" />
+          <ArticleImage src="/bai-14/hinh3.jpg" alt="Nhiều người gặp khó khăn với đơn thuốc giấy tại bệnh viện (Hinh minh họa)" />
 
           {/* Section 4 */}
-          <SectionHeading number="04" id="so-sanh" title="So sánh lưu trữ thủ công vs AI Scanner" />
+          <SectionHeading number="04" id="so-sanh" title="So sánh hiệu quả giữa lưu trữ thủ công và Quét đơn thuốc AI" />
 
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse border border-slate-300 text-sm">
               <thead className="bg-slate-100">
                 <tr>
-                  <th className="border border-slate-300 p-2">Tiêu chí</th>
-                  <th className="border border-slate-300 p-2">Lưu trữ thủ công</th>
-                  <th className="border border-slate-300 p-2">Quét đơn thuốc AI</th>
+                  <th className="border border-slate-300 p-3 text-left">Tiêu chí</th>
+                  <th className="border border-slate-300 p-3 text-left">Lưu trữ hồ sơ thủ công (Giấy tờ)</th>
+                  <th className="border border-slate-300 p-3 text-left">Quản lý bằng AI Scanner (FamCare)</th>
                 </tr>
               </thead>
-              <tbody className="text-xs">
+              <tbody>
                 <tr>
-                  <td className="border border-slate-300 p-2"><strong>Độ bền</strong></td>
-                  <td className="border border-slate-300 p-2">Dễ rách, ẩm mốc, mờ mực</td>
-                  <td className="border border-slate-300 p-2">Lưu trữ vĩnh viễn trên đám mây</td>
+                  <td className="border border-slate-300 p-3 font-semibold">Độ bền thông tin</td>
+                  <td className="border border-slate-300 p-3">Dễ rách, ẩm mốc, mờ mực theo thời gian</td>
+                  <td className="border border-slate-300 p-3">Lưu trữ vĩnh viễn trên đám mây, rõ nét</td>
+                </tr>
+                <tr className="bg-slate-50/50">
+                  <td className="border border-slate-300 p-3 font-semibold">Độ chính xác</td>
+                  <td className="border border-slate-300 p-3">Dễ sai sót khi tự đọc chữ viết tay</td>
+                  <td className="border border-slate-300 p-3">Giảm tối đa sai sót nhập liệu thủ công</td>
                 </tr>
                 <tr>
-                  <td className="border border-slate-300 p-2"><strong>Độ chính xác</strong></td>
-                  <td className="border border-slate-300 p-2">Dễ sai sót khi tự đọc</td>
-                  <td className="border border-slate-300 p-2">Giảm tối đa sai sót</td>
+                  <td className="border border-slate-300 p-3 font-semibold">Tính nhắc nhở</td>
+                  <td className="border border-slate-300 p-3">Người dùng tự ghi nhớ lịch uống thuốc</td>
+                  <td className="border border-slate-300 p-3">Tự động nhắc lịch dựa trên đơn đã quét</td>
                 </tr>
-                <tr>
-                  <td className="border border-slate-300 p-2"><strong>Tính nhắc nhở</strong></td>
-                  <td className="border border-slate-300 p-2">Người dùng tự ghi nhớ</td>
-                  <td className="border border-slate-300 p-2">Tự động nhắc lịch uống thuốc</td>
-                </tr>
-                <tr>
-                  <td className="border border-slate-300 p-2"><strong>Tính di động</strong></td>
-                  <td className="border border-slate-300 p-2">Cồng kềnh, khó mang theo</td>
-                  <td className="border border-slate-300 p-2">Luôn sẵn sàng trên điện thoại</td>
+                <tr className="bg-slate-50/50">
+                  <td className="border border-slate-300 p-3 font-semibold">Tính di động</td>
+                  <td className="border border-slate-300 p-3">Cồng kềnh, khó mang theo khi đi xa</td>
+                  <td className="border border-slate-300 p-3">Luôn sẵn sàng trên điện thoại cá nhân</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           {/* Section 5 */}
-          <SectionHeading number="05" id="giai-phap" title="FamCare: Giải pháp quản lý hồ sơ y tế toàn diện" />
+          <SectionHeading number="05" id="giai-phap" title="FamCare: Lưu đơn thuốc và quản lý y tế thông minh cho mọi nhà" />
 
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li>Quét đơn thuốc thông minh tích hợp AI Scanner</li>
-            <li>Lưu hồ sơ y tế online tập trung cho từng thành viên</li>
-            <li>Tương tác thông minh với cảnh báo tương tác thuốc và thực phẩm</li>
+          <p className="text-justify mb-6">
+            Giữa vô vàn lựa chọn, <strong>FamCare</strong> nổi bật như một giải pháp <strong>quản lý hồ sơ y tế</strong> toàn diện dành riêng cho gia đình Việt với các tính năng:
+          </p>
+
+          <ul className="list-disc pl-6 mb-6 space-y-2 text-justify">
+            <li><strong>Quét đơn thuốc thông minh:</strong> Tích hợp AI Scanner tiên tiến để nhận diện và đọc chính xác đơn thuốc viết tay, giúp số hóa đơn thuốc chỉ trong vài giây.</li>
+            <li><strong>Lưu hồ sơ y tế online tập trung:</strong> Mọi dữ liệu từ đơn thuốc đến kết quả xét nghiệm được lưu trữ khoa học theo từng thành viên trong Hồ sơ gia đình.</li>
+            <li><strong>Tương tác thông minh:</strong> Dựa trên dữ liệu đã quét, FamCare cung cấp các cảnh báo về tương tác thuốc và thực phẩm, giúp hành trình chăm sóc sức khỏe trở nên thảnh thơi và an toàn tuyệt đối.</li>
           </ul>
 
           {/* Section 6 */}
           <SectionHeading number="06" id="ket-bai" title="Kết bài" />
 
           <p className="text-justify mb-6">
-            Việc chuyển từ lưu trữ thủ công sang sử dụng Quét đơn thuốc AI không chỉ là xu hướng, mà là hành động thiết thực để bảo vệ sức khỏe và sự an tâm của những người thân yêu. Hệ thống quản lý hồ sơ y tế minh bạch chính là nền tảng của cuộc sống chất lượng năm 2026.
+            Tóm lại, việc chuyển từ <strong>lưu trữ hồ sơ</strong> thủ công sang sử dụng <strong>Quét đơn thuốc AI</strong> không chỉ là xu hướng, mà là hành động thiết thực để bảo vệ sức khỏe và sự an tâm của những người thân yêu. Một hệ thống <strong>quản lý hồ sơ y tế</strong> minh bạch và dễ dàng tra cứu chính là nền tảng của một cuộc sống chất lượng năm 2026. Hãy để công nghệ <strong>quét đơn thuốc thông minh</strong> của <strong>FamCare</strong> thay bạn quản lý những con số và thuật ngữ phức tạp ngay tại: <a href="https://famcare.site/app/cabinet" className="text-cyan-600 hover:text-cyan-700 underline">https://famcare.site/app/cabinet</a>
           </p>
 
           <div className="mt-12 pt-8 border-t border-slate-200">

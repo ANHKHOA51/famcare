@@ -613,7 +613,7 @@ export default function ResourcesPage() {
                 <Link to="/resources/thuc-don-tieu-duong-7-ngay-kh-hoc" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src="/bai-18/hinh1.jpg" 
+                      src="/bai-18/hinh1.png" 
                       alt="Thực đơn tiểu đường 7 ngày" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
