@@ -162,9 +162,11 @@ export default function Article12Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6">
-            Chỉ số BMI (Body Mass Index) là công cụ phổ biến dùng để đánh giá tình trạng sức khỏe thông qua số cân nặng và chiều cao. Tuy nhiên, liệu bạn đã biết cách đọc chỉ số này sao cho đúng với cơ địa người Việt, hay bao lâu thì nên kiểm tra lại một lần? Cùng FamCare khám phá cách đọc chỉ số BMI chuẩn xác, tần suất đo định kỳ và những lưu ý quan trọng để duy trì vóc dáng cân đối ngay trong bài viết này!
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Chỉ số BMI (Body Mass Index) là công cụ phổ biến dùng để đánh giá tình trạng sức khỏe thông qua số cân nặng và chiều cao. Tuy nhiên, liệu bạn đã biết cách đọc chỉ số này sao cho đúng với cơ địa người Việt, hay bao lâu thì nên kiểm tra lại một lần? Cùng FamCare khám phá cách đọc chỉ số BMI chuẩn xác, tần suất đo định kỳ và những lưu ý quan trọng để duy trì vóc dáng cân đối ngay trong bài viết này!
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="bmi-la-gi" title="Chỉ số BMI là gì?" />

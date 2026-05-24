@@ -159,9 +159,11 @@ export default function Article18Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6 font-semibold italic text-slate-700">
-            Việc duy trì một thực đơn cho người tiểu đường chuẩn y khoa luôn là bài toán hóc búa đối với nhiều gia đình, khi ranh giới giữa kiêng khem nghiêm ngặt và thiếu hụt dinh dưỡng vô cùng mong manh. Thay vì phải đau đầu tính toán từng gram tinh bột hay mức calo thủ công, xu hướng lên thực đơn bằng AI năm 2026 đang mở ra một cuộc cách mạng trong việc chăm sóc sức khỏe chủ động. Giải pháp này giúp cá nhân hóa khẩu phần ăn, bám sát phác đồ điều trị và giải phóng áp lực tâm lý cho người bệnh. Hãy cùng FamCare trải nghiệm tính năng thiết kế bữa ăn thông minh, giúp bạn làm chủ chỉ số đường huyết và thảnh thơi tận hưởng cuộc sống khỏe mạnh bên người thân yêu ngay hôm nay!
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Việc duy trì một thực đơn cho người tiểu đường chuẩn y khoa luôn là bài toán hóc búa đối với nhiều gia đình, khi ranh giới giữa kiêng khem nghiêm ngặt và thiếu hụt dinh dưỡng vô cùng mong manh. Thay vì phải đau đầu tính toán từng gram tinh bột hay mức calo thủ công, xu hướng lên thực đơn bằng AI năm 2026 đang mở ra một cuộc cách mạng trong việc chăm sóc sức khỏe chủ động. Giải pháp này giúp cá nhân hóa khẩu phần ăn, bám sát phác đồ điều trị và giải phóng áp lực tâm lý cho người bệnh. Hãy cùng FamCare trải nghiệm tính năng thiết kế bữa ăn thông minh, giúp bạn làm chủ chỉ số đường huyết và thảnh thơi tận hưởng cuộc sống khỏe mạnh bên người thân yêu ngay hôm nay!
+            </p>
+          </div>
           <ArticleImage src="/bai-18/hinh1.png" alt="Thiết kế thực đơn cho người tiểu đường bằng AI giúp kiểm soát đường huyết tối ưu." />
 
           {/* Section 1 */}

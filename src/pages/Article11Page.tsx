@@ -161,9 +161,11 @@ export default function Article11Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6">
-            Quên tên thuốc cũ là tình huống thường xuất hiện trong cuộc sống, đặc biệt đối với những người từng điều trị bệnh theo đợt hay người phải sử dụng nhiều loại thuốc điều trị trong ngày. Việc quên tên thuốc không chỉ đem lại bất tiện trong cuộc sống mà còn tăng rủi ro cho sức khỏe khi người bệnh bị gián đoạn trị liệu, giảm hiệu quả điều trị. Trong bài viết này, hãy để FamCare hướng dẫn cách bạn xử lý và phòng tránh trường hợp này nhé!
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Quên tên thuốc cũ là tình huống thường xuất hiện trong cuộc sống, đặc biệt đối với những người từng điều trị bệnh theo đợt hay người phải sử dụng nhiều loại thuốc điều trị trong ngày. Việc quên tên thuốc không chỉ đem lại bất tiện trong cuộc sống mà còn tăng rủi ro cho sức khỏe khi người bệnh bị gián đoạn trị liệu, giảm hiệu quả điều trị. Trong bài viết này, hãy để FamCare hướng dẫn cách bạn xử lý và phòng tránh trường hợp này nhé!
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="rui-ro" title="Rủi ro của việc quên tên thuốc cũ" />

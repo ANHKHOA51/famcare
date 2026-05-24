@@ -161,9 +161,11 @@ export default function Article15Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6 font-semibold italic text-slate-700">
-            Trong nhịp sống hiện đại, việc dành hàng giờ chờ đợi tại bệnh viện hay phòng khám khiến nhiều người e ngại mỗi khi cần đi khám bệnh. Chính vì vậy, việc đặt lịch khám trực tuyến đang ngày càng được nhiều người quan tâm, đặc biệt là dân văn phòng, phụ huynh có con nhỏ hay người có lịch trình bận rộn. Không chỉ giúp tiết kiệm thời gian, hình thức đặt lịch khám bệnh online còn mang đến trải nghiệm khám chữa bệnh thuận tiện, chủ động và hiện đại hơn. Hãy cùng khám phá 5 lợi ích nổi bật của dịch vụ này và trải nghiệm đặt lịch khám online với FamCare nha!
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Trong nhịp sống hiện đại, việc dành hàng giờ chờ đợi tại bệnh viện hay phòng khám khiến nhiều người e ngại mỗi khi cần đi khám bệnh. Chính vì vậy, việc đặt lịch khám trực tuyến đang ngày càng được nhiều người quan tâm, đặc biệt là dân văn phòng, phụ huynh có con nhỏ hay người có lịch trình bận rộn. Không chỉ giúp tiết kiệm thời gian, hình thức đặt lịch khám bệnh online còn mang đến trải nghiệm khám chữa bệnh thuận tiện, chủ động và hiện đại hơn. Hãy cùng khám phá 5 lợi ích nổi bật của dịch vụ này và trải nghiệm đặt lịch khám online với FamCare nha!
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="tiet-kiem-thoi-gian" title="Tiết kiệm thời gian chờ đợi ở bệnh viện" />

@@ -163,9 +163,11 @@ export default function Article16Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6 font-semibold italic text-slate-700">
-            Trong cuộc sống bận rộn ngày nay, câu hỏi “Hôm nay ăn gì?” dường như trở thành nỗi đau đầu quen thuộc của nhiều người. Không chỉ mất thời gian suy nghĩ món ăn, nhiều người còn gặp khó khăn khi muốn xây dựng một chế độ ăn khoa học, đầy đủ dinh dưỡng nhưng vẫn phù hợp với mục tiêu cá nhân như giảm cân, tăng cơ hay duy trì sức khỏe. Đó cũng là lý do vì sao thực đơn dinh dưỡng cá nhân hóa ngày càng trở thành xu hướng được nhiều người quan tâm. Trong bài viết này, hãy cùng FamCare tìm hiểu về cách xây dựng thực đơn cá nhân hóa hợp lý với tính năng Trợ lý dinh dưỡng AI nha!
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Trong cuộc sống bận rộn ngày nay, câu hỏi “Hôm nay ăn gì?” dường như trở thành nỗi đau đầu quen thuộc của nhiều người. Không chỉ mất thời gian suy nghĩ món ăn, nhiều người còn gặp khó khăn khi muốn xây dựng một chế độ ăn khoa học, đầy đủ dinh dưỡng nhưng vẫn phù hợp với mục tiêu cá nhân như giảm cân, tăng cơ hay duy trì sức khỏe. Đó cũng là lý do vì sao thực đơn dinh dưỡng cá nhân hóa ngày càng trở thành xu hướng được nhiều người quan tâm. Trong bài viết này, hãy cùng FamCare tìm hiểu về cách xây dựng thực đơn cá nhân hóa hợp lý với tính năng Trợ lý dinh dưỡng AI nha!
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="ca-nhan-hoa" title="Thực đơn dinh dưỡng cá nhân hóa là gì?" />

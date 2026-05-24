@@ -161,9 +161,11 @@ export default function Article17Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6 font-semibold italic text-slate-700">
-            Khi đối mặt với các vấn đề sức khỏe, việc tìm kiếm và chọn bác sĩ có năng lực phù hợp luôn là trăn trở hàng đầu của mọi gia đình. Tuy nhiên, trước hàng loạt thông tin về học hàm học vị như GS, PGS, TS, ThS, BSCKII, nhiều người bệnh thường rơi vào trạng thái mơ hồ, không biết đâu mới là chuyên gia tối ưu cho tình trạng của mình. Hiểu rõ các ký hiệu y khoa này chính là chìa khóa để đưa ra quyết định điều trị chính xác, an toàn. Hãy cùng FamCare giải mã hệ thống danh hiệu ngành y và bỏ túi các tiêu chí lựa chọn bác sĩ chuẩn chuyên môn ngay hôm nay!
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Khi đối mặt với các vấn đề sức khỏe, việc tìm kiếm và chọn bác sĩ có năng lực phù hợp luôn là trăn trở hàng đầu của mọi gia đình. Tuy nhiên, trước hàng loạt thông tin về học hàm học vị như GS, PGS, TS, ThS, BSCKII, nhiều người bệnh thường rơi vào trạng thái mơ hồ, không biết đâu mới là chuyên gia tối ưu cho tình trạng của mình. Hiểu rõ các ký hiệu y khoa này chính là chìa khóa để đưa ra quyết định điều trị chính xác, an toàn. Hãy cùng FamCare giải mã hệ thống danh hiệu ngành y và bỏ túi các tiêu chí lựa chọn bác sĩ chuẩn chuyên môn ngay hôm nay!
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="tai-sao" title="Tại sao cần thấu hiểu học hàm học vị khi tiến hành chọn bác sĩ điều trị?" />

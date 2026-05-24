@@ -161,12 +161,11 @@ export default function Article14Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6">
-            Bạn đã từng mất hàng chục phút lục tung ngăn kéo chỉ để tìm lại một tờ đơn thuốc cũ khi cần tái khám? Hoặc bối rối vì không thể đọc rõ chỉ dẫn trên toa thuốc đã bị mờ mực sau vài tháng lưu trữ? Đây là vấn đề rất phổ biến của nhiều gia đình vẫn đang <strong>quản lý hồ sơ y tế</strong> bằng giấy tờ truyền thống.
-          </p>
-          <p className="text-justify mb-6">
-            Trong xu hướng y tế số, công nghệ <strong>quét đơn thuốc thông minh</strong> đã ra đời như một giải pháp "cứu cánh" thực thụ. Hãy cùng <strong>FamCare</strong> tìm hiểu tại sao việc chuyển đổi sang <strong>Quét đơn thuốc AI</strong> không chỉ là chạy theo công nghệ, mà là cách để bạn bảo vệ sức khỏe gia đình một cách thảnh thơi, chính xác và an toàn hơn bao giờ hết.
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Bạn đã từng mất hàng chục phút lục tung ngăn kéo chỉ để tìm lại một tờ đơn thuốc cũ khi cần tái khám? Hoặc bối rối vì không thể đọc rõ chỉ dẫn trên toa thuốc đã bị mờ mực sau vài tháng lưu trữ? Đây là vấn đề rất phổ biến của nhiều gia đình vẫn đang quản lý hồ sơ y tế bằng giấy tờ truyền thống. Trong xu hướng y tế số, công nghệ quét đơn thuốc thông minh đã ra đời như một giải pháp "cứu cánh" thực thụ. Hãy cùng FamCare tìm hiểu tại sao việc chuyển đổi sang Quét đơn thuốc AI không chỉ là chạy theo công nghệ, mà là cách để bạn bảo vệ sức khỏe gia đình một cách thảnh thơi, chính xác và an toàn hơn bao giờ hết.
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="thuc-trang" title="Thực trạng quản lý hồ sơ y tế thủ công: Rào cản từ những xấp giấy tờ" />

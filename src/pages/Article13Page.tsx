@@ -163,12 +163,11 @@ export default function Article13Page() {
           </nav>
 
           {/* Intro */}
-          <p className="text-justify mb-6">
-            Xây dựng một chế độ dinh dưỡng lành mạnh chính là "chìa khóa vàng" để chung sống hòa bình với căn bệnh đái tháo đường. Tuy nhiên, giữa vô vàn thông tin trái chiều, việc xác định chính xác các loại <strong>thực phẩm người bệnh tiểu đường nên tránh</strong> thường khiến người bệnh và thân nhân bối rối.
-          </p>
-          <p className="text-justify mb-6">
-            Trong bối cảnh y khoa năm 2026, khi các xu hướng như theo dõi đường huyết liên tục (CGM) và dinh dưỡng cá nhân hóa lên ngôi, việc hiểu rõ bản chất thực phẩm là điều bắt buộc. Bài viết này <strong>FamCare</strong> sẽ cung cấp danh mục chi tiết về những món ăn "đại kỵ" và cách thiết kế thực đơn chuẩn y khoa.
-          </p>
+          <div className="mb-14">
+            <p className="text-justify text-base leading-relaxed text-slate-700 italic">
+              Xây dựng một chế độ dinh dưỡng lành mạnh chính là "chìa khóa vàng" để chung sống hòa bình với căn bệnh đái tháo đường. Tuy nhiên, giữa vô vàn thông tin trái chiều, việc xác định chính xác các loại thực phẩm người bệnh tiểu đường nên tránh thường khiến người bệnh và thân nhân bối rối. Trong bối cảnh y khoa năm 2026, khi các xu hướng như theo dõi đường huyết liên tục (CGM) và dinh dưỡng cá nhân hóa lên ngôi, việc hiểu rõ bản chất thực phẩm là điều bắt buộc. Bài viết này FamCare sẽ cung cấp danh mục chi tiết về những món ăn "đại kỵ" và cách thiết kế thực đơn chuẩn y khoa.
+            </p>
+          </div>
 
           {/* Section 1 */}
           <SectionHeading number="01" id="tai-sao-quan-trong" title="Tại sao việc nhận diện thực phẩm nên tránh lại quan trọng?" />
