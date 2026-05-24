@@ -178,7 +178,7 @@ export default function Article17Page() {
           </p>
 
           <div className="bg-amber-50/80 border border-amber-200 border-l-4 border-l-amber-600 p-6 rounded-r-xl my-10">
-            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-amber-700 mb-2">⚠️ Disclaimer</div>
+            <div className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-amber-700 mb-2">⚠️ Lưu ý</div>
             <p className="text-justify text-[0.95rem] text-amber-900 m-0 leading-relaxed font-sans">
               Mọi danh hiệu y khoa đều quý giá, tuy nhiên mức độ phù hợp của bác sĩ phụ thuộc hoàn toàn vào giai đoạn bệnh và thể trạng lâm sàng của từng cá nhân. Hãy luôn kết hợp việc đọc hồ sơ bác sĩ với việc theo dõi sát sao phản ứng điều trị thực tế.
             </p>
