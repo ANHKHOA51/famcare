@@ -192,9 +192,9 @@ export default function Article11Page() {
             Khi không có đầy đủ lịch sử dùng thuốc, bác sĩ sẽ khó có cái nhìn toàn diện về tình trạng sức khỏe, <strong>nguy cơ dị ứng, các bệnh lý đã điều trị hoặc những loại thuốc bệnh nhân đang sử dụng</strong>. Từ đó, việc đưa ra chẩn đoán và phác đồ điều trị phù hợp cũng có thể mất nhiều thời gian hơn và tiềm ẩn nguy cơ sai sót không mong muốn.
           </p>
 
-          <h3 id="nhom-nguoi" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-10 mb-4 scroll-mt-28">
-            Những nhóm người dễ quên tên thuốc nhất
-          </h3>
+          {/* Section 2 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="02" id="nhom-nguoi" title="Những nhóm người dễ quên tên thuốc nhất" />
 
           <p className="text-justify mb-6">
             Trong thực tế, bất kỳ ai cũng có thể rơi vào tình trạng quên tên thuốc cũ. Tuy nhiên, thực tế cho thấy một số <strong>nhóm đối tượng có nguy cơ nhầm lẫn cao hơn hẳn</strong>.
@@ -218,8 +218,9 @@ export default function Article11Page() {
             Đặc biệt, trong thời đại hiện nay, nhiều người có xu hướng tự mua lại thuốc theo trí nhớ thay vì tái khám hoặc kiểm tra thông tin cũ. Điều này tuy tiện lợi trước mắt nhưng lại tiềm ẩn rất nhiều nguy cơ nếu dùng sai thuốc hoặc thay đổi tình trạng sức khỏe theo thời gian.
           </p>
 
-          {/* Section 2 */}
-          <SectionHeading number="02" id="cach-truy-van" title="Cách truy vấn tên thuốc cũ nhanh nhất" />
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="cach-truy-van" title="Cách truy vấn tên thuốc cũ nhanh nhất" />
 
           <p className="text-justify mb-6">
             Khi rơi vào tình trạng quên tên thuốc cũ, bạn có thể áp dụng 3 cách sau:
@@ -270,9 +271,9 @@ export default function Article11Page() {
             </p>
           </div>
 
-          {/* Section 3 */}
+          {/* Section 4 */}
           <div className="clear-both"></div>
-          <SectionHeading number="03" id="ket-luan" title="Kết luận" />
+          <SectionHeading number="04" id="ket-luan" title="Kết luận" />
 
           <p className="text-justify mb-6">
             Quên tên thuốc cũ tưởng chừng chỉ là một bất tiện nhỏ nhưng thực tế có thể gây ra rất nhiều hệ lụy cho sức khỏe và quá trình điều trị. Việc chủ động lưu trữ lịch sử dùng thuốc không chỉ giúp bạn tiết kiệm thời gian, chi phí mà còn góp phần đảm bảo an toàn cho bản thân và gia đình.

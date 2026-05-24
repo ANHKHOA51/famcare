@@ -206,14 +206,6 @@ export default function Article14Page() {
             Việc sử dụng một <strong>app lưu đơn thuốc</strong> tích hợp AI không chỉ đơn thuần là lưu trữ ảnh, mà là tạo ra một quy trình chăm sóc sức khỏe thông minh trong các tình huống thực tế:
           </p>
 
-          {/* Section 3 */}
-          <div className="clear-both"></div>
-          <SectionHeading number="03" id="tinh-huong" title="So sánh hiệu quả giữa lưu trữ thủ công và Quét đơn thuốc AI" />
-
-          <p className="text-justify mb-6">
-            Để thấy rõ tại sao bạn nên thực hiện <strong>chuyển đổi số trong quản lý hồ sơ bệnh án</strong> ngay hôm nay, hãy cùng xem bảng so sánh dưới đây:
-          </p>
-
           <ul className="list-disc pl-6 mb-6 space-y-3">
             <li><strong>Tìm đơn thuốc cũ khi tái khám:</strong> Thay vì mang theo một xấp hồ sơ cồng kềnh, bạn chỉ cần mở <a href="/app/cabinet" className="text-cyan-600 hover:text-cyan-700 underline">app quản lý hồ sơ bệnh án</a> và tìm kiếm theo ngày hoặc tên bệnh để hiện ra ngay lịch sử điều trị cho bác sĩ đối soát.</li>
             <li><strong>Quản lý thuốc cho người già:</strong> Với các đơn thuốc viết tay dài, quét đơn thuốc bằng AI giúp chuyển đổi thành danh sách số rõ ràng, tự động nhắc lịch uống thuốc, giúp con cái an tâm dù không ở cạnh cha mẹ.</li>
@@ -222,8 +214,13 @@ export default function Article14Page() {
           </ul>
           <ArticleImage src="/bai-14/hinh3.jpg" alt="Nhiều người gặp khó khăn với đơn thuốc giấy tại bệnh viện (Hinh minh họa)" />
 
-          {/* Section 4 */}
-          <SectionHeading number="04" id="so-sanh" title="So sánh hiệu quả giữa lưu trữ thủ công và Quét đơn thuốc AI" />
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="so-sanh" title="So sánh hiệu quả giữa lưu trữ thủ công và Quét đơn thuốc AI" />
+
+          <p className="text-justify mb-6">
+            Để thấy rõ tại sao bạn nên thực hiện <strong>chuyển đổi số trong quản lý hồ sơ bệnh án</strong> ngay hôm nay, hãy cùng xem bảng so sánh dưới đây:
+          </p>
 
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse border border-slate-300 text-sm">

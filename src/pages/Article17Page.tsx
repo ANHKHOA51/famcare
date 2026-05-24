@@ -201,24 +201,22 @@ export default function Article17Page() {
           </p>
           <ArticleImage src="/bai-17/hinh2.jpg" alt="Mọi tấm bằng y khoa đều quý giá" />
 
-          {/* Section 2 */}
-          <SectionHeading number="02" id="noi-tru" title="Ý nghĩa của Bác sĩ nội trú và các Học hàm cao cấp (Giáo sư, Phó giáo sư)" />
+          <h3 id="noi-tru" className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-8 mb-3 scroll-mt-28">
+            Ý nghĩa của Bác sĩ nội trú và các Học hàm cao cấp (Giáo sư, Phó giáo sư)
+          </h3>
 
           <p className="text-justify mb-6">
             Một khái niệm khác thường xuất hiện trong hồ sơ của các bác sĩ uy tín là danh hiệu bác sĩ nội trú (BSNT). Đây được mệnh danh là "chứng chỉ vàng" của ngành y. Chỉ những sinh viên y khoa tốt nghiệp loại giỏi và xuất sắc mới được thi nội trú, và họ phải học tập, làm việc liên tục tại bệnh viện 24/7 trong suốt 3 năm. Một bác sĩ nội trú thường có chuyên môn lâm sàng cực kỳ vững chắc và nhạy bén với các tình huống cấp cứu.
           </p>
           <ArticleImage src="/bai-17/hinh3.jpg" alt="Các bác sĩ nội trú tại bệnh viện" />
 
-          {/* Section 3 */}
-          <div className="clear-both"></div>
-          <SectionHeading number="03" id="hoc-ham" title="Học hàm cao cấp: Giáo sư (GS) và Phó giáo sư (PGS)" />
-
-          <p className="text-justify mb-6">
+          <p className="text-justify mb-6 mt-6">
             Khi các tiến sĩ (TS) hoặc bác sĩ chuyên khoa 2 (BSCKII) có nhiều đóng góp lớn cho khoa học, có nhiều công trình nghiên cứu được quốc tế công nhận và tham gia giảng dạy lâu năm, họ sẽ được nhà nước phong học hàm Giáo sư (GS) hoặc Phó giáo sư (PGS). Việc tìm đến các GS, PGS hay các chuyên gia thuộc danh sách top bác sĩ giỏi là vô cùng cần thiết khi bạn gặp phải các căn bệnh hiếm gặp, các ca bệnh hiểm nghèo cần hội chẩn liên chuyên khoa để tìm ra phác đồ đột phá.
           </p>
 
-          {/* Section 4 */}
-          <SectionHeading number="04" id="lua-chon" title="Lựa chọn bác sĩ chuẩn xác cho gia đình bạn" />
+          {/* Section 2 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="02" id="lua-chon" title="Lựa chọn bác sĩ chuẩn xác cho gia đình bạn" />
 
           <p className="text-justify mb-6">
             Hiểu rõ lý thuyết là một chuyện, nhưng ứng dụng vào thực tế để chọn bác sĩ lại cần một bộ lọc có cấu trúc rõ ràng. Không có một người bác sĩ giỏi nhất cho mọi căn bệnh, chỉ có người bác sĩ phù hợp nhất với tình trạng hiện tại của người bệnh.
@@ -227,8 +225,9 @@ export default function Article17Page() {
             Khi đã xác định được nhóm danh hiệu cần tìm, bước tiếp theo để biết làm thế nào để chọn bác sĩ chuyên khoa đúng là đánh giá thâm niên công tác. Số năm kinh nghiệm làm việc tại các bệnh viện tuyến đầu (như Chợ Rẫy, Đại học Y Dược, Bạch Mai) luôn là một bảo chứng vững chắc cho năng lực phản xạ lâm sàng của bác sĩ.
           </p>
 
-          {/* Section 5 */}
-          <SectionHeading number="05" id="ket-noi" title="Kết nối chuyên gia và quản lý hồ sơ y tế thảnh thơi cùng FamCare" />
+          {/* Section 3 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="03" id="ket-noi" title="Kết nối chuyên gia và quản lý hồ sơ y tế thảnh thơi cùng FamCare" />
 
           <p className="text-justify mb-6">
             Việc tự mình tra cứu hồ sơ, xác thực thông tin học hàm học vị của hàng trăm bác sĩ giữa các chuyên khoa khác nhau là một thách thức lớn, dễ làm người bệnh quá tải. Trong kỷ nguyên y tế số 2026, FamCare ra đời như một giải pháp kết nối thông minh, giúp bạn xóa bỏ hoàn toàn rào cản này.
@@ -240,8 +239,9 @@ export default function Article17Page() {
             Đặc biệt, hệ thống Hồ sơ gia đình của FamCare cho phép bạn lưu trữ toàn bộ lịch sử bệnh án, đơn thuốc đã số hóa qua AI. Trước mỗi buổi khám, các dữ liệu này sẽ được liên thông trực tiếp đến bác sĩ mà bạn đã tin tưởng lựa chọn. Điều này giúp các bác sĩ chuyên khoa nắm bắt trọn vẹn tiến trình bệnh lý của bạn từ quá khứ đến hiện tại, loại bỏ tình trạng khai báo sai sót, từ đó đưa ra phác đồ điều trị cá nhân hóa chính xác và an toàn tuyệt đối cho người thân của bạn.
           </p>
 
-          {/* Section 6 */}
-          <SectionHeading number="06" id="ket-bai" title="Kết bài" />
+          {/* Section 4 */}
+          <div className="clear-both"></div>
+          <SectionHeading number="04" id="ket-bai" title="Kết bài" />
 
           <p className="text-justify mb-6">
             Tóm lại, việc chủ động trang bị bộ tiêu chí lựa chọn bác sĩ dựa trên cách đọc hiểu học hàm học vị và kinh nghiệm lâm sàng là bước đi chiến lược để bảo vệ sức khỏe bền vững cho cả gia đình. Hãy là một người bệnh thông thái, biết cách chọn bác sĩ phù hợp để tối ưu hóa thời gian và chi phí điều trị.
