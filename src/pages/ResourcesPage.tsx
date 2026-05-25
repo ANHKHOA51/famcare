@@ -147,17 +147,44 @@ export default function ResourcesPage() {
               
               <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                 
-                {/* Article 4 (Mới nhất) */}
-                <Link to="/resources/quen-uong-thuoc-va-cach-xu-ly" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                {/* Article 18 (Mới nhất) */}
+                <Link to="/resources/thuc-don-tieu-duong-7-ngay-kh-hoc" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
                   <div className="h-48 overflow-hidden relative">
                     <img 
-                      src="/bai-4/hinh1.jpg" 
-                      alt="Quên uống thuốc thì có sao không?" 
+                      src="/bai-18/hinh1.png" 
+                      alt="Thực đơn tiểu đường 7 ngày" 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-4 left-4">
                       <span className="bg-rose-100 text-rose-700 text-[0.625rem] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Mới nhất</span>
                     </div>
+                  </div>
+                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="bg-green-100 text-green-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Dinh dưỡng</span>
+                      <span className="text-[0.6875rem] text-slate-400">23 Th05, 2026</span>
+                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
+                        <Eye size={14} className="text-slate-400" />
+                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['thuc-don-tieu-duong-7-ngay-kh-hoc'] || 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      Thực Đơn 7 Ngày Cho Người Tiểu Đường: Cách Lên Thực Đơn Bằng AI Đơn Giản
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
+                      Hướng dẫn lên thực đơn tiểu đường an toàn và ngon.
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Article 4 */}
+                <Link to="/resources/quen-uong-thuoc-va-cach-xu-ly" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="/bai-4/hinh1.jpg" 
+                      alt="Quên uống thuốc thì có sao không?" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
@@ -432,14 +459,14 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-cyan-100 text-cyan-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">AI & Y tế</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">20 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['quen-ten-thuoc-cu-ai-famcare'] || 0}</span>
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Quên Tên Thuốc Cũ? Tra Cứu Theo Triệu Chứng
+                      Quên tên thuốc cũ? Cách truy vấn dược phẩm theo triệu chứng cực nhanh với AI FamCare
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
                       Khám phá cách tra cứu dược phẩm nhanh chóng bằng AI FamCare.
@@ -459,14 +486,14 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-emerald-100 text-emerald-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Sức khỏe</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">18 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['theo-doi-chi-so-bmi-dung-cach'] || 0}</span>
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Chỉ Số BMI Là Gì? Cách Tính Chuẩn
+                      Chỉ số BMI nói lên điều gì về sức khỏe? Hướng dẫn theo dõi BMI chuẩn xác
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
                       Hướng dẫn tính BMI chính xác và theo dõi sức khỏe.
@@ -486,14 +513,14 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-orange-100 text-orange-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Dinh dưỡng</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">17 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['thuc-pham-nguoi-benh-tieu-duong-nen-tranh-va-che-do-an'] || 0}</span>
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Thực Phẩm Tiểu Đường Nên Tránh
+                      Thực Phẩm Người Tiểu Đường Nên Tránh Để Ổn Định Đường Huyết
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
                       Danh mục thực phẩm để ổn định đường huyết hiệu quả.
@@ -513,14 +540,14 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-blue-100 text-blue-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Công nghệ</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">19 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['quet-don-thuoc-ai-so-hoa-ho-so'] || 0}</span>
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Quét Đơn Thuốc Bằng AI: Số Hóa Hồ Sơ
+                      Quản Lý Hồ Sơ Y Tế Bằng AI: Giải Pháp Thay Thế Lưu Trữ Giấy Truyền Thống
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
                       Giải pháp số hóa hồ sơ y tế thông minh và nhanh chóng.
@@ -547,7 +574,7 @@ export default function ResourcesPage() {
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Đặt Lịch Khám Trực Tuyến: Hướng Dẫn
+                      5 Lợi Ích Vượt Trội Khi Đặt Lịch Khám Trực Tuyến Dành Cho Người Bận Rộn
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
                       Cách đặt lịch khám online an toàn và tiện lợi.
@@ -567,17 +594,17 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-amber-100 text-amber-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Dinh dưỡng</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">24 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['len-thuc-don-dinh-duong-can-bang'] || 0}</span>
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Lên Thực Đơn Dinh Dưỡng Cân Bằng
+                      "Hôm nay ăn gì?" - Thực đơn dinh dưỡng cá nhân hóa cho người bận rộn chỉ với 1 chạm
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
-                      Hướng dẫn lập thực đơn khoa học cho cả gia đình.
+                      Hướng dẫn lập thực đơn khoa học cho cho người bận rôn và cách sử dụng công cụ hỗ trợ lên thực đơn thông minh.
                     </p>
                   </div>
                 </Link>
@@ -594,44 +621,17 @@ export default function ResourcesPage() {
                   <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-rose-100 text-rose-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Sức khỏe</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
+                      <span className="text-[0.6875rem] text-slate-400">21 Th05, 2026</span>
                       <div className="ml-auto flex items-center gap-1.5 text-slate-400">
                         <Eye size={14} className="text-slate-400" />
                         <span className="text-xs font-medium font-sans leading-none">{viewCounts['cach-chon-bac-si-gioi-uy-tin'] || 0}</span>
                       </div>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Cách Chọn Bác Sĩ Giỏi: Hướng Dẫn
+                      Bí Quyết Chọn Bác Sĩ Giỏi: Cách Đọc Hiểu Học Hàm Học Vị Và Kinh Nghiệm Chuyên Môn
                     </h3>
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
                       Mẹo chọn bác sĩ uy tín và giỏi chuyên môn.
-                    </p>
-                  </div>
-                </Link>
-
-                {/* Article 18 */}
-                <Link to="/resources/thuc-don-tieu-duong-7-ngay-kh-hoc" className="w-[85vw] sm:w-[320px] shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all hover:shadow-md group cursor-pointer block">
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src="/bai-18/hinh1.png" 
-                      alt="Thực đơn tiểu đường 7 ngày" 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-6 flex flex-col h-[calc(100%-12rem)]">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="bg-green-100 text-green-700 text-[0.625rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Dinh dưỡng</span>
-                      <span className="text-[0.6875rem] text-slate-400">22 Th05, 2026</span>
-                      <div className="ml-auto flex items-center gap-1.5 text-slate-400">
-                        <Eye size={14} className="text-slate-400" />
-                        <span className="text-xs font-medium font-sans leading-none">{viewCounts['thuc-don-tieu-duong-7-ngay-kh-hoc'] || 0}</span>
-                      </div>
-                    </div>
-                    <h3 className="font-bold text-lg text-slate-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
-                      Thực Đơn 7 Ngày: Lên Kế Hoạch Ăn Khoa Học
-                    </h3>
-                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mt-auto">
-                      Hướng dẫn lên thực đơn tiểu đường an toàn và ngon.
                     </p>
                   </div>
                 </Link>

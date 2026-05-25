@@ -80,7 +80,7 @@ export default function Article18Page() {
   return (
     <>
       <Helmet>
-        <title>Thực Đơn 7 Ngày Cho Người Tiểu Đường: Cách Lên Thực Đơn Bằng AI</title>
+        <title>Thực Đơn 7 Ngày Cho Người Tiểu Đường: Cách Lên Thực Đơn Bằng AI Đơn Giản</title>
         <meta
           name="description"
           content="Làm sao thiết kế thực đơn cho người tiểu đường vừa chuẩn vị vừa hạ đường huyết? Khám phá giải pháp lên thực đơn bằng AI cá nhân hóa từ FamCare."
@@ -91,7 +91,7 @@ export default function Article18Page() {
         <meta name="twitter:description" content="Hướng dẫn lên thực đơn tiểu đường 7 ngày an toàn và ngon." />
         <meta name="twitter:image" content="https://famcare.site/bai-18/hinh1.jpg" />
         <link rel="canonical" href="https://famcare.site/resources/thuc-don-cho-nguoi-tieu-duong-len-thuc-don-bang-ai" />
-        <meta property="og:title" content="Thực Đơn 7 Ngày Cho Người Tiểu Đường: Cách Lên Thực Đơn Bằng AI" />
+        <meta property="og:title" content="Thực Đơn 7 Ngày Cho Người Tiểu Đường: Cách Lên Thực Đơn Bằng AI Đơn Giản" />
         <meta property="og:description" content="Làm sao thiết kế thực đơn cho người tiểu đường vừa chuẩn vị vừa hạ đường huyết?" />
         <meta property="og:image" content="https://famcare.site/bai-18/hinh1.jpg" />
         <meta property="og:image:width" content="1200" />

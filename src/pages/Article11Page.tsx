@@ -82,7 +82,7 @@ export default function Article11Page() {
   return (
     <>
       <Helmet>
-        <title>Quên tên thuốc cũ? Cách tra cứu dược phẩm theo triệu chứng bằng AI FamCare</title>
+        <title>Quên tên thuốc cũ? Cách tra cứu dược phẩm theo triệu chứng cực nhanh với AI FamCare</title>
         <meta
           name="description"
           content="Bạn quên tên thuốc cũ? Khám phá cách tra cứu dược phẩm theo triệu chứng cực nhanh bằng AI FamCare. Giải pháp y tế thông minh ngay trong tầm tay!"
@@ -93,7 +93,7 @@ export default function Article11Page() {
         <meta name="twitter:description" content="Bạn quên tên thuốc cũ? Khám phá cách tra cứu dược phẩm theo triệu chứng cực nhanh bằng AI FamCare." />
         <meta name="twitter:image" content="https://famcare.site/bai-11/hinh1.jpg" />
         <link rel="canonical" href="https://famcare.site/resources/quen-ten-thuoc-cu-ai-famcare" />
-        <meta property="og:title" content="Quên tên thuốc cũ? Cách tra cứu dược phẩm theo triệu chứng bằng AI FamCare" />
+        <meta property="og:title" content="Quên tên thuốc cũ? Cách tra cứu dược phẩm theo triệu chứng cực nhanh với AI FamCare" />
         <meta property="og:description" content="Bạn quên tên thuốc cũ? Khám phá cách tra cứu dược phẩm theo triệu chứng cực nhanh bằng AI FamCare." />
         <meta property="og:image" content="https://famcare.site/bai-11/hinh1.jpg" />
         <meta property="og:image:width" content="1200" />

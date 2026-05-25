@@ -84,7 +84,7 @@ export default function Article16Page() {
   return (
     <>
       <Helmet>
-        <title>"Hôm nay ăn gì?" - Thực đơn dinh dưỡng cá nhân hóa cho người bận rộn</title>
+        <title>"Hôm nay ăn gì?" - Thực đơn dinh dưỡng cá nhân hóa cho người bận rộn chỉ với 1 chạm</title>
         <meta
           name="description"
           content="Xóa tan nỗi lo 'Hôm nay ăn gì'! Khám phá giải pháp thiết kế thực đơn cá nhân hóa chỉ với 1 chạm. Tiện lợi, khoa học, tiết kiệm thời gian cùng FamCare."
